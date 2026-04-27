@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso al Sistema</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --google: #db4437;
+            --yahoo: #6001d2;
+            --bg: #f3f4f6;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .auth-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 { text-align: center; color: #111827; margin-bottom: 1.5rem; }
+
+        .input-group { margin-bottom: 1rem; }
+        label { display: block; font-size: 0.875rem; color: #374151; margin-bottom: 0.5rem; }
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            box-sizing: border-box;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            transition: opacity 0.2s;
+        }
+
+        .btn-main { background: var(--primary); color: white; }
+        .btn-google { background: var(--google); color: white; }
+        .btn-yahoo { background: var(--yahoo); color: white; }
+        .btn:hover { opacity: 0.9; }
+
+        .divider {
+            text-align: center;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+        .divider::before {
+            content: "";
+            position: absolute;
+            top: 50%; left: 0; right: 0;
+            height: 1px; background: #e5e7eb;
+        }
+        .divider span {
+            background: white;
+            padding: 0 0.5rem;
+            position: relative;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .footer-links {
+            text-align: center;
+            font-size: 0.875rem;
+        }
+        .footer-links a { color: var(--primary); text-decoration: none; display: block; margin-top: 0.5rem; }
+    </style>
+</head>
+<body>
+
+<div class="auth-card">
+    <h2 id="form-title">Iniciar Sesión</h2>
+    
+    <form id="auth-form">
+        <div class="input-group">
+            <label>Correo electrónico</label>
+            <input type="email" id="email" required>
+        </div>
+        <div class="input-group" id="pass-group">
+            <label>Contraseña</label>
+            <input type="password" id="password">
+        </div>
+        
+        <button type="submit" class="btn btn-main" id="submit-btn">Entrar</button>
+    </form>
+
+    <div class="footer-links">
+        <a href="#" id="forgot-pass">¿Olvidaste tu contraseña?</a>
+    </div>
+
+    <div class="divider"><span>O continúa con</span></div>
+
+    <button class="btn btn-google">Continuar con Google</button>
+    <button class="btn btn-yahoo">Continuar con Yahoo</button>
+
+    <div class="footer-links">
+        <p id="toggle-text">¿No tienes cuenta? <a href="#" id="toggle-auth">Regístrate aquí</a></p>
+    </div>
+</div>
+
+<script>
+    // Lógica básica para cambiar entre Login y Registro
+    const toggleBtn = document.getElementById('toggle-auth');
+    const formTitle = document.getElementById('form-title');
+    const submitBtn = document.getElementById('submit-btn');
+
+    toggleBtn.onclick = (e) => {
+        e.preventDefault();
+        if (formTitle.innerText === 'Iniciar Sesión') {
+            formTitle.innerText = 'Crear Cuenta';
+            submitBtn.innerText = 'Registrarse';
+            toggleBtn.innerText = 'Inicia sesión aquí';
+        } else {
+            formTitle.innerText = 'Iniciar Sesión';
+            submitBtn.innerText = 'Entrar';
+            toggleBtn.innerText = 'Regístrate aquí';
+        }
+    }
+</script>
+
+</body>
+</html>
