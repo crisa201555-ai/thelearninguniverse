@@ -3,139 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso al Sistema</title>
+    <title>The Learning Universe - Login</title>
     <style>
-        :root {
-            --primary: #4f46e5;
-            --google: #db4437;
-            --yahoo: #6001d2;
-            --bg: #f3f4f6;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-        }
-
-        .auth-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
-        }
-
-        h2 { text-align: center; color: #111827; margin-bottom: 1.5rem; }
-
-        .input-group { margin-bottom: 1rem; }
-        label { display: block; font-size: 0.875rem; color: #374151; margin-bottom: 0.5rem; }
-        input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.5rem;
-            box-sizing: border-box;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 0.75rem;
-            border: none;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            cursor: pointer;
-            margin-bottom: 1rem;
-            transition: opacity 0.2s;
-        }
-
-        .btn-main { background: var(--primary); color: white; }
-        .btn-google { background: var(--google); color: white; }
-        .btn-yahoo { background: var(--yahoo); color: white; }
-        .btn:hover { opacity: 0.9; }
-
-        .divider {
-            text-align: center;
-            margin: 1.5rem 0;
-            position: relative;
-        }
-        .divider::before {
-            content: "";
-            position: absolute;
-            top: 50%; left: 0; right: 0;
-            height: 1px; background: #e5e7eb;
-        }
-        .divider span {
-            background: white;
-            padding: 0 0.5rem;
-            position: relative;
-            color: #6b7280;
-            font-size: 0.875rem;
-        }
-
-        .footer-links {
-            text-align: center;
-            font-size: 0.875rem;
-        }
-        .footer-links a { color: var(--primary); text-decoration: none; display: block; margin-top: 0.5rem; }
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f0f2f5; margin: 0; }
+        .login-card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; width: 320px; }
+        button { width: 100%; padding: 12px; margin: 10px 0; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-google { background: #4285F4; color: white; }
+        .btn-more { background: #e4e6eb; color: #050505; }
+        
+        /* Estilos del Modal (Ventana de más opciones) */
+        .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
+        .modal-content { background: white; margin: 15% auto; padding: 20px; border-radius: 10px; width: 280px; text-align: center; }
+        .btn-yahoo { background: #6001d2; color: white; }
+        .close { float: right; cursor: pointer; font-size: 20px; }
     </style>
 </head>
 <body>
 
-<div class="auth-card">
-    <h2 id="form-title">Iniciar Sesión</h2>
-    
-    <form id="auth-form">
-        <div class="input-group">
-            <label>Correo electrónico</label>
-            <input type="email" id="email" required>
-        </div>
-        <div class="input-group" id="pass-group">
-            <label>Contraseña</label>
-            <input type="password" id="password">
-        </div>
+    <div class="login-card">
+        <h1>The Learning Universe</h1>
+        <p>Inicia sesión para continuar</p>
         
-        <button type="submit" class="btn btn-main" id="submit-btn">Entrar</button>
-    </form>
-
-    <div class="footer-links">
-        <a href="#" id="forgot-pass">¿Olvidaste tu contraseña?</a>
+        <button class="btn-google" onclick="loginGoogle()">Iniciar con Google</button>
+        
+        <button class="btn-more" onclick="openModal()">Ver más opciones...</button>
     </div>
 
-    <div class="divider"><span>O continúa con</span></div>
-
-    <button class="btn btn-google">Continuar con Google</button>
-    <button class="btn btn-yahoo">Continuar con Yahoo</button>
-
-    <div class="footer-links">
-        <p id="toggle-text">¿No tienes cuenta? <a href="#" id="toggle-auth">Regístrate aquí</a></p>
+    <div id="moreOptionsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3>Otras opciones</h3>
+            <button class="btn-yahoo" onclick="loginYahoo()">Iniciar con Yahoo</button>
+            <p style="font-size: 12px; color: gray;">Más métodos próximamente...</p>
+        </div>
     </div>
-</div>
 
-<script>
-    // Lógica básica para cambiar entre Login y Registro
-    const toggleBtn = document.getElementById('toggle-auth');
-    const formTitle = document.getElementById('form-title');
-    const submitBtn = document.getElementById('submit-btn');
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, OAuthProvider } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
-    toggleBtn.onclick = (e) => {
-        e.preventDefault();
-        if (formTitle.innerText === 'Iniciar Sesión') {
-            formTitle.innerText = 'Crear Cuenta';
-            submitBtn.innerText = 'Registrarse';
-            toggleBtn.innerText = 'Inicia sesión aquí';
-        } else {
-            formTitle.innerText = 'Iniciar Sesión';
-            submitBtn.innerText = 'Entrar';
-            toggleBtn.innerText = 'Regístrate aquí';
+        const firebaseConfig = {
+            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
+            authDomain: "thelearninguniverse-26.firebaseapp.com",
+            projectId: "thelearninguniverse-26",
+            storageBucket: "thelearninguniverse-26.firebasestorage.app",
+            messagingSenderId: "85338996011",
+            appId: "1:85338996011:web:1f3bb216900c07e735596e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Funciones de Login Globales
+        window.loginGoogle = async () => {
+            const provider = new GoogleAuthProvider();
+            try {
+                const result = await signInWithPopup(auth, provider);
+                alert("¡Hola " + result.user.displayName + "!");
+            } catch (error) {
+                alert("Error con Google: " + error.message);
+            }
+        };
+
+        window.loginYahoo = async () => {
+            const provider = new OAuthProvider('yahoo.com');
+            try {
+                await signInWithPopup(auth, provider);
+                alert("Sesión iniciada con Yahoo");
+                closeModal();
+            } catch (error) {
+                alert("Error con Yahoo: " + error.message);
+            }
+        };
+
+        // Funciones para la Ventana Modal
+        const modal = document.getElementById("moreOptionsModal");
+        window.openModal = () => modal.style.display = "block";
+        window.closeModal = () => modal.style.display = "none";
+        
+        // Cerrar si hacen clic fuera de la ventana
+        window.onclick = (event) => {
+            if (event.target == modal) closeModal();
         }
-    }
-</script>
+    </script>
 
 </body>
 </html>
