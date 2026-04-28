@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Misión: Ordenar Números</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --fondo: #0c1445;
+            --verde: #2ecc71;
+            --rojo: #e74c3c;
+            --celeste: #48dbfb;
+            --amarillo: #feca57;
+        }
+
+        body {
+            margin: 0; font-family: 'Montserrat', sans-serif;
+            background: var(--fondo); color: white;
+            display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh; overflow-x: hidden;
+        }
+
+        h1 { font-family: 'Fredoka One'; font-size: 2.5rem; color: var(--amarillo); margin: 20px 0 10px; text-shadow: 3px 3px rgba(0,0,0,0.3); }
+        p { font-weight: bold; font-size: 1.2rem; margin-bottom: 30px; }
+
+        /* --- CONTENEDOR DE BLOQUES --- */
+        .contenedor-bloques {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); /* 5 columnas */
+            gap: 20px;
+            max-width: 600px;
+            padding: 20px;
+        }
+
+        .bloque {
+            width: 80px; height: 80px;
+            background: white; border-radius: 20px;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Fredoka One'; font-size: 2.5rem; color: var(--fondo);
+            cursor: pointer; transition: 0.3s;
+            box-shadow: 0 8px 0 #ccc;
+            user-select: none;
+        }
+
+        .bloque:active { transform: translateY(4px); box-shadow: 0 4px 0 #ccc; }
+
+        /* Estados del juego */
+        .correcto { background: var(--verde) !important; color: white !important; box-shadow: 0 8px 0 #27ae60 !important; cursor: default; }
+        .error { background: var(--rojo) !important; color: white !important; box-shadow: 0 8px 0 #c0392b !important; transform: scale(1.1); }
+
+        /* Botón Volver */
+        .btn-volver {
+            margin-top: 40px; padding: 15px 30px;
+            background: var(--celeste); color: var(--fondo);
+            text-decoration: none; border-radius: 50px;
+            font-family: 'Fredoka One'; font-size: 1.2rem;
+            transition: 0.3s; box-shadow: 0 5px 0 #34ace0;
+        }
+        .btn-volver:hover { background: var(--amarillo); transform: scale(1.05); }
+
+        @media (max-width: 500px) {
+            .contenedor-bloques { grid-template-columns: repeat(3, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>¡ORDENA LOS NÚMEROS!</h1>
+    <p>Toca los números empezando por el <span style="color:var(--celeste)">1</span></p>
+
+    <div class="contenedor-bloques" id="tablero">
+        </div>
+
+    <div id="mensaje-victoria" style="display:none; margin-top: 20px;">
+        <h2 style="font-family:'Fredoka One'; color:var(--verde)">¡LO LOGRASTE, CAMPEÓN! 🌟</h2>
+        <button onclick="reiniciarJuego()" style="padding:10px 20px; border-radius:15px; cursor:pointer; font-weight:bold; border:none; background:var(--amarillo);">Jugar de nuevo</button>
+    </div>
+
+    <a href="index.html" class="btn-volver">← VOLVER AL MENÚ</a>
+
+    <script>
+        const tablero = document.getElementById('tablero');
+        let siguienteNumero = 1;
+        const numeros = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+        function shuffle(array) {
+            return array.sort(() => Math.random() - 0.5);
+        }
+
+        function crearTablero() {
+            tablero.innerHTML = "";
+            siguienteNumero = 1;
+            document.getElementById('mensaje-victoria').style.display = "none";
+            
+            const numerosMezclados = shuffle([...numeros]);
+
+            numerosMezclados.forEach(num => {
+                const div = document.createElement('div');
+                div.className = 'bloque';
+                div.innerText = num;
+                div.id = `num-${num}`;
+                div.onclick = () => presionarBloque(num, div);
+                tablero.appendChild(div);
+            });
+        }
+
+        function presionarBloque(num, elemento) {
+            // Si ya está marcado como correcto, no hacer nada
+            if (elemento.classList.contains('correcto')) return;
+
+            if (num === siguienteNumero) {
+                // Acierto
+                elemento.classList.add('correcto');
+                siguienteNumero++;
+                
+                if (siguienteNumero > 10) {
+                    document.getElementById('mensaje-victoria').style.display = "block";
+                }
+            } else {
+                // Error: Poner todos rojos temporalmente
+                const todos = document.querySelectorAll('.bloque');
+                todos.forEach(b => {
+                    if (!b.classList.contains('correcto')) {
+                        b.classList.add('error');
+                    }
+                });
+
+                // Volver a la normalidad tras medio segundo
+                setTimeout(() => {
+                    todos.forEach(b => b.classList.remove('error'));
+                }, 500);
+            }
+        }
+
+        function reiniciarJuego() {
+            crearTablero();
+        }
+
+        // Iniciar al cargar
+        crearTablero();
+    </script>
+</body>
+</html>

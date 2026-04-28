@@ -3,55 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Learning Universe - Login</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Oswald:wght@700&display=swap" rel="stylesheet">
+    <title>Misión Matemáticas - Universe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; font-family: 'Montserrat', sans-serif; height: 100vh; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%); color: white; overflow: hidden; }
-        .login-card { width: 380px; background: rgba(255, 255, 255, 0.05); padding: 40px; border-radius: 20px; border: 1px solid rgba(0, 255, 255, 0.3); backdrop-filter: blur(15px); text-align: center; }
-        h1 { font-family: 'Oswald', sans-serif; color: #00ffff; letter-spacing: 2px; }
-        input { width: 100%; padding: 15px; margin: 10px 0; background: rgba(0,0,0,0.2); border: 1px solid #333; border-radius: 8px; color: white; box-sizing: border-box; outline: none; }
-        button { width: 100%; padding: 15px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; text-transform: uppercase; transition: 0.3s; margin: 5px 0; }
-        .btn-login { background: #00ffff; color: #0a0e17; }
-        .btn-google { background: white; color: #333; }
+        :root { --naranja: #ff9f43; --celeste: #48dbfb; --amarillo: #feca57; --fondo: #0c1445; --rojo: #ff6b6b; }
+        body { margin: 0; font-family: 'Montserrat', sans-serif; background: var(--fondo); color: white; display: flex; flex-direction: column; min-height: 100vh; }
+        
+        /* MENÚ SUPERIOR */
+        .navbar { background: rgba(255,255,255,0.1); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(10px); }
+        .logo { font-family: 'Fredoka One'; color: var(--amarillo); font-size: 1.5rem; text-decoration: none; }
+        .nav-links a { color: white; text-decoration: none; margin-left: 20px; font-weight: bold; font-size: 0.9rem; }
+
+        /* CONTENIDO */
+        .container { flex: 1; padding: 40px; text-align: center; max-width: 1000px; margin: 0 auto; }
+        h1 { font-family: 'Fredoka One'; font-size: 3rem; margin-bottom: 10px; color: var(--celeste); text-shadow: 3px 3px rgba(0,0,0,0.5); }
+        
+        .grid-opciones { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 50px; }
+        
+        .card { background: white; border-radius: 30px; padding: 40px; cursor: pointer; transition: 0.3s; border-bottom: 8px solid #ccc; text-decoration: none; display: block; }
+        .card:hover { transform: translateY(-10px); }
+        .card h2 { font-family: 'Fredoka One'; font-size: 1.8rem; margin: 15px 0; }
+        .card p { color: #555; font-weight: 600; }
+
+        .juegos { border-color: var(--naranja); }
+        .juegos h2 { color: var(--naranja); }
+        .tests { border-color: var(--rojo); }
+        .tests h2 { color: var(--rojo); }
+
+        .emoji { font-size: 4rem; display: block; }
+        .btn-volver { margin-top: 40px; color: var(--celeste); text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="login-card">
-        <h1>THE LEARNING UNIVERSE</h1>
-        <input type="email" id="email" placeholder="Correo Espacial">
-        <input type="password" id="password" placeholder="Contraseña">
-        <button class="btn-login" onclick="loginEmail()">Iniciar Misión</button>
-        <button class="btn-google" onclick="loginGoogle()">Entrar con Google</button>
+
+    <nav class="navbar">
+        <a href="../home.html" class="logo">🚀 UNIVERSE</a>
+        <div class="nav-links">
+            <a href="../home.html">INICIO</a>
+            <a href="../chat.html">CHAT</a>
+            <a href="#">MI PERFIL</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>MISIÓN MATEMÁTICAS</h1>
+        <p>¿Qué aventura numérica quieres comenzar hoy?</p>
+
+        <div class="grid-opciones">
+            <a href="juego.html" class="card juegos">
+                <span class="emoji">🎮</span>
+                <h2>JUEGOS EDUCATIVOS</h2>
+                <p>¡Aprende jugando con retos espaciales y estrellas!</p>
+            </a>
+
+            <a href="test.html" class="card tests">
+                <span class="emoji">📝</span>
+                <h2>GENERADOR DE TEST</h2>
+                <p>¡Pon a prueba tus poderes y conviértete en genio!</p>
+            </a>
+        </div>
+
+        <a href="../home.html" class="btn-volver">← VOLVER A LA NAVE PRINCIPAL</a>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
-            authDomain: "thelearninguniverse-26.firebaseapp.com",
-            projectId: "thelearninguniverse-26",
-            storageBucket: "thelearninguniverse-26.firebasestorage.app",
-            messagingSenderId: "85338996011",
-            appId: "1:85338996011:web:1f3bb216900c07e735596e"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-
-        window.loginEmail = async () => {
-            try {
-                await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value);
-                window.location.href = "home.html";
-            } catch (e) { alert("Error de acceso"); }
-        };
-
-        window.loginGoogle = async () => {
-            const provider = new GoogleAuthProvider();
-            try { await signInWithPopup(auth, provider); window.location.href = "home.html"; } catch (e) { }
-        };
-    </script>
 </body>
 </html>
