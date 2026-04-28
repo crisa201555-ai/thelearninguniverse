@@ -7,31 +7,13 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Oswald:wght@700&display=swap" rel="stylesheet">
     <style>
-        body {
-            margin: 0; font-family: 'Montserrat', sans-serif; height: 100vh; display: flex;
-            justify-content: center; align-items: center;
-            background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
-            color: white; overflow: hidden;
-        }
-        .login-card {
-            width: 380px; background: rgba(255, 255, 255, 0.05); padding: 40px;
-            border-radius: 20px; border: 1px solid rgba(255, 0, 255, 0.3);
-            backdrop-filter: blur(15px); box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
-            text-align: center;
-        }
+        body { margin: 0; font-family: 'Montserrat', sans-serif; height: 100vh; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%); color: white; overflow: hidden; }
+        .login-card { width: 380px; background: rgba(255, 255, 255, 0.05); padding: 40px; border-radius: 20px; border: 1px solid rgba(0, 255, 255, 0.3); backdrop-filter: blur(15px); text-align: center; }
         h1 { font-family: 'Oswald', sans-serif; color: #00ffff; letter-spacing: 2px; }
-        input {
-            width: 100%; padding: 15px; margin: 10px 0; background: rgba(0,0,0,0.2);
-            border: 1px solid #333; border-radius: 8px; color: white; box-sizing: border-box;
-        }
-        button {
-            width: 100%; padding: 15px; border: none; border-radius: 8px; cursor: pointer;
-            font-weight: bold; text-transform: uppercase; transition: 0.3s; margin: 5px 0;
-        }
-        .btn-login { background: #00ffff; color: #0a0e17; box-shadow: 0 0 15px rgba(0, 255, 255, 0.4); }
+        input { width: 100%; padding: 15px; margin: 10px 0; background: rgba(0,0,0,0.2); border: 1px solid #333; border-radius: 8px; color: white; box-sizing: border-box; outline: none; }
+        button { width: 100%; padding: 15px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; text-transform: uppercase; transition: 0.3s; margin: 5px 0; }
+        .btn-login { background: #00ffff; color: #0a0e17; }
         .btn-google { background: white; color: #333; }
-        .btn-register { background: transparent; border: 1px solid #ff00ff; color: #ff00ff; margin-top: 20px; }
-        .btn-register:hover { background: #ff00ff; color: white; }
     </style>
 </head>
 <body>
@@ -41,12 +23,11 @@
         <input type="password" id="password" placeholder="Contraseña">
         <button class="btn-login" onclick="loginEmail()">Iniciar Misión</button>
         <button class="btn-google" onclick="loginGoogle()">Entrar con Google</button>
-        <button class="btn-register" onclick="registerUser()">Crear cuenta</button>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
@@ -60,26 +41,16 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        const irAlHome = () => window.location.href = "home.html";
-
         window.loginEmail = async () => {
             try {
                 await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value);
-                irAlHome();
+                window.location.href = "home.html";
             } catch (e) { alert("Error de acceso"); }
         };
 
         window.loginGoogle = async () => {
             const provider = new GoogleAuthProvider();
-            try { await signInWithPopup(auth, provider); irAlHome(); } catch (e) { }
-        };
-
-        window.registerUser = async () => {
-            try {
-                await createUserWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value);
-                alert("Cuenta creada");
-                irAlHome();
-            } catch (e) { alert(e.message); }
+            try { await signInWithPopup(auth, provider); window.location.href = "home.html"; } catch (e) { }
         };
     </script>
 </body>
