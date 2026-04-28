@@ -3,174 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Learning Universe - Acceso</title>
-    
+    <title>The Learning Universe - Login</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Oswald:wght@700&display=swap" rel="stylesheet">
-    
     <style>
         body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Montserrat', sans-serif;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(135deg, #0a0e17 0%, #111726 50%, #0e3a40 100%);
-            background-size: 400% 400%;
-            animation: gradientAnimation 15s ease infinite;
-            overflow: hidden;
-            color: white;
-            position: relative;
+            margin: 0; font-family: 'Montserrat', sans-serif; height: 100vh; display: flex;
+            justify-content: center; align-items: center;
+            background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
+            color: white; overflow: hidden;
         }
-
-        @keyframes gradientAnimation {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .login-container {
-            width: 100%;
-            max-width: 1000px;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-        }
-
-        .welcome-section {
-            flex: 1;
-            padding-right: 50px;
-            display: none;
-        }
-
-        @media (min-width: 768px) {
-            .welcome-section { display: block; }
-        }
-
-        .logo-container { display: flex; align-items: center; margin-bottom: 20px; }
-        
-        /* USANDO TU FAVICON TAMBIÉN COMO LOGO EN LA WEB */
-        .logo-icon {
-            width: 50px;
-            height: 50px;
-            margin-right: 15px;
-            background: url('favicon.ico') no-repeat center center;
-            background-size: contain;
-            filter: drop-shadow(0 0 8px #00ffff);
-        }
-
-        .logo-text { font-family: 'Oswald', sans-serif; font-size: 24px; letter-spacing: 1px; }
-
-        .welcome-text {
-            font-family: 'Oswald', sans-serif;
-            font-size: 48px;
-            background: linear-gradient(to right, #ffffff, #ff00ff, #00ffff, #ffffff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-size: 300% auto;
-            animation: textGradientAnimation 10s linear infinite;
-        }
-
-        @keyframes textGradientAnimation { to { background-position: 300% center; } }
-
         .login-card {
-            width: 380px;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 40px;
-            border-radius: 12px;
-            border: 2px solid #ff00ff;
-            box-shadow: 0 0 30px rgba(255, 0, 255, 0.4);
-            position: relative;
-            backdrop-filter: blur(10px);
+            width: 380px; background: rgba(255, 255, 255, 0.05); padding: 40px;
+            border-radius: 20px; border: 1px solid rgba(255, 0, 255, 0.3);
+            backdrop-filter: blur(15px); box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+            text-align: center;
         }
-
-        .card-title { font-size: 18px; font-weight: 700; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px; text-align: center; }
-
+        h1 { font-family: 'Oswald', sans-serif; color: #00ffff; letter-spacing: 2px; }
         input {
-            width: 100%;
-            padding: 15px;
-            margin-bottom: 15px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid #333;
-            border-radius: 6px;
-            color: white;
-            outline: none;
-            box-sizing: border-box;
+            width: 100%; padding: 15px; margin: 10px 0; background: rgba(0,0,0,0.2);
+            border: 1px solid #333; border-radius: 8px; color: white; box-sizing: border-box;
         }
-
-        input:focus { border-color: #00ffff; box-shadow: 0 0 10px rgba(0, 255, 255, 0.3); }
-
         button {
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 6px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.3s;
-            text-transform: uppercase;
-            margin-bottom: 10px;
+            width: 100%; padding: 15px; border: none; border-radius: 8px; cursor: pointer;
+            font-weight: bold; text-transform: uppercase; transition: 0.3s; margin: 5px 0;
         }
-
-        .btn-login { background: linear-gradient(45deg, #00ffff, #008080); color: #0a0e17; }
-        .btn-google { background: white; color: #555; display: flex; justify-content: center; align-items: center; gap: 10px; }
-        .btn-register { background: linear-gradient(45deg, #ff00ff, #800080); color: white; margin-top: 20px; }
-
-        .links { font-size: 12px; text-align: center; margin-bottom: 15px; }
-        .links a { color: #00ffff; text-decoration: none; cursor: pointer; }
-
-        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; }
-        .modal-content { background: #0a0e17; padding: 30px; border-radius: 12px; border: 1px solid #00ffff; width: 300px; text-align: center; position: relative; }
-        .close-modal { position: absolute; right: 15px; top: 10px; color: #ff00ff; cursor: pointer; font-size: 20px; }
-        .btn-yahoo { background: #6001d2; color: white; }
+        .btn-login { background: #00ffff; color: #0a0e17; box-shadow: 0 0 15px rgba(0, 255, 255, 0.4); }
+        .btn-google { background: white; color: #333; }
+        .btn-register { background: transparent; border: 1px solid #ff00ff; color: #ff00ff; margin-top: 20px; }
+        .btn-register:hover { background: #ff00ff; color: white; }
     </style>
 </head>
 <body>
-
-    <div class="login-container">
-        <div class="welcome-section">
-            <div class="logo-container">
-                <div class="logo-icon"></div>
-                <div class="logo-text">THE LEARNING UNIVERSE</div>
-            </div>
-            <h1 class="welcome-text">EXPLORA EL CONOCIMIENTO SIN LÍMITES</h1>
-        </div>
-
-        <div class="login-card">
-            <div class="card-title">INGRESO AL PORTAL</div>
-            <input type="email" id="email" placeholder="Email Espacial">
-            <input type="password" id="password" placeholder="Contraseña Secreta">
-            
-            <button class="btn-login" onclick="loginEmail()">Entrar ahora</button>
-            <div class="links"><a onclick="resetPassword()">¿Perdiste tu acceso?</a></div>
-
-            <button class="btn-google" onclick="loginGoogle()">
-                Continuar con Google
-            </button>
-            <center><a style="color:#00ffff; font-size:12px; cursor:pointer;" onclick="openModal()">Otras Galaxias (Yahoo/FB)</a></center>
-
-            <button class="btn-register" onclick="registerUser()">CREAR NUEVA CUENTA</button>
-        </div>
-    </div>
-
-    <div id="moreOptionsModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal()">&times;</span>
-            <h3 style="color:#00ffff">OTROS ACCESOS</h3>
-            <button class="btn-yahoo" onclick="loginYahoo()">Entrar con Yahoo</button>
-        </div>
+    <div class="login-card">
+        <h1>THE LEARNING UNIVERSE</h1>
+        <input type="email" id="email" placeholder="Correo Espacial">
+        <input type="password" id="password" placeholder="Contraseña">
+        <button class="btn-login" onclick="loginEmail()">Iniciar Misión</button>
+        <button class="btn-google" onclick="loginGoogle()">Entrar con Google</button>
+        <button class="btn-register" onclick="registerUser()">Crear cuenta</button>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, OAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
@@ -184,37 +60,27 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // Funciones Firebase
-        window.loginEmail = async () => {
-            const e = document.getElementById('email').value;
-            const p = document.getElementById('password').value;
-            try { await signInWithEmailAndPassword(auth, e, p); alert("¡Acceso concedido!"); } 
-            catch (err) { alert("Error: Datos incorrectos"); }
-        };
+        const irAlHome = () => window.location.href = "home.html";
 
-        window.registerUser = async () => {
-            const e = document.getElementById('email').value;
-            const p = document.getElementById('password').value;
-            try { await createUserWithEmailAndPassword(auth, e, p); alert("¡Cuenta creada!"); } 
-            catch (err) { alert(err.message); }
+        window.loginEmail = async () => {
+            try {
+                await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value);
+                irAlHome();
+            } catch (e) { alert("Error de acceso"); }
         };
 
         window.loginGoogle = async () => {
             const provider = new GoogleAuthProvider();
-            provider.setCustomParameters({ prompt: 'select_account' });
-            try { const r = await signInWithPopup(auth, provider); alert("Hola " + r.user.displayName); } 
-            catch (err) { console.log("Cancelado"); }
+            try { await signInWithPopup(auth, provider); irAlHome(); } catch (e) { }
         };
 
-        window.loginYahoo = async () => {
-            const provider = new OAuthProvider('yahoo.com');
-            try { await signInWithPopup(auth, provider); alert("Entraste con Yahoo"); closeModal(); } 
-            catch (err) { console.log("Error Yahoo"); }
+        window.registerUser = async () => {
+            try {
+                await createUserWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value);
+                alert("Cuenta creada");
+                irAlHome();
+            } catch (e) { alert(e.message); }
         };
-
-        const modal = document.getElementById("moreOptionsModal");
-        window.openModal = () => modal.style.display = "flex";
-        window.closeModal = () => modal.style.display = "none";
     </script>
 </body>
 </html>
