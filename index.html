@@ -1,150 +1,59 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Learning Universe - Acceso</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #f0f2f5; margin: 0; }
-        .login-card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); text-align: center; width: 350px; }
-        h1 { color: #1c1e21; margin-bottom: 0.5rem; }
-        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
-        button { width: 100%; padding: 12px; margin: 10px 0; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; font-size: 14px; }
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, OAuthProvider, 
+             signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } 
+    from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
+        authDomain: "thelearninguniverse-26.firebaseapp.com",
+        projectId: "thelearninguniverse-26",
+        storageBucket: "thelearninguniverse-26.firebasestorage.app",
+        messagingSenderId: "85338996011",
+        appId: "1:85338996011:web:1f3bb216900c07e735596e"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // --- MEJORA: Función para limpiar errores previos ---
+    const handleError = (error, providerName) => {
+        if (error.code === 'auth/popup-closed-by-user') {
+            console.log("El usuario cerró la ventana de " + providerName);
+        } else if (error.code === 'auth/cancelled-popup-request') {
+            console.log("Solicitud cancelada por nueva petición");
+        } else {
+            alert("Error con " + providerName + ": " + error.message);
+        }
+    };
+
+    window.loginGoogle = async () => {
+        const provider = new GoogleAuthProvider();
+        // Forzar a que siempre pida seleccionar cuenta
+        provider.setCustomParameters({ prompt: 'select_account' });
         
-        .btn-primary { background: #1877f2; color: white; }
-        .btn-primary:hover { background: #166fe5; }
-        .btn-google { background: white; color: #5f6368; border: 1px solid #dadce0; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-more { background: none; color: #1877f2; font-size: 13px; text-decoration: none; }
-        .btn-register { background: #42b72a; color: white; margin-top: 20px; }
-        
-        .links { margin-top: 15px; font-size: 13px; }
-        .links a { color: #1877f2; text-decoration: none; cursor: pointer; }
-        
-        /* Modal */
-        .modal { display: none; position: fixed; z-index: 10; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
-        .modal-content { background: white; margin: 15% auto; padding: 25px; border-radius: 10px; width: 280px; text-align: center; }
-        .btn-yahoo { background: #6001d2; color: white; }
-        .close { float: right; cursor: pointer; font-size: 24px; color: #aaa; }
-    </style>
-</head>
-<body>
+        try {
+            const result = await signInWithPopup(auth, provider);
+            alert("¡Bienvenido, " + result.user.displayName + "!");
+        } catch (error) {
+            handleError(error, "Google");
+        }
+    };
 
-    <div class="login-card">
-        <h1>The Learning Universe</h1>
-        <p style="color: #606770;">Bienvenido de nuevo</p>
-        
-        <input type="email" id="email" placeholder="Correo electrónico" required>
-        <input type="password" id="password" placeholder="Contraseña" required>
-        
-        <button class="btn-primary" onclick="loginEmail()">Iniciar Sesión</button>
-        
-        <div class="links">
-            <a onclick="resetPassword()">¿Olvidaste tu contraseña?</a>
-        </div>
+    window.loginYahoo = async () => {
+        const provider = new OAuthProvider('yahoo.com');
+        // Intentar pedir el correo a Yahoo
+        provider.addScope('sdpp-w'); 
+        provider.addScope('email');
 
-        <hr style="border: 0.5px solid #f0f2f5; margin: 20px 0;">
+        try {
+            const result = await signInWithPopup(auth, provider);
+            alert("Sesión iniciada con Yahoo");
+            closeModal();
+        } catch (error) {
+            handleError(error, "Yahoo");
+        }
+    };
 
-        <button class="btn-google" onclick="loginGoogle()">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/done.svg" width="18" style="display:none">
-            Continuar con Google
-        </button>
-        
-        <button class="btn-more" onclick="openModal()">Ver más opciones de acceso...</button>
-
-        <hr style="border: 0.5px solid #f0f2f5; margin: 20px 0;">
-        
-        <button class="btn-register" onclick="registerUser()">Crear cuenta nueva</button>
-    </div>
-
-    <div id="moreOptionsModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h3>Otras opciones</h3>
-            <button class="btn-yahoo" onclick="loginYahoo()">Acceder con Yahoo</button>
-        </div>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, OAuthProvider, 
-                 signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } 
-        from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
-            authDomain: "thelearninguniverse-26.firebaseapp.com",
-            projectId: "thelearninguniverse-26",
-            storageBucket: "thelearninguniverse-26.firebasestorage.app",
-            messagingSenderId: "85338996011",
-            appId: "1:85338996011:web:1f3bb216900c07e735596e"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-
-        // --- LÓGICA DE CORREO Y CONTRASEÑA ---
-
-        window.loginEmail = async () => {
-            const email = document.getElementById('email').value;
-            const pass = document.getElementById('password').value;
-            try {
-                await signInWithEmailAndPassword(auth, email, pass);
-                alert("¡Sesión iniciada con éxito!");
-            } catch (error) {
-                alert("Error: Correo o contraseña incorrectos.");
-            }
-        };
-
-        window.registerUser = async () => {
-            const email = document.getElementById('email').value;
-            const pass = document.getElementById('password').value;
-            if (pass.length < 6) return alert("La contraseña debe tener al menos 6 caracteres.");
-            try {
-                await createUserWithEmailAndPassword(auth, email, pass);
-                alert("¡Cuenta creada! Ya puedes iniciar sesión.");
-            } catch (error) {
-                alert("Error al registrar: " + error.message);
-            }
-        };
-
-        window.resetPassword = async () => {
-            const email = document.getElementById('email').value;
-            if (!email) return alert("Escribe tu correo primero para enviarte el enlace.");
-            try {
-                await sendPasswordResetEmail(auth, email);
-                alert("Se ha enviado un correo para restablecer tu contraseña.");
-            } catch (error) {
-                alert("Error: " + error.message);
-            }
-        };
-
-        // --- LÓGICA SOCIAL ---
-
-        window.loginGoogle = async () => {
-            const provider = new GoogleAuthProvider();
-            try {
-                const result = await signInWithPopup(auth, provider);
-                alert("Bienvenido, " + result.user.displayName);
-            } catch (error) {
-                alert("Error con Google.");
-            }
-        };
-
-        window.loginYahoo = async () => {
-            const provider = new OAuthProvider('yahoo.com');
-            try {
-                await signInWithPopup(auth, provider);
-                alert("Sesión iniciada con Yahoo");
-                closeModal();
-            } catch (error) {
-                alert("Error con Yahoo.");
-            }
-        };
-
-        // Modal
-        const modal = document.getElementById("moreOptionsModal");
-        window.openModal = () => modal.style.display = "block";
-        window.closeModal = () => modal.style.display = "none";
-    </script>
-</body>
-</html>
+    // ... (Mantén tus funciones de loginEmail, registerUser y modal igual que antes) ...
+</script>
