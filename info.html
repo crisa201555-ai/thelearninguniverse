@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buscar Exploradores - The Learning Universe</title>
+    <title>Exploradores - The Learning Universe</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Oswald:wght@700&display=swap" rel="stylesheet">
     <style>
@@ -11,118 +11,172 @@
         body {
             margin: 0; font-family: 'Montserrat', sans-serif; background: var(--bg-dark);
             background-image: radial-gradient(circle at 50% 50%, #111d2b 0%, #05070a 100%);
-            color: white; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding-top: 50px;
+            color: white; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px;
         }
 
-        /* --- BUSCADOR --- */
-        .search-container {
-            width: 90%; max-width: 600px; margin-bottom: 30px; text-align: center;
-        }
-        .search-box {
-            display: flex; gap: 10px; background: rgba(255,255,255,0.05);
-            padding: 10px; border-radius: 50px; border: 1px solid var(--neon-cyan);
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
-        }
-        .search-box input {
-            flex: 1; background: transparent; border: none; color: white;
-            padding: 10px 20px; outline: none; font-size: 1rem;
-        }
-        .search-btn {
-            background: var(--neon-cyan); border: none; padding: 10px 25px;
-            border-radius: 50px; font-weight: bold; cursor: pointer; transition: 0.3s;
-        }
-        .search-btn:hover { box-shadow: 0 0 20px var(--neon-cyan); transform: scale(1.05); }
+        .header-nav { width: 100%; max-width: 800px; display: flex; justify-content: space-between; margin-bottom: 30px; }
+        .btn-nav { background: none; border: 1px solid var(--neon-cyan); color: var(--neon-cyan); padding: 10px 20px; border-radius: 50px; cursor: pointer; text-decoration:none; font-size:0.8rem; }
 
-        /* --- TARJETA DE RESULTADO --- */
-        .info-card {
-            width: 90%; max-width: 500px; background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px); border-radius: 24px;
-            border: 1px solid rgba(255, 0, 255, 0.3); padding: 40px;
-            text-align: center; position: relative; display: none; /* Se muestra al buscar */
-        }
-        .profile-pic { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--neon-pink); margin-bottom: 15px; }
-        .back-link { margin-top: 20px; color: var(--neon-pink); text-decoration: none; font-size: 0.8rem; }
-        
-        .no-results { color: #888; margin-top: 20px; display: none; }
+        /* BUSCADOR */
+        .search-box { display: flex; width: 100%; max-width: 500px; background: rgba(255,255,255,0.05); border-radius: 50px; border: 1px solid var(--neon-cyan); overflow: hidden; margin-bottom: 20px; }
+        .search-box input { flex: 1; background: transparent; border: none; color: white; padding: 15px 20px; outline: none; }
+        .search-box button { background: var(--neon-cyan); border: none; padding: 0 25px; font-weight: bold; cursor: pointer; }
+
+        /* TARJETA DE PERFIL */
+        .profile-card { width: 100%; max-width: 450px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); border-radius: 20px; border: 1px solid rgba(255, 0, 255, 0.3); padding: 30px; text-align: center; margin-top: 20px; display: none; }
+        .avatar { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--neon-pink); margin-bottom: 10px; }
+        .buddy-status { margin-top: 15px; padding: 10px; background: rgba(0, 255, 255, 0.1); border-radius: 10px; font-size: 0.9rem; color: var(--neon-cyan); border: 1px dashed var(--neon-cyan); }
+
+        /* NOTIFICACIONES */
+        .notif-box { width: 100%; max-width: 450px; margin-top: 20px; }
+        .notif-card { background: #1a1f2b; padding: 15px; border-radius: 12px; border-left: 4px solid var(--neon-pink); margin-bottom: 10px; font-size: 0.85rem; }
+        .notif-btns { display: flex; gap: 10px; margin-top: 10px; }
+        .btn-acc { background: #42b72a; color: white; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer; }
+        .btn-rej { background: #ff4444; color: white; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer; }
+
+        .btn-action { background: var(--neon-pink); color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; margin-top: 15px; }
     </style>
 </head>
 <body>
 
-    <a href="home.html" style="position:fixed; top:20px; left:20px; color:var(--neon-cyan); text-decoration:none; font-weight:bold;">← VOLVER</a>
-
-    <div class="search-container">
-        <h1 style="font-family:'Oswald'; letter-spacing:3px;">BUSCAR EN EL UNIVERSO</h1>
-        <form id="searchForm" class="search-box">
-            <input type="text" id="searchInput" placeholder="Nombre o correo del explorador..." required>
-            <button type="submit" class="search-btn">BUSCAR</button>
-        </form>
+    <div class="header-nav">
+        <a href="home.html" class="btn-nav">← VOLVER</a>
+        <button class="btn-nav" onclick="showMyProfile()">VER MI PERFIL</button>
     </div>
 
-    <div id="resultCard" class="info-card">
-        <img id="res-img" src="" class="profile-pic">
-        <h2 id="res-name" style="font-family:'Oswald'; margin:0;"></h2>
-        <p id="res-email" style="color:var(--neon-cyan); font-size:0.9rem;"></p>
-        <div style="text-align:left; background:rgba(0,0,0,0.3); padding:15px; border-radius:10px; margin-top:20px;">
-            <label style="font-size:0.7rem; color:var(--neon-pink); font-weight:bold;">DESCRIPCIÓN</label>
-            <p id="res-desc" style="font-size:0.85rem; margin-top:5px;">Sin descripción disponible.</p>
-        </div>
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Busca un compañero (Nombre o Email)...">
+        <button onclick="searchUser()">BUSCAR</button>
     </div>
 
-    <p id="noResults" class="no-results">No se encontró ningún explorador con esos datos.</p>
+    <div id="profileCard" class="profile-card">
+        <img id="p-img" src="" class="avatar">
+        <h2 id="p-name" style="margin:0;"></h2>
+        <p id="p-email" style="font-size:0.8rem; color:#888;"></p>
+        <div id="buddyField" class="buddy-status" style="display:none;"></div>
+        <button id="requestBtn" class="btn-action" onclick="sendRequest()">MANDAR SOLICITUD DE MEJOR COMPAÑERO</button>
+    </div>
+
+    <div class="notif-box" id="notifArea">
+        <h3 style="font-size:0.9rem; color:var(--neon-cyan)">NOTIFICACIONES</h3>
+        <div id="notifList"></div>
+    </div>
 
     <script type="module">
-        // Simulación de base de datos (En una app real, esto vendría de Firebase Firestore)
-        const mockUsers = [
-            { name: "Alana", email: "alana@universo.com", img: "https://i.pravatar.cc/150?u=alana", desc: "Exploradora de Matemáticas y Tecnología." },
-            { name: "Gemini", email: "gemini@ai.com", img: "https://i.pravatar.cc/150?u=gemini", desc: "Inteligencia artificial al servicio del aprendizaje." },
-            { name: "Admin", email: "admin@thelearninguniverses.com", img: "https://i.pravatar.cc/150?u=admin", desc: "Creador de este universo." }
-        ];
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, onSnapshot, collection, query, where } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
-        const form = document.getElementById('searchForm');
-        const input = document.getElementById('searchInput');
-        const card = document.getElementById('resultCard');
-        const noRes = document.getElementById('noResults');
+        const firebaseConfig = {
+            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
+            authDomain: "thelearninguniverse-26.firebaseapp.com",
+            projectId: "thelearninguniverse-26",
+            storageBucket: "thelearninguniverse-26.firebasestorage.app",
+            messagingSenderId: "85338996011",
+            appId: "1:85338996011:web:1f3bb216900c07e735596e"
+        };
 
-        // Función de búsqueda
-        const performSearch = (query) => {
-            if (!query) return;
-            
-            const result = mockUsers.find(u => 
-                u.name.toLowerCase() === query.toLowerCase() || 
-                u.email.toLowerCase() === query.toLowerCase()
-            );
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
 
-            if (result) {
-                document.getElementById('res-img').src = result.img;
-                document.getElementById('res-name').innerText = result.name;
-                document.getElementById('res-email').innerText = result.email;
-                document.getElementById('res-desc').innerText = result.desc;
-                card.style.display = "block";
-                noRes.style.display = "none";
+        let currentUser = null;
+        let searchedUser = null;
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                // Guardar usuario en Firestore para que otros lo encuentren
+                await setDoc(doc(db, "users", user.uid), {
+                    uid: user.uid,
+                    name: user.displayName || "Explorador",
+                    email: user.email,
+                    photo: user.photoURL || "https://via.placeholder.com/100",
+                    bestBuddy: null
+                }, { merge: true });
+                
+                loadNotifications();
+                checkBuddyStatus();
+            } else { window.location.href = "index.html"; }
+        });
+
+        // BUSCAR USUARIO (SIMULADO PARA ESTE EJEMPLO)
+        window.searchUser = async () => {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            // En una app real haríamos una consulta a Firestore collection "users"
+            // Aquí simularemos que encontramos a alguien si escribes un nombre
+            if(q === "alana" || q === "alana@gmail.com") {
+                searchedUser = { uid: "ID_ALANA_EJEMPLO", name: "Alana", email: "alana@gmail.com", photo: "https://i.pravatar.cc/150?u=alana" };
+                displayProfile(searchedUser);
+            } else { alert("Usuario no encontrado."); }
+        };
+
+        function displayProfile(user) {
+            document.getElementById('p-img').src = user.photo;
+            document.getElementById('p-name').innerText = user.name;
+            document.getElementById('p-email').innerText = user.email;
+            document.getElementById('profileCard').style.display = "block";
+        }
+
+        // ENVIAR SOLICITUD
+        window.sendRequest = async () => {
+            await setDoc(doc(db, "requests", searchedUser.uid), {
+                fromName: currentUser.displayName || currentUser.email,
+                fromId: currentUser.uid,
+                status: "pending"
+            });
+            alert("Solicitud enviada a " + searchedUser.name);
+        };
+
+        // CARGAR NOTIFICACIONES
+        function loadNotifications() {
+            onSnapshot(doc(db, "requests", currentUser.uid), (docSnap) => {
+                const list = document.getElementById('notifList');
+                list.innerHTML = "";
+                if (docSnap.exists() && docSnap.data().status === "pending") {
+                    const data = docSnap.data();
+                    list.innerHTML = `
+                        <div class="notif-card">
+                            El usuario <b>${data.fromName}</b> te mandó una solicitud para ser tu Mejor Compañero/a.
+                            <div class="notif-btns">
+                                <button class="btn-acc" onclick="respond('accept', '${data.fromId}', '${data.fromName}')">ACEPTAR</button>
+                                <button class="btn-rej" onclick="respond('reject', '${data.fromId}')">RECHAZAR</button>
+                            </div>
+                        </div>`;
+                }
+            });
+        }
+
+        window.respond = async (choice, otherId, otherName) => {
+            if (choice === 'accept') {
+                // Actualizar ambos perfiles
+                await updateDoc(doc(db, "users", currentUser.uid), { bestBuddy: otherName });
+                await updateDoc(doc(db, "users", otherId), { bestBuddy: currentUser.displayName || currentUser.email });
+                await updateDoc(doc(db, "requests", currentUser.uid), { status: "accepted" });
+                alert("¡Ahora son mejores compañeros!");
             } else {
-                card.style.display = "none";
-                noRes.style.display = "block";
+                await updateDoc(doc(db, "requests", currentUser.uid), { status: "rejected" });
+                alert("Solicitud rechazada.");
             }
         };
 
-        // Escuchar el envío del formulario
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const val = input.value;
-            // Cambiamos la URL sin recargar para que se vea profesional
-            const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?search=' + val;
-            window.history.pushState({path:newUrl},'',newUrl);
-            performSearch(val);
-        });
+        async function checkBuddyStatus() {
+            onSnapshot(doc(db, "users", currentUser.uid), (docSnap) => {
+                if (docSnap.exists() && docSnap.data().bestBuddy) {
+                    const field = document.getElementById('buddyField');
+                    field.innerText = "Mejor Compañero/a: " + docSnap.data().bestBuddy;
+                    field.style.display = "block";
+                }
+            });
+        }
 
-        // Leer la URL al cargar la página
-        window.onload = () => {
-            const params = new URLSearchParams(window.location.search);
-            const query = params.get('search');
-            if (query) {
-                input.value = query;
-                performSearch(query);
-            }
+        window.showMyProfile = () => {
+            displayProfile({
+                name: currentUser.displayName || "Yo",
+                email: currentUser.email,
+                photo: currentUser.photoURL || "https://via.placeholder.com/100"
+            });
+            document.getElementById('requestBtn').style.display = "none";
         };
     </script>
 </body>
