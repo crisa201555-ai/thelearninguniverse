@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - The Learning Universe</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Oswald:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-cyan: #00ffff;
+            --neon-pink: #ff00ff;
+            --bg-dark: #0a0e17;
+            --sidebar-width: 240px;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            background: var(--bg-dark);
+            color: white;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- MENÚ LATERAL --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: rgba(255, 255, 255, 0.03);
+            border-right: 2px solid var(--neon-pink);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-shadow: 5px 0 15px rgba(255, 0, 255, 0.2);
+        }
+
+        .sidebar h2 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.2rem;
+            color: var(--neon-cyan);
+            text-transform: uppercase;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            color: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            transition: 0.3s;
+            font-weight: 600;
+        }
+
+        .nav-btn:hover {
+            background: rgba(0, 255, 255, 0.1);
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 10px var(--neon-cyan);
+            transform: translateX(5px);
+        }
+
+        /* --- CONTENIDO PRINCIPAL --- */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- BARRA SUPERIOR (HEADER) --- */
+        .top-bar {
+            height: 80px;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .date-time {
+            font-family: 'Oswald', sans-serif;
+            color: var(--neon-cyan);
+            font-size: 1.1rem;
+        }
+
+        /* --- PERFIL Y MINI MENÚ --- */
+        .user-profile {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 5px 15px;
+            border-radius: 50px;
+            transition: 0.3s;
+        }
+
+        .user-profile:hover { background: rgba(255, 255, 255, 0.05); }
+
+        .user-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--neon-pink);
+            object-fit: cover;
+        }
+
+        .user-info { text-align: right; }
+        .user-name { font-weight: 700; font-size: 0.9rem; display: block; }
+        .user-email { font-size: 0.7rem; color: #aaa; }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background: #111726;
+            border: 1px solid var(--neon-cyan);
+            border-radius: 8px;
+            width: 180px;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 100;
+            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+        }
+
+        .dropdown-menu.active { display: flex; }
+
+        .dropdown-item {
+            padding: 12px 20px;
+            font-size: 0.85rem;
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+            background: transparent;
+            border: none;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .dropdown-item:hover { background: var(--neon-cyan); color: #0a0e17; }
+        .logout { color: #ff4444; }
+        .logout:hover { background: #ff4444; color: white; }
+
+        .welcome-hero {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .welcome-hero h1 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 3rem;
+            background: linear-gradient(to right, #fff, var(--neon-cyan), var(--neon-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>Universo</h2>
+        <button class="nav-btn">LENGUAJE</button>
+        <button class="nav-btn">MATEMÁTICAS</button>
+        <button class="nav-btn">HISTORIA</button>
+        <button class="nav-btn">INGLÉS</button>
+        <button class="nav-btn">TECNOLOGÍA</button>
+    </div>
+
+    <div class="main-content">
+        <header class="top-bar">
+            <div class="date-time" id="live-clock">Cargando cronos...</div>
+
+            <div class="user-profile" onclick="toggleMenu()">
+                <div class="user-info">
+                    <span class="user-name" id="display-name">Explorador</span>
+                    <span class="user-email" id="display-email">usuario@universo.com</span>
+                </div>
+                <img src="https://via.placeholder.com/150" alt="User" class="user-img" id="user-photo">
+                
+                <div class="dropdown-menu" id="userMenu">
+                    <button class="dropdown-item">⚙️ Configuración</button>
+                    <button class="dropdown-item">ℹ️ Información</button>
+                    <hr style="border: 0; border-top: 1px solid #333; margin: 0;">
+                    <button class="dropdown-item logout" onclick="logout()">🚀 Cerrar sesión</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="welcome-hero">
+            <h1>CENTRAL DE APRENDIZAJE</h1>
+            <p>Selecciona una materia en el panel izquierdo para comenzar tu misión.</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
+            authDomain: "thelearninguniverse-26.firebaseapp.com",
+            projectId: "thelearninguniverse-26",
+            storageBucket: "thelearninguniverse-26.firebasestorage.app",
+            messagingSenderId: "85338996011",
+            appId: "1:85338996011:web:1f3bb216900c07e735596e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // 1. Verificar sesión y cargar datos
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('display-name').innerText = user.displayName || "Explorador";
+                document.getElementById('display-email').innerText = user.email;
+                if(user.photoURL) document.getElementById('user-photo').src = user.photoURL;
+            } else {
+                // Si no hay usuario, mandarlo al login
+                window.location.href = "index.html";
+            }
+        });
+
+        // 2. Cerrar Sesión
+        window.logout = () => {
+            signOut(auth).then(() => {
+                window.location.href = "index.html";
+            });
+        };
+
+        // 3. Reloj en tiempo real
+        function updateClock() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            document.getElementById('live-clock').innerText = now.toLocaleDateString('es-ES', options).toUpperCase();
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // 4. Lógica del Menú Desplegable
+        window.toggleMenu = () => {
+            document.getElementById('userMenu').classList.toggle('active');
+        };
+
+        // Cerrar menú si clic afuera
+        window.onclick = (event) => {
+            if (!event.target.closest('.user-profile')) {
+                document.getElementById('userMenu').classList.remove('active');
+            }
+        };
+    </script>
+</body>
+</html>
