@@ -10,165 +10,117 @@
         :root {
             --neon-cyan: #00ffff;
             --neon-pink: #ff00ff;
-            --bg-dark: #0a0e17;
-            --sidebar-width: 240px;
+            --bg-dark: #05070a;
+            --glass: rgba(255, 255, 255, 0.03);
         }
 
         body {
-            margin: 0;
-            font-family: 'Montserrat', sans-serif;
-            background: var(--bg-dark);
-            color: white;
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
+            margin: 0; font-family: 'Montserrat', sans-serif;
+            background: var(--bg-dark); color: white;
+            display: flex; height: 100vh; overflow: hidden;
+            background-image: radial-gradient(circle at 50% 50%, #111d2b 0%, #05070a 100%);
         }
 
-        /* --- MENÚ LATERAL --- */
+        /* --- SIDEBAR TECH --- */
         .sidebar {
-            width: var(--sidebar-width);
-            background: rgba(255, 255, 255, 0.03);
-            border-right: 2px solid var(--neon-pink);
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            box-shadow: 5px 0 15px rgba(255, 0, 255, 0.2);
+            width: 260px; background: rgba(0, 0, 0, 0.4);
+            border-right: 1px solid rgba(0, 255, 255, 0.1);
+            display: flex; flex-direction: column; padding: 30px 15px;
+            backdrop-filter: blur(20px); z-index: 10;
         }
 
         .sidebar h2 {
-            font-family: 'Oswald', sans-serif;
-            font-size: 1.2rem;
-            color: var(--neon-cyan);
-            text-transform: uppercase;
-            margin-bottom: 30px;
-            text-align: center;
+            font-family: 'Oswald', sans-serif; color: var(--neon-pink);
+            text-align: center; letter-spacing: 3px; margin-bottom: 40px;
+            text-shadow: 0 0 10px var(--neon-pink);
         }
 
         .nav-btn {
-            background: transparent;
-            border: 1px solid rgba(0, 255, 255, 0.3);
-            color: white;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            text-align: left;
-            transition: 0.3s;
-            font-weight: 600;
+            background: var(--glass); border: 1px solid rgba(255, 255, 255, 0.05);
+            color: #ddd; padding: 18px; margin-bottom: 12px; border-radius: 12px;
+            cursor: pointer; text-align: left; transition: 0.4s;
+            font-weight: bold; letter-spacing: 1px; position: relative; overflow: hidden;
         }
 
         .nav-btn:hover {
-            background: rgba(0, 255, 255, 0.1);
-            border-color: var(--neon-cyan);
-            box-shadow: 0 0 10px var(--neon-cyan);
-            transform: translateX(5px);
+            background: rgba(0, 255, 255, 0.05);
+            color: var(--neon-cyan); border-color: var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            transform: scale(1.05);
         }
 
-        /* --- CONTENIDO PRINCIPAL --- */
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
+        /* --- MAIN AREA --- */
+        .main-content { flex: 1; display: flex; flex-direction: column; position: relative; }
+
+        .header {
+            height: 90px; padding: 0 40px; display: flex;
+            justify-content: space-between; align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        /* --- BARRA SUPERIOR (HEADER) --- */
-        .top-bar {
-            height: 80px;
-            padding: 0 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.02);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        .clock-container {
+            padding: 10px 20px; background: var(--glass);
+            border-radius: 30px; border: 1px solid rgba(0, 255, 255, 0.2);
+            font-family: 'Oswald', sans-serif; color: var(--neon-cyan);
+            box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.1);
         }
 
-        .date-time {
-            font-family: 'Oswald', sans-serif;
-            color: var(--neon-cyan);
-            font-size: 1.1rem;
+        /* --- USER MENU --- */
+        .user-box {
+            display: flex; align-items: center; gap: 15px;
+            cursor: pointer; padding: 8px 20px; border-radius: 40px;
+            background: var(--glass); border: 1px solid rgba(255, 0, 255, 0.2);
+            transition: 0.3s; position: relative;
         }
 
-        /* --- PERFIL Y MINI MENÚ --- */
-        .user-profile {
-            position: relative;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            padding: 5px 15px;
-            border-radius: 50px;
-            transition: 0.3s;
+        .user-box:hover { box-shadow: 0 0 15px rgba(255, 0, 255, 0.3); }
+
+        .user-avatar {
+            width: 45px; height: 45px; border-radius: 50%;
+            border: 2px solid var(--neon-pink); object-fit: cover;
         }
 
-        .user-profile:hover { background: rgba(255, 255, 255, 0.05); }
-
-        .user-img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 2px solid var(--neon-pink);
-            object-fit: cover;
+        .dropdown {
+            position: absolute; top: 70px; right: 0; width: 220px;
+            background: #0d1117; border: 1px solid var(--neon-pink);
+            border-radius: 15px; display: none; flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 100;
         }
 
-        .user-info { text-align: right; }
-        .user-name { font-weight: 700; font-size: 0.9rem; display: block; }
-        .user-email { font-size: 0.7rem; color: #aaa; }
+        .dropdown.active { display: flex; animation: slideDown 0.3s ease; }
 
-        .dropdown-menu {
-            position: absolute;
-            top: 60px;
-            right: 0;
-            background: #111726;
-            border: 1px solid var(--neon-cyan);
-            border-radius: 8px;
-            width: 180px;
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-            z-index: 100;
-            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+        @keyframes slideDown { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:translateY(0); } }
+
+        .dropdown a {
+            padding: 15px 25px; color: white; text-decoration: none;
+            font-size: 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.05);
         }
 
-        .dropdown-menu.active { display: flex; }
+        .dropdown a:hover { background: var(--neon-pink); color: white; }
 
-        .dropdown-item {
-            padding: 12px 20px;
-            font-size: 0.85rem;
-            color: white;
-            text-decoration: none;
-            transition: 0.3s;
-            background: transparent;
-            border: none;
-            text-align: left;
-            cursor: pointer;
+        /* --- CONTENT --- */
+        .hero {
+            flex: 1; display: flex; justify-content: center; align-items: center;
+            flex-direction: column; position: relative;
         }
 
-        .dropdown-item:hover { background: var(--neon-cyan); color: #0a0e17; }
-        .logout { color: #ff4444; }
-        .logout:hover { background: #ff4444; color: white; }
-
-        .welcome-hero {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            text-align: center;
+        .hero h1 {
+            font-family: 'Oswald', sans-serif; font-size: 4.5rem; margin: 0;
+            background: linear-gradient(45deg, #fff, var(--neon-cyan), var(--neon-pink));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 30px rgba(0, 255, 255, 0.3));
         }
 
-        .welcome-hero h1 {
-            font-family: 'Oswald', sans-serif;
-            font-size: 3rem;
-            background: linear-gradient(to right, #fff, var(--neon-cyan), var(--neon-pink));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .orbit-icon {
+            position: absolute; width: 100%; height: 100%;
+            pointer-events: none; opacity: 0.2;
         }
     </style>
 </head>
 <body>
 
     <div class="sidebar">
-        <h2>Universo</h2>
+        <h2>PORTAL</h2>
         <button class="nav-btn">LENGUAJE</button>
         <button class="nav-btn">MATEMÁTICAS</button>
         <button class="nav-btn">HISTORIA</button>
@@ -177,28 +129,27 @@
     </div>
 
     <div class="main-content">
-        <header class="top-bar">
-            <div class="date-time" id="live-clock">Cargando cronos...</div>
+        <div class="header">
+            <div class="clock-container" id="clock">CARGANDO TIEMPO...</div>
 
-            <div class="user-profile" onclick="toggleMenu()">
-                <div class="user-info">
-                    <span class="user-name" id="display-name">Explorador</span>
-                    <span class="user-email" id="display-email">usuario@universo.com</span>
+            <div class="user-box" onclick="toggleDrop()">
+                <div style="text-align: right">
+                    <div id="u-name" style="font-weight:bold; font-size:0.9rem">Explorador</div>
+                    <div id="u-email" style="font-size:0.7rem; color: #888">conectando...</div>
                 </div>
-                <img src="https://via.placeholder.com/150" alt="User" class="user-img" id="user-photo">
+                <img id="u-img" src="https://via.placeholder.com/100" class="user-avatar">
                 
-                <div class="dropdown-menu" id="userMenu">
-                    <button class="dropdown-item">⚙️ Configuración</button>
-                    <button class="dropdown-item">ℹ️ Información</button>
-                    <hr style="border: 0; border-top: 1px solid #333; margin: 0;">
-                    <button class="dropdown-item logout" onclick="logout()">🚀 Cerrar sesión</button>
+                <div class="dropdown" id="myDrop">
+                    <a href="#">⚙️ Configuración</a>
+                    <a href="#">ℹ️ Información</a>
+                    <a href="#" onclick="exit()" style="color: #ff4444">🚀 Cerrar Sesión</a>
                 </div>
             </div>
-        </header>
+        </div>
 
-        <div class="welcome-hero">
-            <h1>CENTRAL DE APRENDIZAJE</h1>
-            <p>Selecciona una materia en el panel izquierdo para comenzar tu misión.</p>
+        <div class="hero">
+            <h1>UNIVERSE</h1>
+            <p style="letter-spacing: 5px; color: var(--neon-cyan)">ESTACIÓN CENTRAL DE APRENDIZAJE</p>
         </div>
     </div>
 
@@ -218,45 +169,29 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // 1. Verificar sesión y cargar datos
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                document.getElementById('display-name').innerText = user.displayName || "Explorador";
-                document.getElementById('display-email').innerText = user.email;
-                if(user.photoURL) document.getElementById('user-photo').src = user.photoURL;
-            } else {
-                // Si no hay usuario, mandarlo al login
-                window.location.href = "index.html";
-            }
+                document.getElementById('u-name').innerText = user.displayName || "Usuario";
+                document.getElementById('u-email').innerText = user.email;
+                if(user.photoURL) document.getElementById('u-img').src = user.photoURL;
+            } else { window.location.href = "index.html"; }
         });
 
-        // 2. Cerrar Sesión
-        window.logout = () => {
-            signOut(auth).then(() => {
-                window.location.href = "index.html";
-            });
-        };
+        window.exit = () => signOut(auth);
 
-        // 3. Reloj en tiempo real
-        function updateClock() {
-            const now = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-            document.getElementById('live-clock').innerText = now.toLocaleDateString('es-ES', options).toUpperCase();
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
+        window.toggleDrop = () => document.getElementById('myDrop').classList.toggle('active');
 
-        // 4. Lógica del Menú Desplegable
-        window.toggleMenu = () => {
-            document.getElementById('userMenu').classList.toggle('active');
-        };
-
-        // Cerrar menú si clic afuera
-        window.onclick = (event) => {
-            if (!event.target.closest('.user-profile')) {
-                document.getElementById('userMenu').classList.remove('active');
+        function startClock() {
+            const update = () => {
+                const now = new Date();
+                document.getElementById('clock').innerText = now.toLocaleString('es-ES', { 
+                    weekday: 'short', day: '2-digit', month: 'short', 
+                    hour: '2-digit', minute: '2-digit', second: '2-digit' 
+                }).toUpperCase();
             }
-        };
+            setInterval(update, 1000); update();
+        }
+        startClock();
     </script>
 </body>
 </html>
