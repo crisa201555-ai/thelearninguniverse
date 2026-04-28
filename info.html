@@ -2,205 +2,99 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exploradores - The Learning Universe</title>
+    <title>Exploradores - Info</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Oswald:wght@700&display=swap" rel="stylesheet">
     <style>
         :root { --neon-cyan: #00ffff; --neon-pink: #ff00ff; --bg-dark: #0a0e17; }
-        body {
-            margin: 0; font-family: 'Montserrat', sans-serif; background: var(--bg-dark);
-            background-image: radial-gradient(circle at 50% 50%, #111d2b 0%, #05070a 100%);
-            color: white; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px;
-        }
-
+        body { margin: 0; font-family: 'Montserrat', sans-serif; background: var(--bg-dark); color: white; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
         .header-nav { width: 100%; max-width: 800px; display: flex; justify-content: space-between; margin-bottom: 30px; }
-        .btn-nav { background: none; border: 1px solid var(--neon-cyan); color: var(--neon-cyan); padding: 10px 20px; border-radius: 50px; cursor: pointer; text-decoration:none; font-size:0.8rem; }
-
-        .search-box { display: flex; width: 100%; max-width: 500px; background: rgba(255,255,255,0.05); border-radius: 50px; border: 1px solid var(--neon-cyan); overflow: hidden; margin-bottom: 20px; }
-        .search-box input { flex: 1; background: transparent; border: none; color: white; padding: 15px 20px; outline: none; }
-        .search-box button { background: var(--neon-cyan); border: none; padding: 0 25px; font-weight: bold; cursor: pointer; }
-
-        .profile-card { width: 100%; max-width: 450px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); border-radius: 20px; border: 1px solid rgba(255, 0, 255, 0.3); padding: 30px; text-align: center; margin-top: 20px; display: none; }
-        .avatar { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--neon-pink); margin-bottom: 10px; object-fit: cover; }
-        .buddy-status { margin-top: 15px; padding: 10px; background: rgba(0, 255, 255, 0.1); border-radius: 10px; font-size: 0.9rem; color: var(--neon-cyan); border: 1px dashed var(--neon-cyan); }
-
-        .notif-box { width: 100%; max-width: 450px; margin-top: 20px; }
-        .notif-card { background: #1a1f2b; padding: 15px; border-radius: 12px; border-left: 4px solid var(--neon-pink); margin-bottom: 10px; font-size: 0.85rem; }
-        .notif-btns { display: flex; gap: 10px; margin-top: 10px; }
-        .btn-acc { background: #42b72a; color: white; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer; }
-        .btn-rej { background: #ff4444; color: white; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer; }
-
-        .btn-action { background: var(--neon-pink); color: white; border: none; padding: 12px 25px; border-radius: 50px; cursor: pointer; font-weight: bold; margin-top: 15px; transition: 0.3s; }
-        .btn-action:hover { box-shadow: 0 0 20px var(--neon-pink); }
+        .search-box { display: flex; width: 100%; max-width: 500px; background: rgba(255,255,255,0.05); border-radius: 50px; border: 1px solid var(--neon-cyan); overflow: hidden; }
+        .search-box input { flex: 1; background: transparent; border: none; color: white; padding: 15px; outline: none; }
+        .search-box button { background: var(--neon-cyan); border: none; padding: 0 20px; cursor: pointer; font-weight: bold; }
+        .profile-card { width: 100%; max-width: 400px; background: rgba(255,255,255,0.05); border: 1px solid var(--neon-pink); border-radius: 20px; padding: 30px; text-align: center; margin-top: 20px; display: none; }
+        .avatar { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--neon-pink); margin-bottom: 10px; }
+        .notif-card { background: #1a1f2b; padding: 15px; border-radius: 12px; border-left: 4px solid var(--neon-pink); margin-top: 10px; width: 100%; max-width: 400px; }
+        .btn-acc { background: #42b72a; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
-
     <div class="header-nav">
-        <a href="home.html" class="btn-nav">← VOLVER</a>
-        <button class="btn-nav" onclick="showMyProfile()">VER MI PERFIL</button>
+        <a href="home.html" style="color:var(--neon-cyan); text-decoration:none;">← VOLVER</a>
+        <button onclick="showMyProfile()" style="background:none; border:1px solid white; color:white; border-radius:20px; padding:5px 15px; cursor:pointer;">MI PERFIL</button>
     </div>
 
     <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Busca por Nombre o Email exacto...">
+        <input type="text" id="searchInput" placeholder="Nombre o Email exacto...">
         <button id="searchBtn">BUSCAR</button>
     </div>
 
     <div id="profileCard" class="profile-card">
-        <img id="p-img" src="https://via.placeholder.com/100" class="avatar">
-        <h2 id="p-name" style="margin:0;"></h2>
-        <p id="p-email" style="font-size:0.8rem; color:#888;"></p>
-        <div id="buddyField" class="buddy-status" style="display:none;"></div>
-        <button id="requestBtn" class="btn-action">MANDAR SOLICITUD DE MEJOR COMPAÑERO</button>
+        <img id="p-img" src="" class="avatar">
+        <h2 id="p-name"></h2>
+        <p id="p-email"></p>
+        <button id="requestBtn" style="background:var(--neon-pink); color:white; border:none; padding:10px 20px; border-radius:20px; cursor:pointer; font-weight:bold;">MANDAR SOLICITUD</button>
     </div>
 
-    <div class="notif-box" id="notifArea">
-        <h3 style="font-size:0.9rem; color:var(--neon-cyan)">NOTIFICACIONES</h3>
+    <div id="notifArea" style="margin-top:30px;">
+        <h3>NOTIFICACIONES</h3>
         <div id="notifList"></div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, updateDoc, onSnapshot, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDocs, collection, query, where, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
-            authDomain: "thelearninguniverse-26.firebaseapp.com",
-            projectId: "thelearninguniverse-26",
-            storageBucket: "thelearninguniverse-26.firebasestorage.app",
-            messagingSenderId: "85338996011",
-            appId: "1:85338996011:web:1f3bb216900c07e735596e"
-        };
-
+        const firebaseConfig = { apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", authDomain: "thelearninguniverse-26.firebaseapp.com", projectId: "thelearninguniverse-26", storageBucket: "thelearninguniverse-26.firebasestorage.app", messagingSenderId: "85338996011", appId: "1:85338996011:web:1f3bb216900c07e735596e" };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-
         let currentUser = null;
-        let targetUser = null;
 
-        // 1. Al cargar la página, registramos al usuario en la base de datos
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
-                await setDoc(doc(db, "users", user.uid), {
-                    uid: user.uid,
-                    name: user.displayName || "Explorador",
-                    email: user.email.toLowerCase(),
-                    photo: user.photoURL || "https://via.placeholder.com/100",
-                    bestBuddy: null
-                }, { merge: true });
-                
+                await setDoc(doc(db, "users", user.uid), { uid: user.uid, name: user.displayName || "Explorador", email: user.email.toLowerCase(), photo: user.photoURL || "https://via.placeholder.com/100" }, { merge: true });
                 loadNotifications();
-                checkMyBuddyStatus();
             } else { window.location.href = "index.html"; }
         });
 
-        // 2. BUSCAR USUARIO REAL EN FIRESTORE
         document.getElementById('searchBtn').onclick = async () => {
-            const searchText = document.getElementById('searchInput').value.toLowerCase().trim();
-            if(!searchText) return;
-
-            // Buscamos por email
-            const qEmail = query(collection(db, "users"), where("email", "==", searchText));
-            // Buscamos por nombre
-            const qName = query(collection(db, "users"), where("name", "==", searchText));
-
-            const querySnapshotEmail = await getDocs(qEmail);
-            const querySnapshotName = await getDocs(qName);
-
-            let userFound = null;
-            querySnapshotEmail.forEach((doc) => userFound = doc.data());
-            if(!userFound) querySnapshotName.forEach((doc) => userFound = doc.data());
-
-            if(userFound) {
-                targetUser = userFound;
-                showProfileCard(userFound, userFound.uid !== currentUser.uid);
-            } else {
-                alert("Explorador no encontrado en el universo.");
-            }
+            const val = document.getElementById('searchInput').value.toLowerCase().trim();
+            const q = query(collection(db, "users"), where("email", "==", val));
+            const snap = await getDocs(q);
+            let found = null; snap.forEach(d => found = d.data());
+            if(found) {
+                document.getElementById('p-img').src = found.photo;
+                document.getElementById('p-name').innerText = found.name;
+                document.getElementById('p-email').innerText = found.email;
+                document.getElementById('profileCard').style.display = "block";
+                document.getElementById('requestBtn').onclick = () => sendRequest(found);
+            } else { alert("No encontrado"); }
         };
 
-        function showProfileCard(user, showRequestBtn) {
-            document.getElementById('p-img').src = user.photo;
-            document.getElementById('p-name').innerText = user.name;
-            document.getElementById('p-email').innerText = user.email;
-            document.getElementById('profileCard').style.display = "block";
-            
-            const btn = document.getElementById('requestBtn');
-            btn.style.display = showRequestBtn ? "inline-block" : "none";
-            btn.onclick = () => sendRequest(user);
-
-            const buddyField = document.getElementById('buddyField');
-            if(user.bestBuddy) {
-                buddyField.innerText = "Mejor Compañero/a: " + user.bestBuddy;
-                buddyField.style.display = "block";
-            } else {
-                buddyField.style.display = "none";
-            }
+        async function sendRequest(target) {
+            await setDoc(doc(db, "requests", target.uid), { fromId: currentUser.uid, fromName: currentUser.displayName || currentUser.email, status: "pending" });
+            alert("Solicitud enviada");
         }
 
-        // 3. ENVIAR SOLICITUD
-        async function sendRequest(user) {
-            await setDoc(doc(db, "requests", user.uid), {
-                fromName: currentUser.displayName || currentUser.email,
-                fromId: currentUser.uid,
-                status: "pending"
-            });
-            alert("Solicitud enviada a " + user.name);
-        }
-
-        // 4. NOTIFICACIONES EN TIEMPO REAL
         function loadNotifications() {
-            onSnapshot(doc(db, "requests", currentUser.uid), (docSnap) => {
-                const list = document.getElementById('notifList');
-                list.innerHTML = "";
-                if (docSnap.exists() && docSnap.data().status === "pending") {
-                    const data = docSnap.data();
-                    const card = document.createElement('div');
-                    card.className = "notif-card";
-                    card.innerHTML = `
-                        El usuario <b>${data.fromName}</b> te mandó una solicitud para ser tu Mejor Compañero/a.
-                        <div class="notif-btns">
-                            <button class="btn-acc" id="accBtn">ACEPTAR</button>
-                            <button class="btn-rej" id="rejBtn">RECHAZAR</button>
-                        </div>`;
-                    list.appendChild(card);
-
-                    document.getElementById('accBtn').onclick = () => respond('accept', data.fromId, data.fromName);
-                    document.getElementById('rejBtn').onclick = () => respond('reject', data.fromId);
+            onSnapshot(doc(db, "requests", currentUser.uid), (d) => {
+                const list = document.getElementById('notifList'); list.innerHTML = "";
+                if(d.exists() && d.data().status === "pending") {
+                    const data = d.data();
+                    list.innerHTML = `<div class="notif-card">${data.fromName} quiere ser tu compañero. <button class="btn-acc" onclick="accept('${data.fromId}', '${data.fromName}')">ACEPTAR</button></div>`;
                 }
             });
         }
 
-        async function respond(choice, otherId, otherName) {
-            if (choice === 'accept') {
-                await updateDoc(doc(db, "users", currentUser.uid), { bestBuddy: otherName });
-                await updateDoc(doc(db, "users", otherId), { bestBuddy: currentUser.displayName || currentUser.email });
-                await updateDoc(doc(db, "requests", currentUser.uid), { status: "accepted" });
-            } else {
-                await updateDoc(doc(db, "requests", currentUser.uid), { status: "rejected" });
-            }
+        window.accept = async (id, name) => {
+            await setDoc(doc(db, "users", currentUser.uid, "contacts", id), { contactId: id, contactName: name });
+            await setDoc(doc(db, "users", id, "contacts", currentUser.uid), { contactId: currentUser.uid, contactName: currentUser.displayName || currentUser.email });
+            await updateDoc(doc(db, "requests", currentUser.uid), { status: "accepted" });
+            alert("¡Ahora son amigos!");
         }
-
-        function checkMyBuddyStatus() {
-            onSnapshot(doc(db, "users", currentUser.uid), (docSnap) => {
-                if (docSnap.exists() && docSnap.data().bestBuddy) {
-                    // Actualiza el estado si ya tienes compañero
-                }
-            });
-        }
-
-        window.showMyProfile = () => {
-            showProfileCard({
-                name: currentUser.displayName || "Yo",
-                email: currentUser.email,
-                photo: currentUser.photoURL || "https://via.placeholder.com/100",
-                bestBuddy: null // Se cargará de Firestore si existe
-            }, false);
-        };
     </script>
 </body>
 </html>
