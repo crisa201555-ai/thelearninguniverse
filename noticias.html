@@ -1,159 +1,43 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Noticias Galácticas - Universe</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --fondo: #0c1445;
-            --celeste: #48dbfb;
-            --amarillo: #feca57;
-            --morado: #a29bfe;
-            --rojo: #ff6b6b;
-            --verde: #1dd1a1;
-        }
-
-        body {
-            margin: 0; font-family: 'Montserrat', sans-serif;
-            background: var(--fondo); color: white;
-            background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
-            display: flex; flex-direction: column; align-items: center;
-            min-height: 100vh; padding: 20px;
-        }
-
-        .header-noticias { text-align: center; margin-bottom: 40px; }
-        .header-noticias h1 { font-family: 'Fredoka One'; font-size: 3rem; color: var(--amarillo); text-shadow: 4px 4px rgba(0,0,0,0.5); margin-bottom: 10px; }
-        
-        /* --- CONTENEDOR DE NOTICIAS --- */
-        .feed-noticias { width: 100%; max-width: 800px; }
-
-        .noticia-card {
-            background: white; color: #333; border-radius: 35px;
-            overflow: hidden; margin-bottom: 40px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-            border-bottom: 10px solid var(--morado);
-        }
-
-        .noticia-header { background: var(--morado); padding: 25px; color: white; }
-        .noticia-header h2 { margin: 0; font-family: 'Fredoka One'; font-size: 2rem; }
-
-        .noticia-meta {
-            padding: 15px 25px; background: #f8f9fa;
-            border-bottom: 1px solid #eee; font-size: 0.9rem; color: #666;
-            display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;
-        }
-        .noticia-meta b { color: var(--morado); }
-
-        .noticia-cuerpo { padding: 30px; font-size: 1.1rem; line-height: 1.7; color: #444; }
-
-        /* --- SECCIÓN DE COMENTARIOS --- */
-        .comentarios-box { padding: 30px; background: #f1f2f6; border-top: 3px dashed #ddd; }
-        .comentarios-box h3 { font-family: 'Fredoka One'; color: var(--fondo); margin-top: 0; }
-
-        .input-comentario { display: flex; gap: 15px; margin-bottom: 25px; }
-        .input-comentario input {
-            flex: 1; padding: 15px; border-radius: 20px;
-            border: 2px solid #ddd; font-family: 'Montserrat'; outline: none;
-        }
-        .btn-enviar {
-            background: var(--verde); border: none; padding: 0 25px;
-            border-radius: 20px; color: white; font-weight: bold;
-            cursor: pointer; transition: 0.3s;
-        }
-        .btn-enviar:hover { transform: scale(1.05); filter: brightness(1.1); }
-
-        .lista-comentarios { list-style: none; padding: 0; margin: 0; }
-        .comentario {
-            background: white; padding: 15px 20px; border-radius: 20px;
-            margin-bottom: 12px; border-left: 5px solid var(--celeste);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-
-        .btn-atras {
-            background: rgba(255,255,255,0.1); color: var(--celeste);
-            padding: 15px 40px; border-radius: 50px; text-decoration: none;
-            font-family: 'Fredoka One'; border: 2px solid var(--celeste);
-            margin-top: 20px; transition: 0.3s;
-        }
-        .btn-atras:hover { background: var(--celeste); color: var(--fondo); }
-    </style>
-</head>
-<body>
-
-    <div class="header-noticias">
-        <h1>BITÁCORA ESPACIAL</h1>
-        <p style="font-weight: bold; font-size: 1.2rem;">Entérate de todo lo que pasa en tu galaxia</p>
+<article class="noticia-card" style="border-color: var(--amarillo);">
+    <div class="noticia-header" style="background: linear-gradient(45deg, #feca57, #ff9f43);">
+        <h2 style="color: #0c1445;">✨ ¡The Learning Universe ya está aquí!</h2>
     </div>
 
-    <main class="feed-noticias">
+    <div class="noticia-meta">
+        <span>📅 <b>Fecha:</b> 28 de abril del 2026</span>
+        <span>🕒 <b>Hora:</b> 11:53</span>
+        <span>👤 <b>Autor:</b> Sally (Exploradora)</span>
+    </div>
+
+    <div class="noticia-cuerpo">
+        <h3 style="font-family: 'Fredoka One'; color: var(--fondo);">Estudiante de 5° Básico creó una aplicación para estudiar</h3>
         
-        <article class="noticia-card">
-            <div class="noticia-header">
-                <h2>🚀 Estudiante inauguró aplicación</h2>
+        <p>Un gran cambio ha llegado a nuestra galaxia educativa. El estudiante de 5° Básico llamado <b>'Cristóbal'</b>, junto a sus mejores amigos del grupo <b>'BMC'</b>, han lanzado oficialmente la página web <b>"The Learning Universe"</b>.</p>
+
+        <blockquote style="background: #fff9e6; border-left: 5px solid var(--amarillo); padding: 15px; font-style: italic; border-radius: 10px;">
+            "Yo siento que no debemos pagar para estudiar, estudiar es algo importante para todos. Por eso, junto con mis amigos, he creado una página web, sin pago, sin anuncios, listo para aprender", expresó Cristóbal con mucha emoción.
+        </blockquote>
+
+        <p>Según otros relatos, sus amigos del grupo BMC apoyaron la idea desde el primer momento, trabajando juntos para que todos los niños y niñas puedan tener acceso gratuito al conocimiento.</p>
+        
+        <p>En la página puedes aprender <b>Matemáticas, Lenguaje, Inglés, Historia, Ciencias y Tecnología</b>, ¡y mucho más! Además, cuenta con una <b>IA amiga</b> con la que puedes hablar para resolver todas tus dudas.</p>
+    </div>
+
+    <div class="comentarios-box">
+        <h3>💬 Mensajes para Cristóbal y BMC</h3>
+        
+        <div class="input-comentario">
+            <input type="text" id="input-bmc" placeholder="¡Diles algo asombroso!">
+            <button class="btn-enviar" onclick="publicarComentario('lista-bmc', 'input-bmc')">ENVIAR</button>
+        </div>
+
+        <div class="lista-comentarios" id="lista-bmc">
+            <div class="comentario">
+                <b>Sally:</b> ¡Gracias por crear esto! Es justo lo que necesitábamos. 🚀
             </div>
-
-            <div class="noticia-meta">
-                <span>📅 <b>Fecha:</b> 28 de abril del 2026</span>
-                <span>🕒 <b>Hora:</b> 14:35</span>
-                <span>👤 <b>Publicador:</b> Yanael Canales</span>
+            <div class="comentario">
+                <b>Profe_Digital:</b> Un ejemplo de generosidad y talento. ¡Felicidades BMC!
             </div>
-
-            <div class="noticia-cuerpo">
-                ¡Gran noticia para todos nuestros exploradores! Un estudiante ha inaugurado oficialmente la nueva aplicación de <b>Universe</b>. 
-                Gracias a esta actualización, ahora tenemos acceso directo a las misiones de matemáticas, juegos de ordenar números y este portal de noticias. 
-                ¡El aprendizaje en el espacio nunca fue tan divertido!
-            </div>
-
-            <div class="comentarios-box">
-                <h3>💬 Comentarios de la Tripulación</h3>
-                
-                <div class="input-comentario">
-                    <input type="text" id="nuevo-comentario" placeholder="Escribe un mensaje amigable...">
-                    <button class="btn-enviar" onclick="publicar()">ENVIAR</button>
-                </div>
-
-                <div class="lista-comentarios" id="lista">
-                    <div class="comentario">
-                        <b>Profe Estelar:</b> ¡Excelente trabajo, Yanael! Bienvenido al equipo.
-                    </div>
-                    <div class="comentario">
-                        <b>PequeñoAstronauta:</b> ¡Me encantan los colores de la nueva app! 🌟
-                    </div>
-                </div>
-            </div>
-        </article>
-
-    </main>
-
-    <a href="home.html" class="btn-atras">← VOLVER A LA NAVE</a>
-
-    <script>
-        function publicar() {
-            const input = document.getElementById('nuevo-comentario');
-            const lista = document.getElementById('lista');
-
-            if (input.value.trim() !== "") {
-                const div = document.createElement('div');
-                div.className = 'comentario';
-                div.innerHTML = `<b>Tú:</b> ${input.value}`;
-                
-                // Animación simple de entrada
-                div.style.opacity = "0";
-                div.style.transform = "translateY(10px)";
-                
-                lista.prepend(div);
-
-                setTimeout(() => {
-                    div.style.transition = "0.4s";
-                    div.style.opacity = "1";
-                    div.style.transform = "translateY(0)";
-                }, 10);
-
-                input.value = "";
-            }
-        }
-    </script>
-</body>
-</html>
+        </div>
+    </div>
+</article>
