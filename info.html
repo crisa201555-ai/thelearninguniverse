@@ -3,228 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil - The Learning Universe</title>
+    <title>Buscar Exploradores - The Learning Universe</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Oswald:wght@700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --neon-cyan: #00ffff;
-            --neon-pink: #ff00ff;
-            --bg-dark: #0a0e17;
-        }
-
+        :root { --neon-cyan: #00ffff; --neon-pink: #ff00ff; --bg-dark: #0a0e17; }
         body {
-            margin: 0;
-            font-family: 'Montserrat', sans-serif;
-            background: var(--bg-dark);
+            margin: 0; font-family: 'Montserrat', sans-serif; background: var(--bg-dark);
             background-image: radial-gradient(circle at 50% 50%, #111d2b 0%, #05070a 100%);
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            color: white; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding-top: 50px;
         }
 
+        /* --- BUSCADOR --- */
+        .search-container {
+            width: 90%; max-width: 600px; margin-bottom: 30px; text-align: center;
+        }
+        .search-box {
+            display: flex; gap: 10px; background: rgba(255,255,255,0.05);
+            padding: 10px; border-radius: 50px; border: 1px solid var(--neon-cyan);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+        }
+        .search-box input {
+            flex: 1; background: transparent; border: none; color: white;
+            padding: 10px 20px; outline: none; font-size: 1rem;
+        }
+        .search-btn {
+            background: var(--neon-cyan); border: none; padding: 10px 25px;
+            border-radius: 50px; font-weight: bold; cursor: pointer; transition: 0.3s;
+        }
+        .search-btn:hover { box-shadow: 0 0 20px var(--neon-cyan); transform: scale(1.05); }
+
+        /* --- TARJETA DE RESULTADO --- */
         .info-card {
-            width: 90%;
-            max-width: 500px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border-radius: 24px;
-            border: 1px solid rgba(0, 255, 255, 0.3);
-            padding: 40px;
-            text-align: center;
-            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 255, 255, 0.1);
+            width: 90%; max-width: 500px; background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px); border-radius: 24px;
+            border: 1px solid rgba(255, 0, 255, 0.3); padding: 40px;
+            text-align: center; position: relative; display: none; /* Se muestra al buscar */
         }
-
-        .back-btn {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            color: var(--neon-cyan);
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 0.9rem;
-            transition: 0.3s;
-        }
-
-        .back-btn:hover { text-shadow: 0 0 10px var(--neon-cyan); }
-
-        .profile-pic-container {
-            position: relative;
-            width: 150px;
-            height: 150px;
-            margin: 0 auto 20px;
-        }
-
-        .profile-pic {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 4px solid var(--neon-pink);
-            object-fit: cover;
-            box-shadow: 0 0 20px var(--neon-pink);
-        }
-
-        h1 {
-            font-family: 'Oswald', sans-serif;
-            margin: 10px 0;
-            letter-spacing: 2px;
-            color: white;
-        }
-
-        .email-box {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 10px 20px;
-            border-radius: 50px;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        #user-email {
-            filter: blur(5px);
-            transition: 0.3s;
-            font-size: 0.9rem;
-        }
-
-        #user-email.visible {
-            filter: blur(0);
-        }
-
-        .toggle-btn {
-            background: var(--neon-cyan);
-            border: none;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            cursor: pointer;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .description-area {
-            text-align: left;
-            margin-top: 20px;
-        }
-
-        label {
-            font-size: 0.8rem;
-            color: var(--neon-cyan);
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        textarea {
-            width: 100%;
-            height: 100px;
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            color: white;
-            padding: 15px;
-            margin-top: 10px;
-            font-family: 'Montserrat', sans-serif;
-            resize: none;
-            box-sizing: border-box;
-            outline: none;
-        }
-
-        textarea:focus {
-            border-color: var(--neon-pink);
-        }
-
-        .save-btn {
-            margin-top: 20px;
-            background: linear-gradient(45deg, var(--neon-pink), #800080);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-            text-transform: uppercase;
-        }
-
-        .save-btn:hover {
-            box-shadow: 0 0 15px var(--neon-pink);
-            transform: translateY(-2px);
-        }
+        .profile-pic { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--neon-pink); margin-bottom: 15px; }
+        .back-link { margin-top: 20px; color: var(--neon-pink); text-decoration: none; font-size: 0.8rem; }
+        
+        .no-results { color: #888; margin-top: 20px; display: none; }
     </style>
 </head>
 <body>
 
-    <a href="home.html" class="back-btn">← VOLVER AL PORTAL</a>
+    <a href="home.html" style="position:fixed; top:20px; left:20px; color:var(--neon-cyan); text-decoration:none; font-weight:bold;">← VOLVER</a>
 
-    <div class="info-card">
-        <div class="profile-pic-container">
-            <img id="info-img" src="https://via.placeholder.com/150" class="profile-pic" alt="Avatar">
-        </div>
-
-        <h1 id="info-name">Explorador</h1>
-
-        <div class="email-box">
-            <span id="user-email">usuario@universo.com</span>
-            <button class="toggle-btn" onclick="toggleEmail()" title="Mostrar/Ocultar correo">👁️</button>
-        </div>
-
-        <div class="description-area">
-            <label>Descripción de Misión</label>
-            <textarea id="info-desc" placeholder="Escribe algo sobre ti, explorador..."></textarea>
-        </div>
-
-        <button class="save-btn" onclick="saveDescription()">Guardar Perfil</button>
+    <div class="search-container">
+        <h1 style="font-family:'Oswald'; letter-spacing:3px;">BUSCAR EN EL UNIVERSO</h1>
+        <form id="searchForm" class="search-box">
+            <input type="text" id="searchInput" placeholder="Nombre o correo del explorador..." required>
+            <button type="submit" class="search-btn">BUSCAR</button>
+        </form>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+    <div id="resultCard" class="info-card">
+        <img id="res-img" src="" class="profile-pic">
+        <h2 id="res-name" style="font-family:'Oswald'; margin:0;"></h2>
+        <p id="res-email" style="color:var(--neon-cyan); font-size:0.9rem;"></p>
+        <div style="text-align:left; background:rgba(0,0,0,0.3); padding:15px; border-radius:10px; margin-top:20px;">
+            <label style="font-size:0.7rem; color:var(--neon-pink); font-weight:bold;">DESCRIPCIÓN</label>
+            <p id="res-desc" style="font-size:0.85rem; margin-top:5px;">Sin descripción disponible.</p>
+        </div>
+    </div>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
-            authDomain: "thelearninguniverse-26.firebaseapp.com",
-            projectId: "thelearninguniverse-26",
-            storageBucket: "thelearninguniverse-26.firebasestorage.app",
-            messagingSenderId: "85338996011",
-            appId: "1:85338996011:web:1f3bb216900c07e735596e"
+    <p id="noResults" class="no-results">No se encontró ningún explorador con esos datos.</p>
+
+    <script type="module">
+        // Simulación de base de datos (En una app real, esto vendría de Firebase Firestore)
+        const mockUsers = [
+            { name: "Alana", email: "alana@universo.com", img: "https://i.pravatar.cc/150?u=alana", desc: "Exploradora de Matemáticas y Tecnología." },
+            { name: "Gemini", email: "gemini@ai.com", img: "https://i.pravatar.cc/150?u=gemini", desc: "Inteligencia artificial al servicio del aprendizaje." },
+            { name: "Admin", email: "admin@thelearninguniverses.com", img: "https://i.pravatar.cc/150?u=admin", desc: "Creador de este universo." }
+        ];
+
+        const form = document.getElementById('searchForm');
+        const input = document.getElementById('searchInput');
+        const card = document.getElementById('resultCard');
+        const noRes = document.getElementById('noResults');
+
+        // Función de búsqueda
+        const performSearch = (query) => {
+            if (!query) return;
+            
+            const result = mockUsers.find(u => 
+                u.name.toLowerCase() === query.toLowerCase() || 
+                u.email.toLowerCase() === query.toLowerCase()
+            );
+
+            if (result) {
+                document.getElementById('res-img').src = result.img;
+                document.getElementById('res-name').innerText = result.name;
+                document.getElementById('res-email').innerText = result.email;
+                document.getElementById('res-desc').innerText = result.desc;
+                card.style.display = "block";
+                noRes.style.display = "none";
+            } else {
+                card.style.display = "none";
+                noRes.style.display = "block";
+            }
         };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-
-        // Cargar datos de Firebase
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                document.getElementById('info-name').innerText = user.displayName || "Explorador";
-                document.getElementById('user-email').innerText = user.email;
-                if(user.photoURL) document.getElementById('info-img').src = user.photoURL;
-                
-                // Cargar descripción guardada localmente
-                const savedDesc = localStorage.getItem('user_desc_' + user.uid);
-                if(savedDesc) document.getElementById('info-desc').value = savedDesc;
-            } else {
-                window.location.href = "index.html";
-            }
+        // Escuchar el envío del formulario
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const val = input.value;
+            // Cambiamos la URL sin recargar para que se vea profesional
+            const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?search=' + val;
+            window.history.pushState({path:newUrl},'',newUrl);
+            performSearch(val);
         });
 
-        // Función para mostrar/ocultar correo
-        window.toggleEmail = () => {
-            const emailSpan = document.getElementById('user-email');
-            emailSpan.classList.toggle('visible');
-        };
-
-        // Guardar descripción en el navegador
-        window.saveDescription = () => {
-            const user = auth.currentUser;
-            if (user) {
-                const desc = document.getElementById('info-desc').value;
-                localStorage.setItem('user_desc_' + user.uid, desc);
-                alert("¡Perfil actualizado, explorador!");
+        // Leer la URL al cargar la página
+        window.onload = () => {
+            const params = new URLSearchParams(window.location.search);
+            const query = params.get('search');
+            if (query) {
+                input.value = query;
+                performSearch(query);
             }
         };
     </script>
