@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Estelar - The Learning Universe</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Oswald:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root { --neon-cyan: #00ffff; --neon-pink: #ff00ff; --bg-dark: #0a0e17; }
+        body {
+            margin: 0; font-family: 'Montserrat', sans-serif; background: var(--bg-dark);
+            background-image: radial-gradient(circle at 50% 50%, #111d2b 0%, #05070a 100%);
+            color: white; height: 100vh; display: flex; flex-direction: column;
+        }
+
+        /* HEADER */
+        .chat-header {
+            padding: 20px; background: rgba(0,0,0,0.4); backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--neon-cyan); display: flex; align-items: center; justify-content: space-between;
+        }
+        .back-btn { color: var(--neon-cyan); text-decoration: none; font-weight: bold; font-size: 0.8rem; border: 1px solid var(--neon-cyan); padding: 5px 15px; border-radius: 20px; }
+
+        /* AREA DE MENSAJES */
+        #chat-window {
+            flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px;
+            scroll-behavior: smooth;
+        }
+
+        .message { max-width: 70%; padding: 12px 18px; border-radius: 15px; font-size: 0.9rem; position: relative; line-height: 1.4; }
+        .sent { align-self: flex-end; background: linear-gradient(45deg, #004e4e, #008080); border: 1px solid var(--neon-cyan); border-bottom-right-radius: 2px; }
+        .received { align-self: flex-start; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--neon-pink); border-bottom-left-radius: 2px; }
+        
+        .msg-info { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 4px; display: block; }
+
+        /* INPUT AREA */
+        .input-area {
+            padding: 20px; background: rgba(0,0,0,0.6); display: flex; gap: 10px; border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        input { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid #333; border-radius: 50px; padding: 15px 25px; color: white; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--neon-cyan); box-shadow: 0 0 10px rgba(0,255,255,0.2); }
+        
+        button { background: var(--neon-cyan); border: none; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; transition: 0.3s; }
+        button:hover { transform: scale(1.1); box-shadow: 0 0 15px var(--neon-cyan); }
+
+        /* ESTADO SIN COMPAÑERO */
+        #no-buddy {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark);
+            display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; text-align: center; padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="no-buddy" style="display: none;">
+        <h1 style="color: var(--neon-pink);">ACCESO RESTRINGIDO</h1>
+        <p>Necesitas tener un "Mejor Compañero/a" vinculado para abrir este canal de comunicación.</p>
+        <a href="info.html" class="back-btn" style="margin-top: 20px;">IR A BUSCAR COMPAÑERO</a>
+    </div>
+
+    <header class="chat-header">
+        <a href="home.html" class="back-btn">← SALIR</a>
+        <div style="text-align: center;">
+            <div id="buddy-name" style="font-family:'Oswald'; color: var(--neon-cyan); letter-spacing: 1px;">CARGANDO...</div>
+            <div style="font-size: 0.6rem; color: #42b72a;">● CONEXIÓN ENCRIPTADA</div>
+        </div>
+        <div style="width: 60px;"></div> </header>
+
+    <div id="chat-window">
+        </div>
+
+    <form class="input-area" id="chat-form">
+        <input type="text" id="msg-input" placeholder="Escribe un mensaje estelar..." autocomplete="off">
+        <button type="submit">🚀</button>
+    </form>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
+            authDomain: "thelearninguniverse-26.firebaseapp.com",
+            projectId: "thelearninguniverse-26",
+            storageBucket: "thelearninguniverse-26.firebasestorage.app",
+            messagingSenderId: "85338996011",
+            appId: "1:85338996011:web:1f3bb216900c07e735596e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+        let chatId = null;
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                
+                if (userDoc.exists() && userDoc.data().bestBuddyId) {
+                    const buddyData = userDoc.data();
+                    document.getElementById('buddy-name').innerText = "CHAT CON: " + buddyData.bestBuddyName;
+                    
+                    // Generar un ID de chat único para la pareja (siempre igual sin importar quién entre)
+                    const ids = [user.uid, buddyData.bestBuddyId].sort();
+                    chatId = ids[0] + "_" + ids[1];
+                    
+                    loadMessages();
+                } else {
+                    document.getElementById('no-buddy').style.display = "flex";
+                }
+            } else { window.location.href = "index.html"; }
+        });
+
+        // 2. ENVIAR MENSAJE
+        document.getElementById('chat-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const text = document.getElementById('msg-input').value.trim();
+            if (!text || !chatId) return;
+
+            document.getElementById('msg-input').value = "";
+
+            await addDoc(collection(db, "chats", chatId, "messages"), {
+                text: text,
+                senderId: currentUser.uid,
+                senderName: currentUser.displayName || currentUser.email,
+                timestamp: serverTimestamp()
+            });
+        };
+
+        // 3. ESCUCHAR MENSAJES (TIEMPO REAL)
+        function loadMessages() {
+            const q = query(collection(db, "chats", chatId, "messages"), orderBy("timestamp", "asc"));
+            
+            onSnapshot(q, (snapshot) => {
+                const window = document.getElementById('chat-window');
+                window.innerHTML = "";
+                
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const msgDiv = document.createElement('div');
+                    msgDiv.className = `message ${data.senderId === currentUser.uid ? 'sent' : 'received'}`;
+                    
+                    msgDiv.innerHTML = `
+                        <span class="msg-info">${data.senderName}</span>
+                        ${data.text}
+                    `;
+                    window.appendChild(msgDiv);
+                });
+                window.scrollTop = window.scrollHeight;
+            });
+        }
+    </script>
+</body>
+</html>
