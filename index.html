@@ -3,12 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Learning Universe - Accede a tu Portal</title>
+    <title>The Learning Universe - Acceso</title>
+    
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Oswald:wght@700&display=swap" rel="stylesheet">
+    
     <style>
-        /* --- ESTILOS GENERALES Y FONDO --- */
         body {
             margin: 0;
             padding: 0;
@@ -17,8 +20,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            /* Fondo con degradado y efecto de espacio/tecnología */
-            background: linear-gradient(135deg, #0a0e17 0%, #0d121c 25%, #111726 50%, #0c2d33 75%, #0e3a40 100%);
+            background: linear-gradient(135deg, #0a0e17 0%, #111726 50%, #0e3a40 100%);
             background-size: 400% 400%;
             animation: gradientAnimation 15s ease infinite;
             overflow: hidden;
@@ -26,32 +28,12 @@
             position: relative;
         }
 
-        /* Animación sutil del fondo */
         @keyframes gradientAnimation {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
-        /* Elementos decorativos de fondo (estrellas/partículas) */
-        body::before {
-            content: '';
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: white;
-            border-radius: 50%;
-            box-shadow: 10vw 10vh 2px white, 20vw 30vh 1px white, 30vw 15vh 3px white, 40vw 40vh 2px white, 50vw 10vh 1px white, 60vw 30vh 3px white, 70vw 20vh 2px white, 80vw 45vh 1px white, 90vw 15vh 3px white;
-            opacity: 0.5;
-            animation: starsAnimation 50s linear infinite;
-        }
-
-        @keyframes starsAnimation {
-            from { transform: translateY(0); }
-            to { transform: translateY(-100vh); }
-        }
-
-        /* --- CONTENEDOR PRINCIPAL --- */
         .login-container {
             width: 100%;
             max-width: 1000px;
@@ -62,46 +44,33 @@
             z-index: 10;
         }
 
-        /* --- SECCIÓN IZQUIERDA (BIENVENIDA) --- */
         .welcome-section {
             flex: 1;
             padding-right: 50px;
-            display: none; /* Oculto en pantallas pequeñas */
+            display: none;
         }
 
         @media (min-width: 768px) {
-            .welcome-section {
-                display: block;
-            }
+            .welcome-section { display: block; }
         }
 
-        .logo-container {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
+        .logo-container { display: flex; align-items: center; margin-bottom: 20px; }
+        
+        /* USANDO TU FAVICON TAMBIÉN COMO LOGO EN LA WEB */
         .logo-icon {
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             margin-right: 15px;
-            /* Aquí iría la imagen del logo planetario */
-            background: linear-gradient(45deg, #ff00ff, #00ffff);
-            border-radius: 50%;
-            box-shadow: 0 0 10px #00ffff;
+            background: url('favicon.ico') no-repeat center center;
+            background-size: contain;
+            filter: drop-shadow(0 0 8px #00ffff);
         }
 
-        .logo-text {
-            font-family: 'Oswald', sans-serif;
-            font-size: 24px;
-            letter-spacing: 1px;
-        }
+        .logo-text { font-family: 'Oswald', sans-serif; font-size: 24px; letter-spacing: 1px; }
 
         .welcome-text {
             font-family: 'Oswald', sans-serif;
             font-size: 48px;
-            line-height: 1.1;
-            margin: 0;
             background: linear-gradient(to right, #ffffff, #ff00ff, #00ffff, #ffffff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -109,281 +78,58 @@
             animation: textGradientAnimation 10s linear infinite;
         }
 
-        @keyframes textGradientAnimation {
-            to { background-position: 300% center; }
-        }
+        @keyframes textGradientAnimation { to { background-position: 300% center; } }
 
-        /* --- TARJETA DE LOGIN (SECCIÓN DERECHA) --- */
         .login-card {
             width: 380px;
-            background: rgba(255, 255, 255, 0.03); /* Fondo casi transparente */
+            background: rgba(255, 255, 255, 0.05);
             padding: 40px;
             border-radius: 12px;
-            border: 2px solid #ff00ff; /* Borde rosa neón principal */
-            box-shadow: 0 0 30px rgba(255, 0, 255, 0.5); /* Resplandor neón */
+            border: 2px solid #ff00ff;
+            box-shadow: 0 0 30px rgba(255, 0, 255, 0.4);
             position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            backdrop-filter: blur(10px);
         }
 
-        /* Borde neón secundario cian */
-        .login-card::after {
-            content: '';
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            right: 10px;
-            bottom: 10px;
-            border-radius: 8px;
-            border: 1px solid #00ffff;
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
-            pointer-events: none; /* No interfiere con clics */
-        }
-
-        .card-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 25px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-        }
-
-        /* --- FORMULARIO Y ENTRADAS --- */
-        .input-group {
-            width: 100%;
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .input-icon {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #00ffff;
-            font-size: 16px;
-        }
+        .card-title { font-size: 18px; font-weight: 700; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px; text-align: center; }
 
         input {
             width: 100%;
-            padding: 15px 15px 15px 45px;
-            background: transparent;
-            border: 2px solid #333;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #333;
             border-radius: 6px;
             color: white;
-            font-size: 14px;
-            font-family: 'Montserrat', sans-serif;
             outline: none;
-            transition: 0.3s;
             box-sizing: border-box;
         }
 
-        input:focus {
-            border-color: #00ffff;
-            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-        }
+        input:focus { border-color: #00ffff; box-shadow: 0 0 10px rgba(0, 255, 255, 0.3); }
 
-        /* --- BOTONES --- */
         button {
             width: 100%;
             padding: 15px;
             border: none;
             border-radius: 6px;
-            font-size: 14px;
             font-weight: 700;
             cursor: pointer;
-            transition: 0.3s ease;
-            font-family: 'Montserrat', sans-serif;
+            transition: 0.3s;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            box-sizing: border-box;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-        }
-
-        /* Botón Iniciar Sesión (Cian) */
-        .btn-login {
-            background: linear-gradient(45deg, #00ffff, #009999);
-            color: #0a0e17;
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
-            margin-bottom: 15px;
-        }
-
-        .btn-login:hover {
-            box-shadow: 0 0 25px rgba(0, 255, 255, 0.9);
-        }
-
-        /* Botón Google (Blanco con icono) */
-        .btn-google {
-            background: white;
-            color: #555;
-            border: 1px solid #ddd;
             margin-bottom: 10px;
         }
 
-        .btn-google img {
-            width: 18px;
-            margin-right: 10px;
-        }
+        .btn-login { background: linear-gradient(45deg, #00ffff, #008080); color: #0a0e17; }
+        .btn-google { background: white; color: #555; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .btn-register { background: linear-gradient(45deg, #ff00ff, #800080); color: white; margin-top: 20px; }
 
-        .btn-google:hover {
-            background: #f1f1f1;
-        }
+        .links { font-size: 12px; text-align: center; margin-bottom: 15px; }
+        .links a { color: #00ffff; text-decoration: none; cursor: pointer; }
 
-        /* Botón Crear Cuenta (Violeta) */
-        .btn-register {
-            background: linear-gradient(45deg, #ff00ff, #990099);
-            color: white;
-            margin-top: 30px;
-            box-shadow: 0 0 15px rgba(255, 0, 255, 0.6);
-        }
-
-        .btn-register:hover {
-            box-shadow: 0 0 25px rgba(255, 0, 255, 0.9);
-        }
-
-        /* Botones de Opciones (Yahoo, Facebook) */
-        .btn-option {
-            font-size: 13px;
-            font-weight: 700;
-            padding: 10px;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: start;
-            width: 100%;
-            box-sizing: border-box;
-            margin-bottom: 10px;
-        }
-
-        .btn-yahoo { background-color: #6001d2; }
-        .btn-yahoo:hover { background-color: #7102e3; }
-        .btn-facebook { background-color: #1877f2; }
-        .btn-facebook:hover { background-color: #1a83ff; }
-
-        /* Iconos de opciones */
-        .option-icon { margin-right: 10px; font-size: 16px; font-weight: bold; }
-
-        /* --- ENLACES Y TEXTOS SECUNDARIOS --- */
-        .links {
-            font-size: 13px;
-            color: #00ffff;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .links a {
-            color: #00ffff;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .divider {
-            width: 100%;
-            text-align: center;
-            color: #555;
-            position: relative;
-            margin-bottom: 15px;
-            font-size: 14px;
-        }
-
-        .divider::before, .divider::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            width: 45%;
-            height: 1px;
-            background-color: #333;
-        }
-
-        .divider::before { left: 0; }
-        .divider::after { right: 0; }
-
-        .more-options {
-            font-size: 13px;
-            color: #00ffff;
-            text-decoration: none;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        .register-text {
-            color: #ff00ff;
-            font-size: 14px;
-            font-weight: 700;
-            margin-top: 25px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        /* --- MODAL DE MÁS OPCIONES --- */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 100;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background-color: #0a0e17;
-            padding: 30px;
-            border-radius: 12px;
-            border: 2px solid #00ffff;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
-            width: 320px;
-            text-align: left;
-            position: relative;
-        }
-
-        .modal-content::after {
-            content: '';
-            position: absolute;
-            top: 5px;
-            left: 5px;
-            right: 5px;
-            bottom: 5px;
-            border-radius: 8px;
-            border: 1px solid #ff00ff;
-            box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
-            pointer-events: none;
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            color: #ff00ff;
-            font-size: 24px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .modal-title {
-            color: #00ffff;
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
+        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; }
+        .modal-content { background: #0a0e17; padding: 30px; border-radius: 12px; border: 1px solid #00ffff; width: 300px; text-align: center; position: relative; }
+        .close-modal { position: absolute; right: 15px; top: 10px; color: #ff00ff; cursor: pointer; font-size: 20px; }
+        .btn-yahoo { background: #6001d2; color: white; }
     </style>
 </head>
 <body>
@@ -394,68 +140,38 @@
                 <div class="logo-icon"></div>
                 <div class="logo-text">THE LEARNING UNIVERSE</div>
             </div>
-            <h1 class="welcome-text">BIENVENIDO DE NUEVO, EXPLORADOR</h1>
+            <h1 class="welcome-text">EXPLORA EL CONOCIMIENTO SIN LÍMITES</h1>
         </div>
 
         <div class="login-card">
-            <div class="card-title">ACCEDE A TU PORTAL</div>
-
-            <div class="input-group">
-                <span class="input-icon">&#9993;</span> <input type="email" id="email" placeholder="Correo electrónico" required>
-            </div>
-
-            <div class="input-group">
-                <span class="input-icon">&#128274;</span> <input type="password" id="password" placeholder="Contraseña" required>
-            </div>
-
-            <button class="btn-login" onclick="loginEmail()">Iniciar Sesión</button>
-            <div class="links">
-                <a onclick="resetPassword()">¿Olvidaste tu contraseña?</a>
-            </div>
-
-            <div class="divider">O</div>
+            <div class="card-title">INGRESO AL PORTAL</div>
+            <input type="email" id="email" placeholder="Email Espacial">
+            <input type="password" id="password" placeholder="Contraseña Secreta">
+            
+            <button class="btn-login" onclick="loginEmail()">Entrar ahora</button>
+            <div class="links"><a onclick="resetPassword()">¿Perdiste tu acceso?</a></div>
 
             <button class="btn-google" onclick="loginGoogle()">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/done.svg" alt="G" style="display:none;">
                 Continuar con Google
             </button>
+            <center><a style="color:#00ffff; font-size:12px; cursor:pointer;" onclick="openModal()">Otras Galaxias (Yahoo/FB)</a></center>
 
-            <a class="more-options" onclick="openModal()">Ver más opciones de acceso...</a>
-
-            <div class="register-text">¿NUEVO AQUÍ? ÚNETE A LA AVENTURA</div>
-            <button class="btn-register" onclick="registerUser()">CREAR CUENTA NUEVA</button>
+            <button class="btn-register" onclick="registerUser()">CREAR NUEVA CUENTA</button>
         </div>
     </div>
 
     <div id="moreOptionsModal" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal()">&times;</span>
-            <div class="modal-title">OTRAS OPCIONES</div>
-            
-            <button class="btn-option btn-yahoo" onclick="loginYahoo()">
-                <span class="option-icon">Y!</span> Iniciar sesión con Yahoo
-            </button>
-
-            <button class="btn-option btn-facebook" onclick="loginFacebook()">
-                <span class="option-icon">f</span> Iniciar sesión con Facebook
-            </button>
+            <h3 style="color:#00ffff">OTROS ACCESOS</h3>
+            <button class="btn-yahoo" onclick="loginYahoo()">Entrar con Yahoo</button>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-        import { 
-            getAuth, 
-            signInWithPopup, 
-            GoogleAuthProvider, 
-            OAuthProvider, 
-            FacebookAuthProvider,
-            signInWithEmailAndPassword, 
-            createUserWithEmailAndPassword, 
-            sendPasswordResetEmail 
-        } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, OAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
-        // Configuración de Firebase (asegúrate de usar tu propia configuración si es diferente)
         const firebaseConfig = {
             apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
             authDomain: "thelearninguniverse-26.firebaseapp.com",
@@ -465,107 +181,40 @@
             appId: "1:85338996011:web:1f3bb216900c07e735596e"
         };
 
-        // Inicialización
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // --- MANEJO DE ERRORES SUTIL ---
-        const handleAuthError = (error, providerName) => {
-            if (error.code === 'auth/popup-closed-by-user') {
-                console.warn(`Login con ${providerName} cancelado por el usuario.`);
-            } else if (error.code === 'auth/cancelled-popup-request') {
-                console.warn("Se abrió un nuevo popup antes de cerrar el anterior.");
-            } else {
-                alert(`Error con ${providerName}: ${error.message}`);
-            }
-        };
-
-        // --- FUNCIONES DE LOGIN CORREO/PASS ---
+        // Funciones Firebase
         window.loginEmail = async () => {
-            const email = document.getElementById('email').value;
-            const pass = document.getElementById('password').value;
-            if (!email || !pass) return alert("Por favor rellena todos los campos.");
-            try {
-                await signInWithEmailAndPassword(auth, email, pass);
-                alert("¡Sesión iniciada con éxito!");
-                // Redirigir aquí a tu app
-            } catch (error) {
-                alert("Correo o contraseña incorrectos.");
-            }
+            const e = document.getElementById('email').value;
+            const p = document.getElementById('password').value;
+            try { await signInWithEmailAndPassword(auth, e, p); alert("¡Acceso concedido!"); } 
+            catch (err) { alert("Error: Datos incorrectos"); }
         };
 
         window.registerUser = async () => {
-            const email = document.getElementById('email').value;
-            const pass = document.getElementById('password').value;
-            if (!email || !pass) return alert("Por favor rellena todos los campos para registrarte.");
-            if (pass.length < 6) return alert("La contraseña debe tener al menos 6 caracteres.");
-            try {
-                await createUserWithEmailAndPassword(auth, email, pass);
-                alert("¡Cuenta creada exitosamente! Ya puedes entrar.");
-            } catch (error) {
-                alert("Error al registrar: " + error.message);
-            }
+            const e = document.getElementById('email').value;
+            const p = document.getElementById('password').value;
+            try { await createUserWithEmailAndPassword(auth, e, p); alert("¡Cuenta creada!"); } 
+            catch (err) { alert(err.message); }
         };
 
-        window.resetPassword = async () => {
-            const email = document.getElementById('email').value;
-            if (!email) return alert("Escribe tu correo primero.");
-            try {
-                await sendPasswordResetEmail(auth, email);
-                alert("Revisa tu correo para restablecer tu contraseña.");
-            } catch (error) {
-                alert("Error: " + error.message);
-            }
-        };
-
-        // --- FUNCIONES DE LOGIN SOCIAL ---
         window.loginGoogle = async () => {
             const provider = new GoogleAuthProvider();
             provider.setCustomParameters({ prompt: 'select_account' });
-            try {
-                const result = await signInWithPopup(auth, provider);
-                alert("Bienvenido, " + result.user.displayName);
-                // Redirigir aquí
-            } catch (error) {
-                handleAuthError(error, "Google");
-            }
+            try { const r = await signInWithPopup(auth, provider); alert("Hola " + r.user.displayName); } 
+            catch (err) { console.log("Cancelado"); }
         };
 
         window.loginYahoo = async () => {
             const provider = new OAuthProvider('yahoo.com');
-            provider.addScope('email');
-            provider.addScope('profile');
-            try {
-                await signInWithPopup(auth, provider);
-                alert("Sesión iniciada con Yahoo");
-                closeModal();
-                // Redirigir aquí
-            } catch (error) {
-                handleAuthError(error, "Yahoo");
-            }
+            try { await signInWithPopup(auth, provider); alert("Entraste con Yahoo"); closeModal(); } 
+            catch (err) { console.log("Error Yahoo"); }
         };
 
-        window.loginFacebook = async () => {
-            const provider = new FacebookAuthProvider();
-            try {
-                const result = await signInWithPopup(auth, provider);
-                alert("Bienvenido, " + result.user.displayName);
-                closeModal();
-                // Redirigir aquí
-            } catch (error) {
-                handleAuthError(error, "Facebook");
-            }
-        };
-
-        // --- LÓGICA DEL MODAL ---
         const modal = document.getElementById("moreOptionsModal");
         window.openModal = () => modal.style.display = "flex";
         window.closeModal = () => modal.style.display = "none";
-        
-        // Cerrar si hacen clic fuera del cuadro del modal
-        window.onclick = (event) => {
-            if (event.target == modal) closeModal();
-        };
     </script>
 </body>
 </html>
