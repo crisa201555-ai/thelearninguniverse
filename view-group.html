@@ -1,0 +1,24 @@
+import { onSnapshot, collection, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+function listenToFlota() {
+    const q = query(collection(db, "grupos", code, "miembros"), orderBy("nombre", "asc"));
+    
+    // Escucha en tiempo real: Si alguien entra o se saca una nota, la lista se actualiza sola
+    onSnapshot(q, (snapshot) => {
+        const mList = document.getElementById('mList');
+        mList.innerHTML = ""; // Limpiar para refrescar
+        
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            const item = document.createElement('div');
+            item.className = 'miembro anim-row';
+            item.innerHTML = `
+                <span>${data.nombre}</span>
+                <span class="status-pill ${data.nota === 'Pendiente' ? 'waiting' : 'done'}">
+                    ${data.nota}
+                </span>
+            `;
+            mList.appendChild(item);
+        });
+    });
+}
