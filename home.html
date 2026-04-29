@@ -3,155 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Universe - Home</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <title>Panel de Control - The Learning Universe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --naranja: #ff9f43;
+            --fondo: #0c1445;
             --celeste: #48dbfb;
             --amarillo: #feca57;
-            --fondo: #0c1445;
             --rojo: #ff6b6b;
-            --morado: #a29bfe;
-            --verde: #1dd1a1;
+            --blanco: #ffffff;
         }
 
         body {
-            margin: 0; font-family: 'Montserrat', sans-serif;
-            background: var(--fondo); color: white;
-            display: flex; height: 100vh; overflow: hidden;
-            background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            background: var(--fondo);
+            background-image: radial-gradient(circle at top, #1b277a 0%, #0c1445 100%);
+            color: var(--blanco);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* --- BARRA LATERAL --- */
-        .sidebar {
-            width: 250px; background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(15px); border-right: 3px solid var(--celeste);
-            padding: 30px; display: flex; flex-direction: column; gap: 15px;
+        /* Navbar Galáctica */
+        nav {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid rgba(72, 219, 251, 0.3);
         }
 
-        .logo { font-family: 'Fredoka One'; font-size: 2rem; color: var(--amarillo); text-align: center; margin-bottom: 20px; }
-
-        .nav-btn {
-            background: white; color: var(--fondo); padding: 15px;
-            border-radius: 20px; text-decoration: none; font-weight: bold;
-            display: flex; align-items: center; gap: 10px; transition: 0.3s;
-            border: none; cursor: pointer; font-family: 'Montserrat', sans-serif;
-        }
-        .nav-btn:hover { transform: scale(1.05); background: var(--amarillo); }
-        .btn-news { background: var(--morado); color: white; }
-
-        /* --- CONTENIDO PRINCIPAL --- */
-        .main { flex: 1; padding: 40px; overflow-y: auto; scroll-behavior: smooth; }
-
-        .section-title { font-family: 'Fredoka One'; font-size: 2.5rem; color: var(--celeste); margin-bottom: 30px; }
-
-        /* --- TARJETA DE NOTICIA --- */
-        .news-card {
-            background: white; color: #333; border-radius: 35px;
-            max-width: 700px; margin: 0 auto 50px; overflow: hidden;
-            border-bottom: 10px solid var(--morado); text-align: left;
+        .nav-logo {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.5rem;
+            color: var(--amarillo);
         }
 
-        .news-header { background: var(--morado); padding: 20px; color: white; }
-        .news-header h2 { margin: 0; font-family: 'Fredoka One'; font-size: 1.8rem; }
-        
-        .news-meta { padding: 15px 25px; background: #f8f9fa; border-bottom: 1px solid #eee; font-size: 0.85rem; color: #666; }
-        .news-meta b { color: var(--morado); }
+        .btn-salir {
+            background: var(--rojo);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-family: 'Fredoka One', cursive;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 0 #b33939;
+        }
 
-        .news-body { padding: 25px; font-size: 1.1rem; line-height: 1.6; color: #444; }
+        .btn-salir:hover {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+        }
 
-        /* --- COMENTARIOS --- */
-        .comments-section { padding: 25px; background: #f1f2f6; border-top: 2px dashed #ccc; }
-        .comments-section h3 { font-family: 'Fredoka One'; font-size: 1.2rem; color: var(--fondo); margin-top: 0; }
-        
-        .comment-input-area { display: flex; gap: 10px; margin-bottom: 20px; }
-        .comment-input-area input { flex: 1; padding: 12px; border-radius: 15px; border: 2px solid #ddd; outline: none; }
-        .btn-send { background: var(--verde); border: none; padding: 10px 20px; border-radius: 15px; color: white; font-weight: bold; cursor: pointer; }
+        .btn-salir:active {
+            transform: translateY(3px);
+            box-shadow: none;
+        }
 
-        .comment-list { list-style: none; padding: 0; margin: 0; }
-        .comment-item { background: white; padding: 10px 15px; border-radius: 15px; margin-bottom: 10px; font-size: 0.9rem; border-left: 4px solid var(--celeste); }
+        /* Dashboard Content */
+        .container {
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
 
-        .hidden { display: none; }
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 3rem;
+            margin-bottom: 10px;
+            color: var(--celeste);
+        }
+
+        .user-welcome {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        /* Grid de Misiones */
+        .grid-misiones {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 30px;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--celeste);
+            transform: translateY(-10px);
+        }
+
+        .card i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .card h3 {
+            font-family: 'Fredoka One', cursive;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
     </style>
 </head>
 <body>
 
-    <nav class="sidebar">
-        <div class="logo">UNIVERSE</div>
-        
-        <button class="nav-btn" onclick="showSection('inicio')">🏠 Inicio</button>
-        <a href="matematicas-index.html" class="nav-btn">🔢 Matemáticas</a>
-        <button class="nav-btn btn-news" onclick="showSection('noticias')">📰 Noticias</button>
-        
-        <button onclick="location.href='index.html'" style="margin-top:auto; background:var(--rojo); border:none; padding:12px; border-radius:15px; color:white; font-weight:bold; cursor:pointer;">🚪 Salir</button>
+    <nav>
+        <div class="nav-logo">THE LEARNING UNIVERSE</div>
+        <button id="btnCerrarSesion" class="btn-salir">ABORTAR MISIÓN (SALIR)</button>
     </nav>
 
-    <main class="main">
-        
-        <div id="section-inicio">
-            <h1 class="section-title">¡Bienvenido, Explorador!</h1>
-            <p style="font-size: 1.5rem;">Selecciona una misión en el menú de la izquierda.</p>
+    <div class="container">
+        <h1>¡BIENVENIDO, CADETE!</h1>
+        <p class="user-welcome" id="userDisplay">Conectando con la base de datos...</p>
+
+        <div class="grid-misiones">
+            <div class="card" onclick="location.href='noticias.html'">
+                <div style="font-size: 40px;">📡</div>
+                <h3>Noticias BMC</h3>
+                <p>Últimas transmisiones de Cristóbal y el equipo.</p>
+            </div>
+            <div class="card">
+                <div style="font-size: 40px;">🧮</div>
+                <h3>Matemáticas</h3>
+                <p>Misión: Ordenar los bloques numéricos.</p>
+            </div>
+            <div class="card">
+                <div style="font-size: 40px;">🚀</div>
+                <h3>Misiones</h3>
+                <p>Explora nuevos mundos de conocimiento.</p>
+            </div>
         </div>
+    </div>
 
-        <div id="section-noticias" class="hidden">
-            <h1 class="section-title">Transmisiones Galácticas</h1>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-            <article class="news-card">
-                <div class="news-header">
-                    <h2>🚀 Estudiante inauguró aplicación</h2>
-                </div>
-                
-                <div class="news-meta">
-                    📅 <b>Fecha:</b> 28 de abril del 2026 | 🕒 <b>Hora:</b> 14:35 <br>
-                    👤 <b>Publicador:</b> Yanael Canales
-                </div>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
+            authDomain: "thelearninguniverse-26.firebaseapp.com",
+            projectId: "thelearninguniverse-26",
+            storageBucket: "thelearninguniverse-26.firebasestorage.app",
+            messagingSenderId: "85338996011",
+            appId: "1:85338996011:web:1f3bb216900c07e735596e"
+        };
 
-                <div class="news-body">
-                    Estudiante añadió una nueva app al sistema Universe. ¡Ahora todos los pequeños astronautas pueden practicar matemáticas de una forma mucho más divertida y colorida! Esta actualización incluye el nuevo juego de ordenar números y el portal de misiones.
-                </div>
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
 
-                <div class="comments-section">
-                    <h3>💬 Comentarios</h3>
-                    <div class="comment-input-area">
-                        <input type="text" id="commentText" placeholder="Escribe un mensaje amigable...">
-                        <button class="btn-send" onclick="addComment()">ENVIAR</button>
-                    </div>
-                    <ul class="comment-list" id="commentList">
-                        <li class="comment-item"><b>Explorador123:</b> ¡Qué genial noticia! Me encanta la app.</li>
-                    </ul>
-                </div>
-            </article>
-        </div>
-
-    </main>
-
-    <script>
-        // Función para cambiar entre Inicio y Noticias
-        function showSection(section) {
-            document.getElementById('section-inicio').classList.add('hidden');
-            document.getElementById('section-noticias').classList.add('hidden');
-            
-            if(section === 'inicio') {
-                document.getElementById('section-inicio').classList.remove('hidden');
+        // 1. VERIFICAR SESIÓN (Si no hay usuario, manda a login)
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('userDisplay').innerText = `Sesión iniciada como: ${user.email}`;
             } else {
-                document.getElementById('section-noticias').classList.remove('hidden');
+                window.location.replace("login.html");
             }
-        }
+        });
 
-        // Función simple para añadir comentarios localmente
-        function addComment() {
-            const input = document.getElementById('commentText');
-            const list = document.getElementById('commentList');
-            
-            if (input.value.trim() !== "") {
-                const li = document.createElement('li');
-                li.className = 'comment-item';
-                li.innerHTML = `<b>Tú:</b> ${input.value}`;
-                list.prepend(li); // Añadir al principio de la lista
-                input.value = "";
-            }
-        }
+        // 2. LÓGICA DEL BOTÓN CERRAR SESIÓN
+        document.getElementById('btnCerrarSesion').addEventListener('click', () => {
+            signOut(auth).then(() => {
+                // Al cerrar sesión, lo mandamos al login y limpiamos el historial
+                window.location.replace("login.html");
+            }).catch((error) => {
+                alert("Error al cerrar sesión: " + error.message);
+            });
+        });
     </script>
 </body>
 </html>
