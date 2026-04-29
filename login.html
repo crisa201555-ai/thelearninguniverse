@@ -2,32 +2,61 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - The Learning Universe</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root { --fondo: #0c1445; --celeste: #48dbfb; --amarillo: #feca57; --rojo: #ff6b6b; }
         body { margin: 0; font-family: 'Montserrat', sans-serif; background: var(--fondo); background-image: radial-gradient(circle, #1b277a 0%, #0c1445 100%); height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
-        .card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); padding: 40px; border-radius: 30px; border: 2px solid rgba(255,255,255,0.2); width: 100%; max-width: 350px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative; z-index: 1; }
-        .logo { font-family: 'Fredoka One'; font-size: 2.5rem; color: var(--amarillo); margin-bottom: 20px; }
-        input { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 20px; border: none; outline: none; box-sizing: border-box; }
-        .btn { width: 100%; padding: 15px; border-radius: 50px; border: none; background: var(--celeste); color: var(--fondo); font-family: 'Fredoka One'; cursor: pointer; transition: 0.3s; }
-        .btn:hover { background: var(--amarillo); transform: scale(1.02); }
-        .links { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
-        .links a { color: white; text-decoration: none; font-size: 0.8rem; opacity: 0.8; }
-        .links a:hover { opacity: 1; color: var(--celeste); }
+        .card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px); padding: 40px; border-radius: 35px; border: 2px solid rgba(255,255,255,0.2); width: 100%; max-width: 380px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); color: white; }
+        .logo { font-family: 'Fredoka One'; font-size: 2.8rem; color: var(--amarillo); margin-bottom: 25px; text-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        input { width: 100%; padding: 14px 20px; margin-bottom: 15px; border-radius: 50px; border: none; outline: none; box-sizing: border-box; font-size: 1rem; }
+        .btn { width: 100%; padding: 15px; border-radius: 50px; border: none; background: var(--celeste); color: var(--fondo); font-family: 'Fredoka One'; font-size: 1.2rem; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 0 #34ace0; }
+        .btn:hover { background: var(--amarillo); box-shadow: 0 5px 0 #f39c12; transform: translateY(-2px); }
+        .links { margin-top: 25px; display: flex; flex-direction: column; gap: 12px; }
+        .links a { color: rgba(255, 255, 255, 0.8); text-decoration: none; font-size: 0.85rem; transition: 0.3s; }
+        .links a:hover { color: var(--celeste); }
         .btn-reset { color: var(--rojo) !important; font-weight: bold; }
     </style>
 </head>
 <body>
     <div class="card">
-        <div class="logo">LOGIN</div>
-        <input type="text" placeholder="Usuario">
-        <input type="password" placeholder="Contraseña">
-        <button class="btn" onclick="location.href='home.html'">INICIAR VIAJE</button>
+        <div class="logo">UNIVERSE</div>
+        <input type="email" id="email" placeholder="Correo Espacial" required>
+        <input type="password" id="pass" placeholder="Tu Llave Secreta" required>
+        <button class="btn" id="loginBtn">INICIAR VIAJE</button>
         <div class="links">
             <a href="resetpassword.html" class="btn-reset">¿Olvidaste tu contraseña?</a>
-            <a href="register.html">¿No tienes cuenta? Regístrate</a>
+            <a href="register.html">¿Eres nuevo cadete? <b>Regístrate aquí</b></a>
         </div>
     </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
+            authDomain: "thelearninguniverse-26.firebaseapp.com",
+            projectId: "thelearninguniverse-26",
+            storageBucket: "thelearninguniverse-26.firebasestorage.app",
+            messagingSenderId: "85338996011",
+            appId: "1:85338996011:web:1f3bb216900c07e735596e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        document.getElementById('loginBtn').addEventListener('click', async () => {
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('pass').value;
+            try {
+                await signInWithEmailAndPassword(auth, email, pass);
+                window.location.href = 'home.html';
+            } catch (error) {
+                alert("Error de acceso: " + error.message);
+            }
+        });
+    </script>
 </body>
 </html>
