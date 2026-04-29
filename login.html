@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - The Learning Universe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --fondo: #0c1445; --celeste: #48dbfb; --amarillo: #feca57; --rojo: #ff6b6b; }
+        body { margin: 0; font-family: 'Montserrat', sans-serif; background: var(--fondo); background-image: radial-gradient(circle, #1b277a 0%, #0c1445 100%); height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        .card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); padding: 40px; border-radius: 30px; border: 2px solid rgba(255,255,255,0.2); width: 100%; max-width: 350px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative; z-index: 1; }
+        .logo { font-family: 'Fredoka One'; font-size: 2.5rem; color: var(--amarillo); margin-bottom: 20px; }
+        input { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 20px; border: none; outline: none; box-sizing: border-box; }
+        .btn { width: 100%; padding: 15px; border-radius: 50px; border: none; background: var(--celeste); color: var(--fondo); font-family: 'Fredoka One'; cursor: pointer; transition: 0.3s; }
+        .btn:hover { background: var(--amarillo); transform: scale(1.02); }
+        .links { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .links a { color: white; text-decoration: none; font-size: 0.8rem; opacity: 0.8; }
+        .links a:hover { opacity: 1; color: var(--celeste); }
+        .btn-reset { color: var(--rojo) !important; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="logo">LOGIN</div>
+        <input type="text" placeholder="Usuario">
+        <input type="password" placeholder="Contraseña">
+        <button class="btn" onclick="location.href='home.html'">INICIAR VIAJE</button>
+        <div class="links">
+            <a href="resetpassword.html" class="btn-reset">¿Olvidaste tu contraseña?</a>
+            <a href="register.html">¿No tienes cuenta? Regístrate</a>
+        </div>
+    </div>
+</body>
+</html>
