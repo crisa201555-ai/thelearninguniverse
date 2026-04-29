@@ -1,47 +1,300 @@
-// Este script reemplaza la lógica simple anterior para hacerlo más robusto
-let examData = {
-    config: { timer: 30, shuffle: true },
-    questions: []
-};
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Constructor de Misiones | L-Universe Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #48dbfb;
+            --secondary: #feca57;
+            --success: #1dd1a1;
+            --danger: #ff6b6b;
+            --dark-bg: #060918;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
 
-window.addQ = function() {
-    const id = Date.now(); // ID único para cada pregunta en el DOM
-    const div = document.createElement('div');
-    div.className = 'q-card anim-entry'; // Añadir clase de animación
-    div.id = `q-${id}`;
-    div.innerHTML = `
-        <div style="display:flex; justify-content:space-between">
-            <b>Pregunta de Misión</b>
-            <button onclick="removeQ(${id})" style="color:red; background:none; border:none; cursor:pointer">Eliminar</button>
+        body {
+            background: var(--dark-bg);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(72, 219, 251, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(254, 202, 87, 0.1) 0px, transparent 50%);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; }
+
+        /* HEADER */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--glass);
+            padding: 20px 30px;
+            border-radius: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            margin-bottom: 40px;
+        }
+
+        .group-tag {
+            background: rgba(72, 219, 251, 0.2);
+            color: var(--primary);
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        /* QUESTION CARD */
+        .q-card {
+            background: var(--glass);
+            border-radius: 30px;
+            padding: 30px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .q-header { display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center; }
+        .q-number { font-family: 'Fredoka One'; color: var(--secondary); font-size: 1.2rem; }
+
+        input[type="text"] {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            width: 100%;
+            box-sizing: border-box;
+            font-family: 'Montserrat';
+            transition: 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 15px rgba(72, 219, 251, 0.2);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(255,255,255,0.02);
+            padding: 10px;
+            border-radius: 15px;
+        }
+
+        /* CUSTOM RADIO */
+        .radio-btn {
+            appearance: none;
+            width: 25px; height: 25px;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+            transition: 0.3s;
+        }
+        .radio-btn:checked { background: var(--primary); }
+        .radio-btn:checked::after {
+            content: '✓'; color: #000; position: absolute; left: 5px; top: -2px; font-weight: bold;
+        }
+
+        /* ACTIONS */
+        .actions {
+            position: sticky;
+            bottom: 30px;
+            display: flex;
+            gap: 15px;
+            margin-top: 50px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 20px;
+            border-radius: 50px;
+            border: none;
+            font-family: 'Fredoka One';
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-add { background: var(--glass); color: #fff; border: 1px dashed var(--primary); }
+        .btn-save { background: var(--primary); color: var(--dark-bg); box-shadow: 0 10px 30px rgba(72, 219, 251, 0.3); }
+        .btn:hover { transform: translateY(-5px); filter: brightness(1.1); }
+
+        .btn-delete {
+            background: none; border: none; color: var(--danger); cursor: pointer; font-weight: 600; font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="top-bar">
+            <div>
+                <h2 style="margin:0; font-family:'Fredoka One'">Configurar Examen</h2>
+                <span id="date-now" style="font-size: 0.7rem; opacity: 0.6;">Sincronizando reloj estelar...</span>
+            </div>
+            <div class="group-tag" id="group-id-display">Cargando Flota...</div>
         </div>
-        <input type="text" class="question-input" placeholder="¿Cuál es la distancia a la Luna?">
-        <div class="options-container">
-            <div class="opt"><input type="radio" name="correct-${id}" value="0" checked> <input type="text" class="opt-val" placeholder="Opción A"></div>
-            <div class="opt"><input type="radio" name="correct-${id}" value="1"> <input type="text" class="opt-val" placeholder="Opción B"></div>
-            <div class="opt"><input type="radio" name="correct-${id}" value="2"> <input type="text" class="opt-val" placeholder="Opción C"></div>
+
+        <div id="questions-wrapper">
+            </div>
+
+        <div class="actions">
+            <button class="btn btn-add" onclick="addNewQuestion()">+ AÑADIR PREGUNTA</button>
+            <button class="btn btn-save" id="saveAction">
+                <span id="btnText">LANZAR MISIÓN</span>
+                <div id="spinner" style="display:none" class="loader"></div>
+            </button>
         </div>
-    `;
-    document.getElementById('container').appendChild(div);
-};
+    </div>
 
-window.removeQ = (id) => document.getElementById(`q-${id}`).remove();
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-document.getElementById('btnSave').addEventListener('click', async () => {
-    const questionCards = document.querySelectorAll('.q-card');
-    if(questionCards.length === 0) return alert("La misión debe tener al menos una pregunta");
-
-    const formattedQuestions = Array.from(questionCards).map(card => {
-        return {
-            text: card.querySelector('.question-input').value,
-            options: Array.from(card.querySelectorAll('.opt-val')).map(i => i.value),
-            answer: parseInt(card.querySelector('input[type="radio"]:checked').value)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
+            authDomain: "thelearninguniverse-26.firebaseapp.com",
+            projectId: "thelearninguniverse-26",
+            storageBucket: "thelearninguniverse-26.firebasestorage.app",
+            messagingSenderId: "85338996011",
+            appId: "1:85338996011:web:1f3bb216900c07e735596e"
         };
-    });
 
-    // Validación de campos vacíos
-    const isInvalid = formattedQuestions.some(q => q.text === "" || q.options.some(o => o === ""));
-    if(isInvalid) return alert("Hay campos vacíos en tu examen");
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-    // Proceso de guardado con bloqueo de UI
-    // (Aquí iría la llamada a Firestore mostrada antes)
-});
+        const params = new URLSearchParams(window.location.search);
+        const groupCode = params.get('grupo');
+
+        if(!groupCode) window.location.href = "crear-grupo.html";
+        document.getElementById('group-id-display').innerText = `FLOTA: ${groupCode}`;
+        document.getElementById('date-now').innerText = new Date().toLocaleDateString();
+
+        let questionIndex = 0;
+
+        window.addNewQuestion = function() {
+            questionIndex++;
+            const wrapper = document.getElementById('questions-wrapper');
+            const qId = Date.now();
+            
+            const div = document.createElement('div');
+            div.className = 'q-card';
+            div.id = `card-${qId}`;
+            div.innerHTML = `
+                <div class="q-header">
+                    <span class="q-number">Pregunta #${questionIndex}</span>
+                    <button class="btn-delete" onclick="removeQuestion(${qId})">Eliminar</button>
+                </div>
+                <input type="text" class="main-question" placeholder="Escribe el desafío aquí...">
+                
+                <div class="options-grid">
+                    <div class="option-item">
+                        <input type="radio" name="correct-${qId}" value="0" class="radio-btn" checked>
+                        <input type="text" class="opt-input" placeholder="Respuesta A">
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="correct-${qId}" value="1" class="radio-btn">
+                        <input type="text" class="opt-input" placeholder="Respuesta B">
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" name="correct-${qId}" value="2" class="radio-btn">
+                        <input type="text" class="opt-input" placeholder="Respuesta C">
+                    </div>
+                </div>
+            `;
+            wrapper.appendChild(div);
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+
+        window.removeQuestion = (id) => {
+            document.getElementById(`card-${id}`).style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById(`card-${id}`).remove();
+                reorderNumbers();
+            }, 300);
+        }
+
+        function reorderNumbers() {
+            const numbers = document.querySelectorAll('.q-number');
+            numbers.forEach((n, i) => n.innerText = `Pregunta #${i + 1}`);
+            questionIndex = numbers.length;
+        }
+
+        // Iniciar con una pregunta
+        addNewQuestion();
+
+        // GUARDADO PRO
+        document.getElementById('saveAction').addEventListener('click', async () => {
+            const cards = document.querySelectorAll('.q-card');
+            if(cards.length === 0) return alert("¡La misión debe tener al menos un desafío!");
+
+            const testData = [];
+            let isValid = true;
+
+            cards.forEach(card => {
+                const question = card.querySelector('.main-question').value.trim();
+                const options = Array.from(card.querySelectorAll('.opt-input')).map(i => i.value.trim());
+                const correct = card.querySelector('input[type="radio"]:checked').value;
+
+                if(!question || options.some(o => o === "")) isValid = false;
+
+                testData.push({
+                    q: question,
+                    o: options,
+                    a: parseInt(correct)
+                });
+            });
+
+            if(!isValid) return alert("🚨 Hay campos vacíos. Todos los desafíos deben estar completos.");
+
+            const btn = document.getElementById('saveAction');
+            btn.disabled = true;
+            btn.innerText = "SINCRONIZANDO CON LA BASE...";
+
+            try {
+                await setDoc(doc(db, "pruebas", groupCode), {
+                    preguntas: testData,
+                    creadoEn: Date.now(),
+                    tipo: "Evaluación Estelar"
+                });
+                
+                alert("✅ ¡Misión publicada! Los cadetes ya pueden iniciar el salto.");
+                window.location.href = "home.html";
+            } catch (e) {
+                alert("Error crítico: " + e.message);
+                btn.disabled = false;
+                btn.innerText = "REINTENTAR LANZAMIENTO";
+            }
+        });
+    </script>
+</body>
+</html>
