@@ -3,118 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crear Prueba - The Learning Universe</title>
+    <title>Unirse a Misión - The Learning Universe</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --fondo: #060918;
             --celeste: #48dbfb;
             --amarillo: #feca57;
-            --verde: #1dd1a1;
-            --glass: rgba(255, 255, 255, 0.05);
+            --rojo: #ff6b6b;
+            --glass: rgba(255, 255, 255, 0.1);
         }
 
         body {
             margin: 0;
             font-family: 'Montserrat', sans-serif;
             background: var(--fondo);
-            background-image: radial-gradient(circle at top left, #1b277a 0%, #060918 100%);
+            background-image: radial-gradient(circle at center, #1b277a 0%, #060918 100%);
             color: white;
-            min-height: 100vh;
-            padding: 40px 5%;
-        }
-
-        .container { max-width: 800px; margin: 0 auto; }
-
-        h1 { font-family: 'Fredoka One'; color: var(--amarillo); text-align: center; }
-
-        .setup-group {
-            background: var(--glass);
-            padding: 20px;
-            border-radius: 20px;
-            border: 1px solid var(--celeste);
-            margin-bottom: 30px;
+            height: 100vh;
             display: flex;
-            gap: 15px;
+            justify-content: center;
             align-items: center;
+            overflow: hidden;
         }
 
-        input, select {
-            padding: 12px;
-            border-radius: 10px;
-            border: none;
-            background: rgba(255,255,255,0.9);
-            color: #333;
-            font-family: 'Montserrat';
-        }
-
-        .question-card {
+        .join-card {
             background: var(--glass);
-            padding: 25px;
-            border-radius: 25px;
-            border: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .option-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .option-row input[type="text"] { flex: 1; }
-
-        .btn-add {
-            background: var(--celeste);
-            border: none;
-            padding: 15px 30px;
-            border-radius: 50px;
-            font-family: 'Fredoka One';
-            cursor: pointer;
-            margin-bottom: 30px;
-        }
-
-        .btn-save {
-            background: var(--verde);
+            backdrop-filter: blur(15px);
+            padding: 40px;
+            border-radius: 35px;
+            border: 2px solid rgba(72, 219, 251, 0.3);
+            text-align: center;
             width: 100%;
-            padding: 20px;
+            max-width: 400px;
+            box-shadow: 0 0 50px rgba(72, 219, 251, 0.1);
+        }
+
+        .icon-space { font-size: 3rem; margin-bottom: 20px; }
+        
+        h1 { font-family: 'Fredoka One'; color: var(--amarillo); margin-bottom: 5px; }
+        p { opacity: 0.8; font-size: 0.9rem; margin-bottom: 30px; }
+
+        .input-box {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--celeste);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .input-box label {
+            display: block;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--celeste);
+            margin-bottom: 8px;
+            text-align: left;
+        }
+
+        input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: white;
+            font-family: 'Fredoka One';
+            font-size: 1.4rem;
+            text-align: center;
+            outline: none;
+            text-transform: uppercase;
+        }
+
+        .user-info-tag {
+            font-size: 0.75rem;
+            margin-bottom: 20px;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .btn-join {
+            width: 100%;
+            padding: 18px;
             border-radius: 50px;
             border: none;
+            background: var(--celeste);
+            color: var(--fondo);
             font-family: 'Fredoka One';
             font-size: 1.2rem;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(29, 209, 161, 0.3);
+            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(72, 219, 251, 0.2);
         }
 
-        .correct-mark { accent-color: var(--verde); transform: scale(1.5); }
+        .btn-join:hover {
+            background: var(--amarillo);
+            transform: translateY(-3px);
+        }
+
+        .status-msg {
+            margin-top: 20px;
+            font-size: 0.85rem;
+            min-height: 20px;
+        }
+
+        .loader {
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top: 3px solid var(--celeste);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: none;
+            margin: 10px auto;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>CREADOR DE PRUEBAS</h1>
-        
-        <div class="setup-group">
-            <label>Código del Grupo:</label>
-            <input type="text" id="target-group" placeholder="Ej: BIO-2026" style="text-transform: uppercase;">
-            <span style="font-size: 0.8rem; opacity: 0.7;">* La prueba durará lo mismo que el grupo (18h).</span>
+    <div class="join-card">
+        <div class="icon-space">🚀</div>
+        <h1>SALTAR A GRUPO</h1>
+        <p>Ingresa las coordenadas de tu flota</p>
+
+        <div class="user-info-tag">
+            Tu ID de Cadete: <span id="my-id" style="color: var(--amarillo);">Verificando...</span>
         </div>
 
-        <div id="questions-container">
-            </div>
+        <div class="input-box">
+            <label>Código de Galaxia</label>
+            <input type="text" id="group-input" placeholder="BIO-2026" maxlength="15">
+        </div>
 
-        <button class="btn-add" id="add-question">+ AÑADIR PREGUNTA</button>
-        <button class="btn-save" id="save-test">GUARDAR Y LANZAR PRUEBA</button>
+        <button class="btn-join" id="btn-enter">INICIAR SECUENCIA</button>
         
-        <br><br>
-        <center><a href="home.html" style="color: white; opacity: 0.5;">Cancelar misión</a></center>
+        <div class="loader" id="loader"></div>
+        <div class="status-msg" id="status-msg"></div>
+
+        <br>
+        <a href="home.html" style="color: white; opacity: 0.4; text-decoration: none; font-size: 0.8rem;">Abortar misión</a>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, doc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
@@ -126,70 +159,68 @@
         };
 
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
         const db = getFirestore(app);
 
-        let questionCount = 0;
+        let userId = null;
 
-        // Función para crear el HTML de una nueva pregunta
-        function createQuestionHTML() {
-            questionCount++;
-            const div = document.createElement('div');
-            div.className = 'question-card';
-            div.innerHTML = `
-                <h3>Pregunta ${questionCount}</h3>
-                <input type="text" class="q-text" placeholder="Escribe la pregunta aquí..." style="width: 95%; margin-bottom: 15px;">
-                
-                <p style="font-size: 0.8rem; margin-bottom: 5px;">Opciones (Marca el círculo de la correcta):</p>
-                <div class="option-row">
-                    <input type="radio" name="correct-${questionCount}" value="0" class="correct-mark" checked>
-                    <input type="text" class="opt-text" placeholder="Opción A">
-                </div>
-                <div class="option-row">
-                    <input type="radio" name="correct-${questionCount}" value="1" class="correct-mark">
-                    <input type="text" class="opt-text" placeholder="Opción B">
-                </div>
-                <div class="option-row">
-                    <input type="radio" name="correct-${questionCount}" value="2" class="correct-mark">
-                    <input type="text" class="opt-text" placeholder="Opción C">
-                </div>
-            `;
-            document.getElementById('questions-container').appendChild(div);
-        }
+        // 1. Verificar sesión y mostrar ID
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                userId = user.uid;
+                document.getElementById('my-id').innerText = userId.substring(0, 8) + "...";
+            } else {
+                window.location.replace("login.html");
+            }
+        });
 
-        // Añadir primera pregunta al cargar
-        createQuestionHTML();
+        // 2. Lógica para entrar al grupo
+        document.getElementById('btn-enter').addEventListener('click', async () => {
+            const code = document.getElementById('group-input').value.trim().toUpperCase();
+            const msg = document.getElementById('status-msg');
+            const loader = document.getElementById('loader');
 
-        document.getElementById('add-question').addEventListener('click', createQuestionHTML);
+            if (!code) return;
 
-        document.getElementById('save-test').addEventListener('click', async () => {
-            const groupCode = document.getElementById('target-group').value.toUpperCase();
-            if (!groupCode) return alert("Ingresa el código del grupo");
-
-            const cards = document.querySelectorAll('.question-card');
-            const testData = [];
-
-            cards.forEach((card, index) => {
-                const questionText = card.querySelector('.q-text').value;
-                const options = Array.from(card.querySelectorAll('.opt-text')).map(input => input.value);
-                const correctIdx = card.querySelector(`input[name="correct-${index + 1}"]:checked`).value;
-
-                testData.push({
-                    pregunta: questionText,
-                    opciones: options,
-                    correcta: parseInt(correctIdx)
-                });
-            });
+            // Reset UI
+            msg.innerText = "";
+            msg.style.color = "white";
+            loader.style.display = "block";
 
             try {
-                // Guardamos la prueba dentro del documento del grupo en Firestore
-                await setDoc(doc(db, "pruebas", groupCode), {
-                    preguntas: testData,
-                    creadoEn: Date.now()
-                });
-                alert("¡Prueba vinculada al grupo " + groupCode + " con éxito!");
-                window.location.href = "home.html";
-            } catch (e) {
-                alert("Error al guardar: " + e.message);
+                // Buscar el grupo en Firestore
+                const groupRef = doc(db, "grupos", code);
+                const groupSnap = await getDoc(groupRef);
+
+                if (!groupSnap.exists()) {
+                    msg.innerText = "❌ El código de galaxia no existe.";
+                    msg.style.color = "var(--rojo)";
+                } else {
+                    const groupData = groupSnap.data();
+                    const now = Date.now();
+
+                    // VALIDACIÓN DE LAS 18 HORAS
+                    if (now > groupData.expiraEn) {
+                        msg.innerText = "🚨 ERROR: Esta misión ha caducado (pasaron las 18h).";
+                        msg.style.color = "var(--rojo)";
+                    } else {
+                        msg.innerText = "✅ ¡Coordenadas correctas! Saltando...";
+                        msg.style.color = "var(--verde)";
+                        
+                        // Guardar el código en localStorage para que la página de la prueba sepa qué examen cargar
+                        localStorage.setItem('currentGroup', code);
+
+                        // Redirigir a la página donde se rinde la prueba
+                        setTimeout(() => {
+                            window.location.href = "take-test.html";
+                        }, 1500);
+                    }
+                }
+            } catch (error) {
+                msg.innerText = "Hubo un error en la conexión.";
+                console.error(error);
+            } finally {
+                loader.style.display = "none";
             }
         });
     </script>
