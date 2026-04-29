@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Prueba - The Learning Universe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --fondo: #060918;
+            --celeste: #48dbfb;
+            --amarillo: #feca57;
+            --verde: #1dd1a1;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            background: var(--fondo);
+            background-image: radial-gradient(circle at top left, #1b277a 0%, #060918 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 40px 5%;
+        }
+
+        .container { max-width: 800px; margin: 0 auto; }
+
+        h1 { font-family: 'Fredoka One'; color: var(--amarillo); text-align: center; }
+
+        .setup-group {
+            background: var(--glass);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid var(--celeste);
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        input, select {
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            font-family: 'Montserrat';
+        }
+
+        .question-card {
+            background: var(--glass);
+            padding: 25px;
+            border-radius: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .option-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .option-row input[type="text"] { flex: 1; }
+
+        .btn-add {
+            background: var(--celeste);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-family: 'Fredoka One';
+            cursor: pointer;
+            margin-bottom: 30px;
+        }
+
+        .btn-save {
+            background: var(--verde);
+            width: 100%;
+            padding: 20px;
+            border-radius: 50px;
+            border: none;
+            font-family: 'Fredoka One';
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(29, 209, 161, 0.3);
+        }
+
+        .correct-mark { accent-color: var(--verde); transform: scale(1.5); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>CREADOR DE PRUEBAS</h1>
+        
+        <div class="setup-group">
+            <label>Código del Grupo:</label>
+            <input type="text" id="target-group" placeholder="Ej: BIO-2026" style="text-transform: uppercase;">
+            <span style="font-size: 0.8rem; opacity: 0.7;">* La prueba durará lo mismo que el grupo (18h).</span>
+        </div>
+
+        <div id="questions-container">
+            </div>
+
+        <button class="btn-add" id="add-question">+ AÑADIR PREGUNTA</button>
+        <button class="btn-save" id="save-test">GUARDAR Y LANZAR PRUEBA</button>
+        
+        <br><br>
+        <center><a href="home.html" style="color: white; opacity: 0.5;">Cancelar misión</a></center>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, doc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
+            authDomain: "thelearninguniverse-26.firebaseapp.com",
+            projectId: "thelearninguniverse-26",
+            storageBucket: "thelearninguniverse-26.firebasestorage.app",
+            messagingSenderId: "85338996011",
+            appId: "1:85338996011:web:1f3bb216900c07e735596e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let questionCount = 0;
+
+        // Función para crear el HTML de una nueva pregunta
+        function createQuestionHTML() {
+            questionCount++;
+            const div = document.createElement('div');
+            div.className = 'question-card';
+            div.innerHTML = `
+                <h3>Pregunta ${questionCount}</h3>
+                <input type="text" class="q-text" placeholder="Escribe la pregunta aquí..." style="width: 95%; margin-bottom: 15px;">
+                
+                <p style="font-size: 0.8rem; margin-bottom: 5px;">Opciones (Marca el círculo de la correcta):</p>
+                <div class="option-row">
+                    <input type="radio" name="correct-${questionCount}" value="0" class="correct-mark" checked>
+                    <input type="text" class="opt-text" placeholder="Opción A">
+                </div>
+                <div class="option-row">
+                    <input type="radio" name="correct-${questionCount}" value="1" class="correct-mark">
+                    <input type="text" class="opt-text" placeholder="Opción B">
+                </div>
+                <div class="option-row">
+                    <input type="radio" name="correct-${questionCount}" value="2" class="correct-mark">
+                    <input type="text" class="opt-text" placeholder="Opción C">
+                </div>
+            `;
+            document.getElementById('questions-container').appendChild(div);
+        }
+
+        // Añadir primera pregunta al cargar
+        createQuestionHTML();
+
+        document.getElementById('add-question').addEventListener('click', createQuestionHTML);
+
+        document.getElementById('save-test').addEventListener('click', async () => {
+            const groupCode = document.getElementById('target-group').value.toUpperCase();
+            if (!groupCode) return alert("Ingresa el código del grupo");
+
+            const cards = document.querySelectorAll('.question-card');
+            const testData = [];
+
+            cards.forEach((card, index) => {
+                const questionText = card.querySelector('.q-text').value;
+                const options = Array.from(card.querySelectorAll('.opt-text')).map(input => input.value);
+                const correctIdx = card.querySelector(`input[name="correct-${index + 1}"]:checked`).value;
+
+                testData.push({
+                    pregunta: questionText,
+                    opciones: options,
+                    correcta: parseInt(correctIdx)
+                });
+            });
+
+            try {
+                // Guardamos la prueba dentro del documento del grupo en Firestore
+                await setDoc(doc(db, "pruebas", groupCode), {
+                    preguntas: testData,
+                    creadoEn: Date.now()
+                });
+                alert("¡Prueba vinculada al grupo " + groupCode + " con éxito!");
+                window.location.href = "home.html";
+            } catch (e) {
+                alert("Error al guardar: " + e.message);
+            }
+        });
+    </script>
+</body>
+</html>
