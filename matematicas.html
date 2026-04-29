@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratorio de Matemáticas - L-Universe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --fondo: #060918; --celeste: #48dbfb; --amarillo: #feca57; --glass: rgba(255, 255, 255, 0.1); }
+        body { margin: 0; font-family: 'Montserrat', sans-serif; background: var(--fondo); color: white; min-height: 100vh; overflow-x: hidden; }
+        
+        .bg-animated { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: linear-gradient(125deg, #060918, #1b277a, #2c003e); background-size: 400% 400%; animation: moveGradient 15s ease infinite; }
+        @keyframes moveGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        nav { background: rgba(0,0,0,0.5); padding: 20px 5%; display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(10px); }
+        .btn-back { color: var(--celeste); text-decoration: none; font-weight: bold; border: 1px solid var(--celeste); padding: 10px 20px; border-radius: 50px; }
+
+        .container { padding: 50px 5%; text-align: center; }
+        h1 { font-family: 'Fredoka One'; font-size: 3rem; color: var(--amarillo); margin-bottom: 40px; }
+
+        .game-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+        .game-card { background: var(--glass); padding: 30px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; cursor: pointer; }
+        .game-card:hover { transform: translateY(-10px); border-color: var(--celeste); background: rgba(255,255,255,0.15); }
+        .game-card i { font-size: 3rem; display: block; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <div class="bg-animated"></div>
+    <nav>
+        <div style="font-family: 'Fredoka One'; font-size: 1.5rem;">MATEMÁTICAS</div>
+        <a href="home.html" class="btn-back">← VOLVER AL MANDO</a>
+    </nav>
+
+    <div class="container">
+        <h1>Misiones de Cálculo</h1>
+        <div class="game-grid">
+            <div class="game-card" onclick="location.href='ordenar.html'">
+                <i>🔢</i>
+                <h3>Orden Numérico</h3>
+                <p>Ordena los bloques de menor a mayor para estabilizar la nave.</p>
+            </div>
+            <div class="game-card" onclick="location.href='juegos.html'">
+                <i>🎮</i>
+                <h3>Centro de Juegos</h3>
+                <p>Explora otros desafíos lúdicos de la galaxia.</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        const firebaseConfig = { apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", authDomain: "thelearninguniverse-26.firebaseapp.com", projectId: "thelearninguniverse-26", storageBucket: "thelearninguniverse-26.firebasestorage.app", messagingSenderId: "85338996011", appId: "1:85338996011:web:1f3bb216900c07e735596e" };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        onAuthStateChanged(auth, (user) => { if (!user) window.location.replace("login.html"); });
+    </script>
+</body>
+</html>
