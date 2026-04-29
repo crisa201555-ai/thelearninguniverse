@@ -1,43 +1,271 @@
-<article class="noticia-card" style="border-color: var(--amarillo);">
-    <div class="noticia-header" style="background: linear-gradient(45deg, #feca57, #ff9f43);">
-        <h2 style="color: #0c1445;">✨ ¡The Learning Universe ya está aquí!</h2>
-    </div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noticias - The Learning Universe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --fondo: #0c1445;
+            --celeste: #48dbfb;
+            --amarillo: #feca57;
+            --rojo: #ff6b6b;
+            --purpura: #a29bfe;
+            --glass: rgba(255, 255, 255, 0.1);
+        }
 
-    <div class="noticia-meta">
-        <span>📅 <b>Fecha:</b> 28 de abril del 2026</span>
-        <span>🕒 <b>Hora:</b> 11:53</span>
-        <span>👤 <b>Autor:</b> Sally (Exploradora)</span>
-    </div>
+        body {
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            background: var(--fondo);
+            background-image: radial-gradient(circle at center, #1b277a 0%, #0c1445 100%);
+            color: white;
+            min-height: 100vh;
+        }
 
-    <div class="noticia-cuerpo">
-        <h3 style="font-family: 'Fredoka One'; color: var(--fondo);">Estudiante de 5° Básico creó una aplicación para estudiar</h3>
+        /* Navbar Superior */
+        nav {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(15px);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(72, 219, 251, 0.2);
+        }
+
+        .nav-brand {
+            font-family: 'Fredoka One';
+            color: var(--amarillo);
+            font-size: 1.5rem;
+            text-decoration: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Layout Principal */
+        .main-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 30px;
+            padding: 40px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Sidebar Filtros */
+        .sidebar {
+            background: var(--glass);
+            border-radius: 20px;
+            padding: 20px;
+            height: fit-content;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar h3 { font-family: 'Fredoka One'; font-size: 1.1rem; color: var(--celeste); margin-bottom: 20px; }
         
-        <p>Un gran cambio ha llegado a nuestra galaxia educativa. El estudiante de 5° Básico llamado <b>'Cristóbal'</b>, junto a sus mejores amigos del grupo <b>'BMC'</b>, han lanzado oficialmente la página web <b>"The Learning Universe"</b>.</p>
+        .filter-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background: transparent;
+            border: none;
+            color: white;
+            text-align: left;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
 
-        <blockquote style="background: #fff9e6; border-left: 5px solid var(--amarillo); padding: 15px; font-style: italic; border-radius: 10px;">
-            "Yo siento que no debemos pagar para estudiar, estudiar es algo importante para todos. Por eso, junto con mis amigos, he creado una página web, sin pago, sin anuncios, listo para aprender", expresó Cristóbal con mucha emoción.
-        </blockquote>
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--celeste);
+            color: var(--fondo);
+            font-weight: bold;
+        }
 
-        <p>Según otros relatos, sus amigos del grupo BMC apoyaron la idea desde el primer momento, trabajando juntos para que todos los niños y niñas puedan tener acceso gratuito al conocimiento.</p>
-        
-        <p>En la página puedes aprender <b>Matemáticas, Lenguaje, Inglés, Historia, Ciencias y Tecnología</b>, ¡y mucho más! Además, cuenta con una <b>IA amiga</b> con la que puedes hablar para resolver todas tus dudas.</p>
-    </div>
+        /* Feed de Noticias */
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
 
-    <div class="comentarios-box">
-        <h3>💬 Mensajes para Cristóbal y BMC</h3>
-        
-        <div class="input-comentario">
-            <input type="text" id="input-bmc" placeholder="¡Diles algo asombroso!">
-            <button class="btn-enviar" onclick="publicarComentario('lista-bmc', 'input-bmc')">ENVIAR</button>
+        .news-card {
+            background: var(--glass);
+            border-radius: 25px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: 0.4s;
+            position: relative;
+        }
+
+        .news-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--celeste);
+            box-shadow: 0 10px 30px rgba(72, 219, 251, 0.2);
+        }
+
+        .news-img {
+            width: 100%;
+            height: 180px;
+            background: #1b277a; /* Fallback color */
+            object-fit: cover;
+        }
+
+        .news-content {
+            padding: 20px;
+        }
+
+        .news-tag {
+            display: inline-block;
+            background: var(--purpura);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .news-card h2 {
+            font-size: 1.3rem;
+            margin: 0 0 10px 0;
+            line-height: 1.2;
+            color: var(--amarillo);
+        }
+
+        .news-card p {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+
+        .news-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--celeste);
+        }
+
+        .read-more {
+            color: var(--celeste);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .main-container { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="home.html" class="nav-brand">THE LEARNING UNIVERSE</a>
+        <div class="nav-links">
+            <a href="home.html">Misiones</a>
+            <a href="#" id="btnCerrarSesion" style="color: var(--rojo);">Salir</a>
         </div>
+    </nav>
 
-        <div class="lista-comentarios" id="lista-bmc">
-            <div class="comentario">
-                <b>Sally:</b> ¡Gracias por crear esto! Es justo lo que necesitábamos. 🚀
-            </div>
-            <div class="comentario">
-                <b>Profe_Digital:</b> Un ejemplo de generosidad y talento. ¡Felicidades BMC!
-            </div>
-        </div>
+    <div class="main-container">
+        <aside class="sidebar">
+            <h3>FILTRAR SEÑALES</h3>
+            <button class="filter-btn active">Todas las Noticias</button>
+            <button class="filter-btn">Misión BMC</button>
+            <button class="filter-btn">Actualizaciones</button>
+            <button class="filter-btn">Eventos Especiales</button>
+        </aside>
+
+        <main class="news-grid">
+            
+            <article class="news-card">
+                <img src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&q=80&w=600" class="news-img" alt="Espacio">
+                <div class="news-content">
+                    <span class="news-tag" style="background: var(--rojo);">URGENTE</span>
+                    <h2>Nueva Misión Detectada en el Sector 7</h2>
+                    <p>Cristóbal y el equipo han reportado una anomalía educativa. Prepárense para la actualización de mañana.</p>
+                    <div class="news-footer">
+                        <span>28 Abr, 2026</span>
+                        <a href="#" class="read-more">Leer más →</a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="news-card">
+                <img src="https://images.unsplash.com/photo-1518107616985-bd48230d3b20?auto=format&fit=crop&q=80&w=600" class="news-img" alt="Tecnología">
+                <div class="news-content">
+                    <span class="news-tag">ACTUALIZACIÓN</span>
+                    <h2>Mejoras en el Sistema de Acceso</h2>
+                    <p>Ahora puedes entrar a la nave usando tu cuenta de Google. ¡Más rápido que la velocidad de la luz!</p>
+                    <div class="news-footer">
+                        <span>27 Abr, 2026</span>
+                        <a href="#" class="read-more">Leer más →</a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="news-card">
+                <img src="https://images.unsplash.com/photo-1614728263952-84ea206f99b6?auto=format&fit=crop&q=80&w=600" class="news-img" alt="Planeta">
+                <div class="news-content">
+                    <span class="news-tag" style="background: var(--celeste); color: #000;">EVENTO</span>
+                    <h2>Torneo de Matemáticas Intergaláctico</h2>
+                    <p>¡Atención cadetes! El grupo BMC busca al mejor constructor de algoritmos de Chiguayante.</p>
+                    <div class="news-footer">
+                        <span>25 Abr, 2026</span>
+                        <a href="#" class="read-more">Leer más →</a>
+                    </div>
+                </div>
+            </article>
+
+        </main>
     </div>
-</article>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
+            authDomain: "thelearninguniverse-26.firebaseapp.com",
+            projectId: "thelearninguniverse-26",
+            storageBucket: "thelearninguniverse-26.firebasestorage.app",
+            messagingSenderId: "85338996011",
+            appId: "1:85338996011:web:1f3bb216900c07e735596e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Protección de Ruta
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.replace("login.html");
+            }
+        });
+
+        // Cerrar Sesión
+        document.getElementById('btnCerrarSesion').addEventListener('click', () => {
+            signOut(auth).then(() => {
+                window.location.replace("login.html");
+            });
+        });
+    </script>
+</body>
+</html>
