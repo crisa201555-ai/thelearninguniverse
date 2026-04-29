@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Info - The Learning Universe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --fondo: #060918;
+            --celeste: #48dbfb;
+            --amarillo: #feca57;
+            --glass: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            background: var(--fondo);
+            background-image: radial-gradient(circle at top, #1b277a 0%, #060918 100%);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .profile-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 30px;
+            border: 1px solid rgba(72, 219, 251, 0.3);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        h1 { font-family: 'Fredoka One'; color: var(--amarillo); margin-bottom: 10px; }
+        
+        .user-id {
+            font-size: 0.8rem;
+            background: rgba(0,0,0,0.3);
+            padding: 5px 15px;
+            border-radius: 50px;
+            color: var(--celeste);
+            display: inline-block;
+            margin-bottom: 30px;
+        }
+
+        .input-group { text-align: left; margin-bottom: 20px; }
+        label { display: block; font-size: 0.9rem; margin-bottom: 8px; font-weight: 600; }
+        
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(0,0,0,0.2);
+            color: white;
+            font-family: 'Montserrat';
+            box-sizing: border-box;
+        }
+
+        textarea { height: 100px; resize: none; }
+
+        .btn-save {
+            width: 100%;
+            padding: 15px;
+            border-radius: 50px;
+            border: none;
+            background: var(--celeste);
+            color: var(--fondo);
+            font-family: 'Fredoka One';
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-save:hover { background: var(--amarillo); transform: scale(1.02); }
+        
+        .back-link { display: block; margin-top: 20px; color: white; text-decoration: none; opacity: 0.6; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <div class="profile-card">
+        <h1>MI PERFIL</h1>
+        <div class="user-id">ID: <span id="display-id">Cargando...</span></div>
+
+        <div class="input-group">
+            <label>Nombre de Explorador</label>
+            <input type="text" id="user-name" placeholder="Ej: Capitán Cristóbal">
+        </div>
+
+        <div class="input-group">
+            <label>Descripción Privada (Solo tú la ves)</label>
+            <textarea id="user-desc" placeholder="Escribe aquí tus notas secretas o metas..."></textarea>
+        </div>
+
+        <button class="btn-save" id="btn-save">GUARDAR CAMBIOS</button>
+        
+        <a href="home.html" class="back-link">← Volver al Mando Central</a>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
+            authDomain: "thelearninguniverse-26.firebaseapp.com",
+            projectId: "thelearninguniverse-26",
+            storageBucket: "thelearninguniverse-26.firebasestorage.app",
+            messagingSenderId: "85338996011",
+            appId: "1:85338996011:web:1f3bb216900c07e735596e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+
+        // 1. Cargar datos del usuario
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                document.getElementById('display-id').innerText = user.uid; // El ID único de Firebase
+
+                // Buscar datos en Firestore
+                const docRef = doc(db, "usuarios", user.uid);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    document.getElementById('user-name').value = data.nombre || "";
+                    document.getElementById('user-desc').value = data.descripcion || "";
+                }
+            } else {
+                window.location.replace("login.html");
+            }
+        });
+
+        // 2. Guardar datos en Firestore
+        document.getElementById('btn-save').addEventListener('click', async () => {
+            const nombre = document.getElementById('user-name').value;
+            const descripcion = document.getElementById('user-desc').value;
+
+            if (currentUser) {
+                try {
+                    await setDoc(doc(db, "usuarios", currentUser.uid), {
+                        nombre: nombre,
+                        descripcion: descripcion,
+                        email: currentUser.email
+                    }, { merge: true });
+                    alert("¡Datos guardados en la base de datos galáctica!");
+                } catch (error) {
+                    console.error("Error al guardar:", error);
+                    alert("Error al conectar con la base de datos.");
+                }
+            }
+        });
+    </script>
+</body>
+</html>
