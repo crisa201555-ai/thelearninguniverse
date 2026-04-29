@@ -3,156 +3,271 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Control - The Learning Universe</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <title>Mando Central - The Learning Universe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --fondo: #0c1445;
+            --fondo: #060918;
+            --sidebar: rgba(15, 23, 61, 0.8);
             --celeste: #48dbfb;
             --amarillo: #feca57;
             --rojo: #ff6b6b;
             --blanco: #ffffff;
+            --glass: rgba(255, 255, 255, 0.1);
         }
 
         body {
             margin: 0;
             font-family: 'Montserrat', sans-serif;
             background: var(--fondo);
-            background-image: radial-gradient(circle at top, #1b277a 0%, #0c1445 100%);
             color: var(--blanco);
-            min-height: 100vh;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* FONDO ANIMADO DE COLORES GALÁCTICOS */
+        .bg-animated {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: linear-gradient(125deg, #060918, #1b277a, #060918, #2c003e);
+            background-size: 400% 400%;
+            animation: moveGradient 15s ease infinite;
+        }
+
+        @keyframes moveGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* MENÚ LATERAL (SIDEBAR) */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar);
+            backdrop-filter: blur(20px);
             display: flex;
             flex-direction: column;
+            padding: 30px 20px;
+            border-right: 1px solid rgba(72, 219, 251, 0.2);
+            box-shadow: 10px 0 30px rgba(0,0,0,0.5);
         }
 
-        /* Navbar Galáctica */
-        nav {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid rgba(72, 219, 251, 0.3);
-        }
-
-        .nav-logo {
+        .brand {
             font-family: 'Fredoka One', cursive;
-            font-size: 1.5rem;
             color: var(--amarillo);
+            font-size: 1.8rem;
+            margin-bottom: 40px;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(254, 202, 87, 0.5);
         }
 
-        .btn-salir {
+        /* Perfil del Usuario en Sidebar */
+        .profile-frame {
+            background: var(--glass);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .profile-pic {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            border: 3px solid var(--celeste);
+            margin-bottom: 10px;
+            object-fit: cover;
+            background: #000;
+        }
+
+        .profile-frame h3 { 
+            font-family: 'Fredoka One', cursive; font-size: 1.1rem; margin: 5px 0; color: var(--celeste);
+        }
+
+        .profile-frame p { 
+            font-size: 0.75rem; opacity: 0.7; margin: 0; word-break: break-all;
+        }
+
+        /* Botones de Materias */
+        .menu-nav { flex: 1; }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 20px;
+            margin-bottom: 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            transition: 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: rgba(72, 219, 251, 0.15);
+            border-color: var(--celeste);
+            transform: translateX(5px);
+        }
+
+        .nav-item span { margin-right: 15px; font-size: 1.2rem; }
+
+        .btn-logout {
             background: var(--rojo);
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 12px;
             border-radius: 50px;
             font-family: 'Fredoka One', cursive;
             cursor: pointer;
             transition: 0.3s;
-            box-shadow: 0 4px 0 #b33939;
+            margin-top: 20px;
         }
 
-        .btn-salir:hover {
-            transform: scale(1.05);
-            filter: brightness(1.1);
-        }
-
-        .btn-salir:active {
-            transform: translateY(3px);
-            box-shadow: none;
-        }
-
-        /* Dashboard Content */
-        .container {
+        /* CONTENIDO PRINCIPAL */
+        .main-content {
+            flex: 1;
             padding: 40px;
-            max-width: 1200px;
-            margin: 0 auto;
-            text-align: center;
+            overflow-y: auto;
+            position: relative;
         }
 
-        h1 {
-            font-family: 'Fredoka One', cursive;
-            font-size: 3rem;
-            margin-bottom: 10px;
-            color: var(--celeste);
-        }
-
-        .user-welcome {
-            font-size: 1.2rem;
+        /* Reloj y Fecha */
+        .time-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--glass);
+            padding: 15px 30px;
+            border-radius: 50px;
             margin-bottom: 40px;
-            opacity: 0.9;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
-        /* Grid de Misiones */
-        .grid-misiones {
+        #clock { font-family: 'Fredoka One', cursive; font-size: 1.5rem; color: var(--amarillo); }
+        #date { font-weight: 600; opacity: 0.8; }
+
+        /* Misiones */
+        .grid-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 25px;
         }
 
         .card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 25px;
+            background: var(--glass);
             padding: 30px;
-            transition: 0.3s;
+            border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: 0.4s;
             cursor: pointer;
         }
 
-        .card:hover {
-            background: rgba(255, 255, 255, 0.1);
+        .card:hover { 
+            background: rgba(255,255,255,0.15); 
             border-color: var(--celeste);
-            transform: translateY(-10px);
+            transform: scale(1.02);
         }
 
-        .card i {
-            font-size: 3rem;
-            margin-bottom: 15px;
-            display: block;
+        /* FOOTER CON DEGRADEZ */
+        footer {
+            margin-top: 80px;
+            padding: 60px 40px 30px;
+            background: linear-gradient(to bottom, transparent, rgba(72, 219, 251, 0.1));
+            border-top: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
         }
 
-        .card h3 {
-            font-family: 'Fredoka One', cursive;
-            margin-bottom: 10px;
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+            text-align: left;
         }
 
-        .card p {
-            font-size: 0.9rem;
-            opacity: 0.8;
+        .footer-col h4 { font-family: 'Fredoka One'; color: var(--amarillo); margin-bottom: 15px; }
+        .footer-col a { display: block; color: rgba(255,255,255,0.6); text-decoration: none; margin-bottom: 10px; font-size: 0.9rem; }
+        .footer-col a:hover { color: var(--celeste); }
+
+        .bug-report {
+            background: rgba(255, 107, 107, 0.1);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px dashed var(--rojo);
+            margin: 20px 0;
         }
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="nav-logo">THE LEARNING UNIVERSE</div>
-        <button id="btnCerrarSesion" class="btn-salir">ABORTAR MISIÓN (SALIR)</button>
-    </nav>
+    <div class="bg-animated"></div>
 
-    <div class="container">
-        <h1>¡BIENVENIDO, CADETE!</h1>
-        <p class="user-welcome" id="userDisplay">Conectando con la base de datos...</p>
+    <aside class="sidebar">
+        <div class="brand">L-UNIVERSE</div>
+        
+        <div class="profile-frame">
+            <img src="https://cdn-icons-png.flaticon.com/512/1026/1026383.png" class="profile-pic" id="userImg">
+            <h3 id="userName">Cargando...</h3>
+            <p id="userEmail">explorador@bmc.com</p>
+        </div>
 
-        <div class="grid-misiones">
+        <nav class="menu-nav">
+            <a href="#" class="nav-item"><span>🧮</span> Matemáticas</a>
+            <a href="#" class="nav-item"><span>🇬🇧</span> Inglés</a>
+            <a href="#" class="nav-item"><span>📖</span> Lenguaje</a>
+            <a href="noticias.html" class="nav-item"><span>📡</span> Noticias BMC</a>
+        </aside>
+
+        <button class="btn-logout" id="btnSignOut">CERRAR ESCOTILLA</button>
+    </aside>
+
+    <main class="main-content">
+        <header class="time-header">
+            <div id="date">Cargando fecha...</div>
+            <div id="clock">00:00:00</div>
+        </header>
+
+        <h1>¡Bienvenido al Mando Central!</h1>
+        <p style="font-size: 1.2rem; opacity: 0.8; margin-bottom: 40px;">Tu radar indica nuevas misiones educativas disponibles en tu sector.</p>
+
+        <div class="grid-cards">
             <div class="card" onclick="location.href='noticias.html'">
-                <div style="font-size: 40px;">📡</div>
-                <h3>Noticias BMC</h3>
-                <p>Últimas transmisiones de Cristóbal y el equipo.</p>
+                <h2 style="color:var(--amarillo)">📡 Transmisión Reciente</h2>
+                <p>Nuevos mensajes de Cristóbal y el equipo del grupo BMC han llegado a la base.</p>
             </div>
             <div class="card">
-                <div style="font-size: 40px;">🧮</div>
-                <h3>Matemáticas</h3>
-                <p>Misión: Ordenar los bloques numéricos.</p>
-            </div>
-            <div class="card">
-                <div style="font-size: 40px;">🚀</div>
-                <h3>Misiones</h3>
-                <p>Explora nuevos mundos de conocimiento.</p>
+                <h2 style="color:var(--celeste)">🚀 Academia Estelar</h2>
+                <p>Comienza tus lecciones diarias para ganar estrellas y subir de rango.</p>
             </div>
         </div>
-    </div>
+
+        <footer>
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Navegación</h4>
+                    <a href="home.html">Panel Central</a>
+                    <a href="noticias.html">Noticias</a>
+                    <a href="contacto.html">Contacto</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Misión BMC</h4>
+                    <p style="font-size: 0.85rem; color: rgba(255,255,255,0.5);">Impulsando el aprendizaje intergaláctico desde Chiguayante para todo el universo.</p>
+                </div>
+            </div>
+
+            <div class="bug-report">
+                <p><strong>Bienvenido.</strong> Si deseas reportar algún error o bug, puedes reportarlo a nuestra base central:</p>
+                <code style="color: var(--rojo); font-weight: bold;">thelearninguniverse@googlegroups.com</code>
+            </div>
+
+            <div style="font-size: 0.7rem; opacity: 0.4; margin-top: 40px;">
+                &copy; 2026 The Learning Universe - Sistema de Inteligencia Educativa
+            </div>
+        </footer>
+    </main>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -170,22 +285,36 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // 1. VERIFICAR SESIÓN (Si no hay usuario, manda a login)
+        // --- RELOJ Y FECHA ---
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('es-CL');
+            const dateString = now.toLocaleDateString('es-CL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            
+            document.getElementById('clock').innerText = timeString;
+            document.getElementById('date').innerText = dateString.toUpperCase();
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // --- DATOS DEL USUARIO ---
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                document.getElementById('userDisplay').innerText = `Sesión iniciada como: ${user.email}`;
+                // Si el usuario entró con Google, tendrá nombre y foto
+                document.getElementById('userName').innerText = user.displayName || "Explorador BMC";
+                document.getElementById('userEmail').innerText = user.email;
+                if (user.photoURL) {
+                    document.getElementById('userImg').src = user.photoURL;
+                }
             } else {
                 window.location.replace("login.html");
             }
         });
 
-        // 2. LÓGICA DEL BOTÓN CERRAR SESIÓN
-        document.getElementById('btnCerrarSesion').addEventListener('click', () => {
+        // --- CERRAR SESIÓN ---
+        document.getElementById('btnSignOut').addEventListener('click', () => {
             signOut(auth).then(() => {
-                // Al cerrar sesión, lo mandamos al login y limpiamos el historial
                 window.location.replace("login.html");
-            }).catch((error) => {
-                alert("Error al cerrar sesión: " + error.message);
             });
         });
     </script>
