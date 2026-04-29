@@ -2,226 +2,48 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unirse a Misión - The Learning Universe</title>
+    <title>Unirse - L-Universe</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --fondo: #060918;
-            --celeste: #48dbfb;
-            --amarillo: #feca57;
-            --rojo: #ff6b6b;
-            --glass: rgba(255, 255, 255, 0.1);
-        }
-
-        body {
-            margin: 0;
-            font-family: 'Montserrat', sans-serif;
-            background: var(--fondo);
-            background-image: radial-gradient(circle at center, #1b277a 0%, #060918 100%);
-            color: white;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
-
-        .join-card {
-            background: var(--glass);
-            backdrop-filter: blur(15px);
-            padding: 40px;
-            border-radius: 35px;
-            border: 2px solid rgba(72, 219, 251, 0.3);
-            text-align: center;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 0 50px rgba(72, 219, 251, 0.1);
-        }
-
-        .icon-space { font-size: 3rem; margin-bottom: 20px; }
-        
-        h1 { font-family: 'Fredoka One'; color: var(--amarillo); margin-bottom: 5px; }
-        p { opacity: 0.8; font-size: 0.9rem; margin-bottom: 30px; }
-
-        .input-box {
-            background: rgba(0,0,0,0.4);
-            border: 1px solid var(--celeste);
-            padding: 15px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-        }
-
-        .input-box label {
-            display: block;
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--celeste);
-            margin-bottom: 8px;
-            text-align: left;
-        }
-
-        input {
-            width: 100%;
-            background: transparent;
-            border: none;
-            color: white;
-            font-family: 'Fredoka One';
-            font-size: 1.4rem;
-            text-align: center;
-            outline: none;
-            text-transform: uppercase;
-        }
-
-        .user-info-tag {
-            font-size: 0.75rem;
-            margin-bottom: 20px;
-            color: rgba(255,255,255,0.5);
-        }
-
-        .btn-join {
-            width: 100%;
-            padding: 18px;
-            border-radius: 50px;
-            border: none;
-            background: var(--celeste);
-            color: var(--fondo);
-            font-family: 'Fredoka One';
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 10px 20px rgba(72, 219, 251, 0.2);
-        }
-
-        .btn-join:hover {
-            background: var(--amarillo);
-            transform: translateY(-3px);
-        }
-
-        .status-msg {
-            margin-top: 20px;
-            font-size: 0.85rem;
-            min-height: 20px;
-        }
-
-        .loader {
-            border: 3px solid rgba(255,255,255,0.1);
-            border-top: 3px solid var(--celeste);
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            animation: spin 1s linear infinite;
-            display: none;
-            margin: 10px auto;
-        }
-
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        body { background: #060918; color: white; font-family: 'Montserrat'; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: rgba(255,255,255,0.1); padding: 40px; border-radius: 30px; text-align: center; border: 2px solid #48dbfb; width: 400px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: none; box-sizing: border-box; }
+        button { background: #48dbfb; border: none; padding: 15px; width: 100%; border-radius: 50px; font-family: 'Fredoka One'; cursor: pointer; color:#060918; font-size:1.1rem; }
     </style>
 </head>
 <body>
-
-    <div class="join-card">
-        <div class="icon-space">🚀</div>
-        <h1>SALTAR A GRUPO</h1>
-        <p>Ingresa las coordenadas de tu flota</p>
-
-        <div class="user-info-tag">
-            Tu ID de Cadete: <span id="my-id" style="color: var(--amarillo);">Verificando...</span>
-        </div>
-
-        <div class="input-box">
-            <label>Código de Galaxia</label>
-            <input type="text" id="group-input" placeholder="BIO-2026" maxlength="15">
-        </div>
-
-        <button class="btn-join" id="btn-enter">INICIAR SECUENCIA</button>
-        
-        <div class="loader" id="loader"></div>
-        <div class="status-msg" id="status-msg"></div>
-
-        <br>
-        <a href="home.html" style="color: white; opacity: 0.4; text-decoration: none; font-size: 0.8rem;">Abortar misión</a>
+    <div class="card">
+        <h1 style="font-family:'Fredoka One'; color:#feca57">UNIRSE A FLOTA</h1>
+        <input type="text" id="docId" placeholder="ID del Docente (UID)">
+        <input type="text" id="gCode" placeholder="Clave del Grupo" style="text-transform: uppercase;">
+        <input type="text" id="sName" placeholder="Tu Nombre Completo">
+        <button id="btnJoin">SINCRONIZAR</button>
+        <a href="home.html" style="color: white; font-size: 0.8rem; display: block; margin-top: 20px;">Cancelar</a>
     </div>
-
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
-            authDomain: "thelearninguniverse-26.firebaseapp.com",
-            projectId: "thelearninguniverse-26",
-            storageBucket: "thelearninguniverse-26.firebasestorage.app",
-            messagingSenderId: "85338996011",
-            appId: "1:85338996011:web:1f3bb216900c07e735596e"
-        };
-
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        const firebaseConfig = { apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", authDomain: "thelearninguniverse-26.firebaseapp.com", projectId: "thelearninguniverse-26", storageBucket: "thelearninguniverse-26.firebasestorage.app", messagingSenderId: "85338996011", appId: "1:85338996011:web:1f3bb216900c07e735596e" };
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
         const db = getFirestore(app);
+        const auth = getAuth(app);
 
-        let userId = null;
+        document.getElementById('btnJoin').addEventListener('click', async () => {
+            const uid = document.getElementById('docId').value;
+            const code = document.getElementById('gCode').value.toUpperCase();
+            const name = document.getElementById('sName').value;
+            if(!uid || !code || !name) return alert("Faltan datos");
 
-        // 1. Verificar sesión y mostrar ID
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                userId = user.uid;
-                document.getElementById('my-id').innerText = userId.substring(0, 8) + "...";
-            } else {
-                window.location.replace("login.html");
-            }
-        });
-
-        // 2. Lógica para entrar al grupo
-        document.getElementById('btn-enter').addEventListener('click', async () => {
-            const code = document.getElementById('group-input').value.trim().toUpperCase();
-            const msg = document.getElementById('status-msg');
-            const loader = document.getElementById('loader');
-
-            if (!code) return;
-
-            // Reset UI
-            msg.innerText = "";
-            msg.style.color = "white";
-            loader.style.display = "block";
-
-            try {
-                // Buscar el grupo en Firestore
-                const groupRef = doc(db, "grupos", code);
-                const groupSnap = await getDoc(groupRef);
-
-                if (!groupSnap.exists()) {
-                    msg.innerText = "❌ El código de galaxia no existe.";
-                    msg.style.color = "var(--rojo)";
-                } else {
-                    const groupData = groupSnap.data();
-                    const now = Date.now();
-
-                    // VALIDACIÓN DE LAS 18 HORAS
-                    if (now > groupData.expiraEn) {
-                        msg.innerText = "🚨 ERROR: Esta misión ha caducado (pasaron las 18h).";
-                        msg.style.color = "var(--rojo)";
-                    } else {
-                        msg.innerText = "✅ ¡Coordenadas correctas! Saltando...";
-                        msg.style.color = "var(--verde)";
-                        
-                        // Guardar el código en localStorage para que la página de la prueba sepa qué examen cargar
-                        localStorage.setItem('currentGroup', code);
-
-                        // Redirigir a la página donde se rinde la prueba
-                        setTimeout(() => {
-                            window.location.href = "take-test.html";
-                        }, 1500);
-                    }
-                }
-            } catch (error) {
-                msg.innerText = "Hubo un error en la conexión.";
-                console.error(error);
-            } finally {
-                loader.style.display = "none";
-            }
+            const gSnap = await getDoc(doc(db, "grupos", code));
+            if(gSnap.exists() && gSnap.data().creador === uid) {
+                if(Date.now() > gSnap.data().expiraEn) return alert("Misión expirada (18h)");
+                
+                // Registrar miembro
+                await setDoc(doc(db, "grupos", code, "miembros", auth.currentUser.uid), { nombre: name, nota: "Pendiente" });
+                localStorage.setItem('currentGroup', code);
+                window.location.href = "view-group.html";
+            } else { alert("ID o Clave incorrectos"); }
         });
     </script>
 </body>
