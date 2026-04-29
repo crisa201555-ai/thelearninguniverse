@@ -7,27 +7,41 @@
     <style>
         :root { --fondo: #0c1445; --verde: #1dd1a1; --amarillo: #feca57; }
         body { margin: 0; font-family: 'Montserrat', sans-serif; background: var(--fondo); background-image: radial-gradient(circle, #1b277a 0%, #0c1445 100%); height: 100vh; display: flex; justify-content: center; align-items: center; }
-        .card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px); padding: 40px; border-radius: 35px; border: 2px solid var(--verde); width: 100%; max-width: 380px; text-align: center; color: white; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px); padding: 40px; border-radius: 35px; border: 2px solid var(--verde); width: 100%; max-width: 380px; text-align: center; color: white; }
         .logo { font-family: 'Fredoka One'; font-size: 2.5rem; color: var(--verde); margin-bottom: 20px; }
         input { width: 100%; padding: 12px 20px; margin-bottom: 15px; border-radius: 50px; border: none; outline: none; box-sizing: border-box; }
         .btn { width: 100%; padding: 15px; border-radius: 50px; border: none; background: var(--verde); color: var(--fondo); font-family: 'Fredoka One'; font-size: 1.1rem; cursor: pointer; box-shadow: 0 5px 0 #10ac84; }
-        .btn:hover { background: var(--amarillo); box-shadow: 0 5px 0 #f39c12; transform: translateY(-2px); }
-        .back { margin-top: 20px; display: block; color: white; text-decoration: none; font-size: 0.8rem; }
+        
+        .btn-google { 
+            width: 100%; padding: 12px; border-radius: 50px; border: none; background: white; color: #444; 
+            font-family: 'Montserrat', sans-serif; font-weight: 600; display: flex; align-items: center; 
+            justify-content: center; gap: 10px; cursor: pointer; margin-top: 15px;
+        }
+        .btn-google img { width: 20px; }
+        
+        hr { border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0; }
+        .back { color: white; text-decoration: none; font-size: 0.8rem; display: block; margin-top: 15px; }
     </style>
 </head>
 <body>
     <div class="card">
         <div class="logo">CADETES</div>
-        <p style="margin-bottom: 20px; font-weight: bold;">¡Únete a la misión de Cristóbal!</p>
         <input type="email" id="email" placeholder="Tu Correo">
         <input type="password" id="pass" placeholder="Crea tu Contraseña">
-        <button class="btn" id="regBtn">CREAR CUENTA</button>
+        <button class="btn" id="regBtn">REGISTRARSE</button>
+
+        <hr>
+        <button class="btn-google" id="googleBtn">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google">
+            Registrarse con Google
+        </button>
+
         <a href="login.html" class="back">¿Ya tienes cuenta? Inicia sesión</a>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
@@ -40,17 +54,18 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
 
         document.getElementById('regBtn').addEventListener('click', async () => {
             const email = document.getElementById('email').value;
             const pass = document.getElementById('pass').value;
-            try {
-                await createUserWithEmailAndPassword(auth, email, pass);
-                alert("¡Bienvenido al Universo, Cadete!");
-                window.location.href = 'login.html';
-            } catch (error) {
-                alert("Error: " + error.message);
-            }
+            try { await createUserWithEmailAndPassword(auth, email, pass); window.location.href = 'login.html'; } 
+            catch (e) { alert(e.message); }
+        });
+
+        document.getElementById('googleBtn').addEventListener('click', async () => {
+            try { await signInWithPopup(auth, provider); window.location.href = 'home.html'; } 
+            catch (e) { alert(e.message); }
         });
     </script>
 </body>
