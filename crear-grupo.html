@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Misión - Docentes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --fondo: #060918; --celeste: #48dbfb; --amarillo: #feca57; --rojo: #ff6b6b; }
+        body { margin: 0; font-family: 'Montserrat', sans-serif; background: var(--fondo); color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .card { background: rgba(255,255,255,0.1); padding: 40px; border-radius: 30px; border: 2px solid var(--celeste); width: 100%; max-width: 400px; text-align: center; backdrop-filter: blur(10px); }
+        input { width: 100%; padding: 12px; margin: 15px 0; border-radius: 10px; border: none; }
+        .btn-crear { width: 100%; padding: 15px; border-radius: 50px; border: none; background: var(--amarillo); font-family: 'Fredoka One'; cursor: pointer; font-size: 1.1rem; }
+        .timer-info { font-size: 0.8rem; color: var(--rojo); margin-top: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1 style="font-family: 'Fredoka One'; color: var(--amarillo);">NUEVA FLOTA</h1>
+        <p>Crea un código para tus estudiantes.</p>
+        
+        <input type="text" id="group-name" placeholder="Nombre de la Clase (ej: 6to Básico)">
+        <input type="text" id="group-code" placeholder="Código Secreto (ej: BIO-2026)">
+        
+        <button class="btn-crear" id="btn-crear">LANZAR MISIÓN</button>
+        
+        <div class="timer-info">⚠️ Esta misión se autodestruirá en 18 horas.</div>
+        <br>
+        <a href="home.html" style="color: white; text-decoration: none; font-size: 0.8rem;">Volver al Mando</a>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
+            authDomain: "thelearninguniverse-26.firebaseapp.com",
+            projectId: "thelearninguniverse-26",
+            storageBucket: "thelearninguniverse-26.firebasestorage.app",
+            messagingSenderId: "85338996011",
+            appId: "1:85338996011:web:1f3bb216900c07e735596e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        document.getElementById('btn-crear').addEventListener('click', async () => {
+            const name = document.getElementById('group-name').value;
+            const code = document.getElementById('group-code').value.toUpperCase();
+            
+            if(!name || !code) return alert("Completa los datos");
+
+            const ahora = Date.now(); // Tiempo actual en milisegundos
+            const expira = ahora + (18 * 60 * 60 * 1000); // +18 horas
+
+            try {
+                await setDoc(doc(db, "grupos", code), {
+                    nombre: name,
+                    creador: auth.currentUser.uid,
+                    creadoEn: ahora,
+                    expiraEn: expira,
+                    activo: true
+                });
+                alert(`¡Grupo ${code} creado! Comparte el código con tus alumnos.`);
+            } catch (e) { alert("Error al crear flota: " + e.message); }
+        });
+    </script>
+</body>
+</html>
