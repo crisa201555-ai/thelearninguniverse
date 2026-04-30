@@ -4,25 +4,28 @@
     <meta charset="UTF-8">
     <title>Generador de Pruebas | The Learning Universe</title>
     <style>
-        body { background: #060918; color: white; font-family: sans-serif; padding: 40px; }
-        .config { background: rgba(255,255,255,0.05); padding: 30px; border-radius: 20px; border: 1px solid #feca57; }
-        input, select { margin: 10px; padding: 12px; border-radius: 8px; width: 200px; }
-        .btn-save { background: #feca57; padding: 20px; border: none; width: 100%; cursor: pointer; font-weight: bold; border-radius: 50px; margin-top: 20px; }
+        body { background: #060918; color: white; font-family: sans-serif; padding: 20px; }
+        .config-card, .q-card { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; border: 1px solid #feca57; margin-bottom: 20px; }
+        input { padding: 10px; margin: 5px; border-radius: 5px; border: 1px solid #ccc; }
+        .q-input { width: 90%; }
+        .btn-add { background: #48dbfb; padding: 10px; border: none; border-radius: 5px; cursor: pointer; }
+        .btn-save { background: #1dd1a1; padding: 20px; border: none; border-radius: 50px; width: 100%; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
     </style>
 </head>
 <body>
-    <h1>Configuración de Evaluación del Grupo</h1>
-    <div class="config">
-        <h3>Parámetros de Calificación</h3>
-        <label>Puntos por cada pregunta:</label> <input type="number" id="pts" value="1"><br>
-        <label>Puntaje Máximo Total:</label> <input type="number" id="max" value="10"><br>
-        <label>Escala de Notas (Exigencia):</label>
-        <select id="escala">
-            <option value="60">60% (Exigente)</option>
-            <option value="50">50% (Básica)</option>
-        </select>
+    <h1>Creador de Exámenes</h1>
+    
+    <div class="config-card">
+        <h3>1. Configuración de Escala</h3>
+        Puntos por pregunta: <input type="number" id="pts" value="1">
+        Puntaje Máximo: <input type="number" id="max" value="10">
+        Escala: <select id="escala"><option value="60">60%</option><option value="50">50%</option></select>
     </div>
-    <button class="btn-save" id="save">PUBLICAR PRUEBA EN LA CLASE</button>
+
+    <div id="questionsContainer"></div>
+    <button class="btn-add" onclick="addQuestion()">+ AÑADIR PREGUNTA</button>
+    <hr>
+    <button class="btn-save" id="btnPublish">PUBLICAR PRUEBA</button>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -31,18 +34,44 @@
         const firebaseConfig = { apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", authDomain: "thelearninguniverse-26.firebaseapp.com", projectId: "thelearninguniverse-26", storageBucket: "thelearninguniverse-26.firebasestorage.app", messagingSenderId: "85338996011", appId: "1:85338996011:web:1f3bb216900c07e735596e" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const gID = new URLSearchParams(window.location.search).get('grupo');
 
-        document.getElementById('save').addEventListener('click', async () => {
-            const gID = new URLSearchParams(window.location.search).get('grupo');
+        let qCount = 0;
+        window.addQuestion = () => {
+            qCount++;
+            const div = document.createElement('div');
+            div.className = 'q-card';
+            div.innerHTML = `
+                <h4>Pregunta ${qCount}</h4>
+                <input type="text" class="q-text q-input" placeholder="Pregunta"><br>
+                Correcta: <input type="text" class="q-correct q-input" placeholder="Respuesta Correcta"><br>
+                Incorrecta 1: <input type="text" class="q-inc q-input" placeholder="Distractor 1"><br>
+                Incorrecta 2: <input type="text" class="q-inc q-input" placeholder="Distractor 2">
+            `;
+            document.getElementById('questionsContainer').appendChild(div);
+        };
+
+        document.getElementById('btnPublish').addEventListener('click', async () => {
+            const qs = [];
+            document.querySelectorAll('.q-card').forEach(card => {
+                qs.push({
+                    pregunta: card.querySelector('.q-text').value,
+                    correcta: card.querySelector('.q-correct').value,
+                    incorrectas: Array.from(card.querySelectorAll('.q-inc')).map(i => i.value)
+                });
+            });
+
             await setDoc(doc(db, "pruebas", gID), {
+                preguntas: qs,
                 puntosPregunta: document.getElementById('pts').value,
                 puntajeMax: document.getElementById('max').value,
                 escala: document.getElementById('escala').value,
                 activa: true
-            }, { merge: true });
-            alert("¡Prueba de clase publicada!");
+            });
+            alert("Prueba publicada en la clase.");
             window.location.href = "home.html";
         });
+        addQuestion();
     </script>
 </body>
 </html>
