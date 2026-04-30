@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Generador de Pruebas | The Learning Universe</title>
+    <style>
+        body { background: #060918; color: white; font-family: sans-serif; padding: 40px; }
+        .config { background: rgba(255,255,255,0.05); padding: 30px; border-radius: 20px; border: 1px solid #feca57; }
+        input, select { margin: 10px; padding: 12px; border-radius: 8px; width: 200px; }
+        .btn-save { background: #feca57; padding: 20px; border: none; width: 100%; cursor: pointer; font-weight: bold; border-radius: 50px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Configuración de Evaluación del Grupo</h1>
+    <div class="config">
+        <h3>Parámetros de Calificación</h3>
+        <label>Puntos por cada pregunta:</label> <input type="number" id="pts" value="1"><br>
+        <label>Puntaje Máximo Total:</label> <input type="number" id="max" value="10"><br>
+        <label>Escala de Notas (Exigencia):</label>
+        <select id="escala">
+            <option value="60">60% (Exigente)</option>
+            <option value="50">50% (Básica)</option>
+        </select>
+    </div>
+    <button class="btn-save" id="save">PUBLICAR PRUEBA EN LA CLASE</button>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        
+        const firebaseConfig = { apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", authDomain: "thelearninguniverse-26.firebaseapp.com", projectId: "thelearninguniverse-26", storageBucket: "thelearninguniverse-26.firebasestorage.app", messagingSenderId: "85338996011", appId: "1:85338996011:web:1f3bb216900c07e735596e" };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        document.getElementById('save').addEventListener('click', async () => {
+            const gID = new URLSearchParams(window.location.search).get('grupo');
+            await setDoc(doc(db, "pruebas", gID), {
+                puntosPregunta: document.getElementById('pts').value,
+                puntajeMax: document.getElementById('max').value,
+                escala: document.getElementById('escala').value,
+                activa: true
+            }, { merge: true });
+            alert("¡Prueba de clase publicada!");
+            window.location.href = "home.html";
+        });
+    </script>
+</body>
+</html>
