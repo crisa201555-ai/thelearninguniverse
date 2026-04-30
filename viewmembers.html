@@ -2,52 +2,75 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Miembros del Grupo | The Learning Universe</title>
+    <title>Miembros | The Learning Universe</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        body { background: #060918; color: white; font-family: 'Montserrat'; padding: 40px; text-align: center; }
-        .box { background: rgba(255,255,255,0.05); padding: 30px; border-radius: 20px; max-width: 500px; margin: auto; border: 1px solid #48dbfb; }
-        input { padding: 12px; width: 80%; border-radius: 10px; border: none; margin-bottom: 15px; }
-        button { padding: 12px 20px; border-radius: 10px; border: none; background: #48dbfb; cursor: pointer; font-weight: bold; }
-        .btn-next { background: #feca57; margin-top: 20px; width: 100%; }
+        body { background: #060918; color: white; font-family: 'Montserrat'; padding: 40px; }
+        .container { max-width: 600px; margin: auto; background: rgba(255,255,255,0.05); padding: 30px; border-radius: 20px; border: 1px solid #48dbfb; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #48dbfb; background: none; color: white; box-sizing: border-box; }
+        button { padding: 12px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
+        .btn-invite { background: #48dbfb; color: #060918; }
+        .list-area { margin-top: 30px; text-align: left; }
+        .member-item { background: rgba(255,255,255,0.1); padding: 10px 15px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .btn-del { background: #ff6b6b; color: white; width: 30px; height: 30px; padding: 0; border-radius: 50%; margin: 0; }
     </style>
 </head>
 <body>
-    <div class="box">
-        <h2>Invitar Estudiantes</h2>
-        <p>Envía invitaciones al correo de tus alumnos</p>
-        <input type="email" id="email" placeholder="correo@estudiante.com">
-        <button id="send">ENVIAR INVITACIÓN</button>
-        <hr style="opacity:0.2; margin: 20px 0;">
-        <button class="btn-next" onclick="irAPrueba()">CONFIGURAR PRUEBA DEL GRUPO</button>
+    <div class="container">
+        <h2>Invitación a la Clase</h2>
+        <input type="text" id="sName" placeholder="Nombre del estudiante">
+        <input type="email" id="sEmail" placeholder="Correo del estudiante">
+        <button id="btnSend" class="btn-invite">ENVIAR INVITACIÓN</button>
+        
+        <div class="list-area">
+            <h3>Invitados Pendientes</h3>
+            <div id="inviteList"></div>
+        </div>
+        
+        <button onclick="irAPrueba()" style="background:#feca57; margin-top:30px;">SIGUIENTE: CREAR PRUEBA</button>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, where, onSnapshot, deleteDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         const firebaseConfig = { apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", authDomain: "thelearninguniverse-26.firebaseapp.com", projectId: "thelearninguniverse-26", storageBucket: "thelearninguniverse-26.firebasestorage.app", messagingSenderId: "85338996011", appId: "1:85338996011:web:1f3bb216900c07e735596e" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-
         const gID = new URLSearchParams(window.location.search).get('grupo');
 
-        document.getElementById('send').addEventListener('click', async () => {
-            const email = document.getElementById('email').value.toLowerCase();
+        document.getElementById('btnSend').addEventListener('click', async () => {
+            const name = document.getElementById('sName').value;
+            const email = document.getElementById('sEmail').value.toLowerCase();
+            if(!name || !email) return alert("Completa los datos");
+
             const gSnap = await getDoc(doc(db, "grupos", gID));
-            
             await addDoc(collection(db, "invitaciones"), {
+                nombreEstudiante: name,
                 para: email,
-                de: auth.currentUser.email,
                 grupoID: gID,
                 nombreGrupo: gSnap.data().nombreGrupo,
                 estado: "pendiente"
             });
-            alert("Invitación enviada con éxito.");
+            document.getElementById('sName').value = ""; document.getElementById('sEmail').value = "";
         });
 
+        const q = query(collection(db, "invitaciones"), where("grupoID", "==", gID), where("estado", "==", "pendiente"));
+        onSnapshot(q, snap => {
+            const list = document.getElementById('inviteList');
+            list.innerHTML = "";
+            snap.forEach(d => {
+                const data = d.data();
+                list.innerHTML += `<div class="member-item">
+                    <span><b>${data.nombreEstudiante}</b> (${data.para})</span>
+                    <button class="btn-del" onclick="cancelar('${d.id}')">X</button>
+                </div>`;
+            });
+        });
+
+        window.cancelar = async (id) => { if(confirm("¿Cancelar invitación?")) await deleteDoc(doc(db, "invitaciones", id)); };
         window.irAPrueba = () => { window.location.href = `generator-test.html?grupo=${gID}`; };
     </script>
 </body>
