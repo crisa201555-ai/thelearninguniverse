@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Buzón | The Learning Universe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body { background: #060918; color: white; font-family: 'Montserrat'; padding: 40px; }
+        .inv-card { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid #1dd1a1; }
+        button { background: #1dd1a1; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Invitaciones a Clases</h1>
+    <div id="list"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, query, where, onSnapshot, doc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", authDomain: "thelearninguniverse-26.firebaseapp.com", projectId: "thelearninguniverse-26", storageBucket: "thelearninguniverse-26.firebasestorage.app", messagingSenderId: "85338996011", appId: "1:85338996011:web:1f3bb216900c07e735596e" };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, (user) => {
+            if(user) {
+                const q = query(collection(db, "invitaciones"), where("para", "==", user.email), where("estado", "==", "pendiente"));
+                onSnapshot(q, (snap) => {
+                    const list = document.getElementById('list');
+                    list.innerHTML = snap.empty ? "<p>No tienes invitaciones pendientes.</p>" : "";
+                    snap.forEach(d => {
+                        const inv = d.data();
+                        const div = document.createElement('div');
+                        div.className = 'inv-card';
+                        div.innerHTML = `<span>Has sido invitado al grupo: <b>${inv.nombreGrupo}</b></span> 
+                                         <button onclick="aceptar('${d.id}', '${inv.grupoID}')">ACEPTAR</button>`;
+                        list.appendChild(div);
+                    });
+                });
+            }
+        });
+
+        window.aceptar = async (id, gID) => {
+            await setDoc(doc(db, "grupos", gID, "miembros", auth.currentUser.uid), {
+                nombre: auth.currentUser.email,
+                nota: "Pendiente"
+            });
+            await updateDoc(doc(db, "invitaciones", id), { estado: "aceptado" });
+            localStorage.setItem('currentGroup', gID);
+            window.location.href = "viewclass.html";
+        };
+    </script>
+</body>
+</html>
