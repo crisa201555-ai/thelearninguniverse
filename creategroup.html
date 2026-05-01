@@ -2,54 +2,96 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Crear Clase | The Learning Universe</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <title>Crear Sector | The Learning Universe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Fredoka+One&display=swap" rel="stylesheet">
     <style>
         :root { --p: #48dbfb; --s: #feca57; --bg: #060918; }
         body { background: var(--bg); color: white; font-family: 'Montserrat'; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .card { background: rgba(255,255,255,0.05); padding: 40px; border-radius: 30px; border: 1px solid var(--p); width: 350px; text-align: center; backdrop-filter: blur(10px); }
-        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid var(--p); background: rgba(0,0,0,0.3); color: white; box-sizing: border-box; }
-        .btn { background: var(--s); border: none; padding: 15px; width: 100%; border-radius: 50px; font-family: 'Fredoka One'; cursor: pointer; margin-top: 10px; transition: 0.3s; }
-        .btn:hover { transform: scale(1.05); background: var(--p); }
+        .card { background: rgba(255,255,255,0.05); padding: 40px; border-radius: 25px; border: 1px solid var(--p); width: 100%; max-width: 400px; text-align: center; }
+        h1 { font-family: 'Fredoka One'; color: var(--s); }
+        input { width: 100%; padding: 12px; margin: 15px 0; border-radius: 10px; border: 1px solid var(--p); background: #000; color: white; box-sizing: border-box; }
+        .btn { background: var(--p); color: #000; border: none; padding: 15px; width: 100%; border-radius: 10px; font-family: 'Fredoka One'; cursor: pointer; font-size: 1rem; }
+        .btn:hover { background: var(--s); }
     </style>
 </head>
 <body>
+
     <div class="card">
-        <h1 style="font-family:'Fredoka One'; color: var(--s);">NUEVA CLASE</h1>
-        <p>The Learning Universe</p>
-        <input type="text" id="docName" placeholder="Nombre del Docente">
-        <input type="text" id="groupName" placeholder="Nombre de la Clase/Grupo">
-        <button class="btn" id="btnCrear">CREAR GRUPO</button>
+        <h1>NUEVA CLASE</h1>
+        <p>Define el nombre de tu sector galáctico.</p>
+        <input type="text" id="groupName" placeholder="Nombre de la Clase (Ej: Ciencias 4to B)">
+        <button class="btn" id="btnCreate">INICIALIZAR SECTOR</button>
+        <p id="status" style="margin-top:20px; font-size:0.8rem; color:var(--s);"></p>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        const firebaseConfig = { apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", authDomain: "thelearninguniverse-26.firebaseapp.com", projectId: "thelearninguniverse-26", storageBucket: "thelearninguniverse-26.firebasestorage.app", messagingSenderId: "85338996011", appId: "1:85338996011:web:1f3bb216900c07e735596e" };
+        const firebaseConfig = { 
+            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", 
+            authDomain: "thelearninguniverse-26.firebaseapp.com", 
+            projectId: "thelearninguniverse-26", 
+            storageBucket: "thelearninguniverse-26.firebasestorage.app", 
+            messagingSenderId: "85338996011", 
+            appId: "1:85338996011:web:1f3bb216900c07e735596e" 
+        };
+
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        document.getElementById('btnCrear').addEventListener('click', async () => {
-            const dName = document.getElementById('docName').value;
-            const gName = document.getElementById('groupName').value;
-            const groupID = Math.random().toString(36).substring(2, 7).toUpperCase();
+        // FUNCIÓN MAESTRA: Generar ID Aleatorio de 6 caracteres
+        const generarID = () => {
+            const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let id = '';
+            for (let i = 0; i < 6; i++) {
+                id += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+            }
+            return id;
+        };
 
-            if(!dName || !gName) return alert("Por favor, completa todos los campos.");
+        document.getElementById('btnCreate').onclick = async () => {
+            const name = document.getElementById('groupName').value.trim();
+            const status = document.getElementById('status');
+            if(!name) return alert("Escribe un nombre.");
+
+            const user = auth.currentUser;
+            const randomID = generarID(); // Generamos el ID aleatorio
+            const masterCode = Math.floor(100000 + Math.random() * 900000).toString(); // Código para poner notas
 
             try {
-                await setDoc(doc(db, "grupos", groupID), {
-                    id: groupID,
-                    nombreGrupo: gName,
-                    docente: dName,
-                    docenteUID: auth.currentUser.uid,
+                status.innerText = "Generando coordenadas aleatorias...";
+                
+                // 1. Crear el grupo con el ID Aleatorio
+                await setDoc(doc(db, "grupos", randomID), {
+                    nombreGrupo: name,
+                    docente: user.email,
+                    docenteUID: user.uid,
+                    idGrupo: randomID,
+                    masterCode: masterCode,
                     creadoEn: Date.now()
                 });
-                window.location.href = `viewmembers.html?grupo=${groupID}`;
-            } catch (e) { alert("Error al crear: " + e.message); }
-        });
+
+                // 2. Enviar el código de seguridad al Inbox del docente
+                await addDoc(collection(db, "invitaciones"), {
+                    para: user.email,
+                    titulo: "CÓDIGO DE CALIFICACIÓN",
+                    mensaje: `El código para poner notas en la clase ${name} es: ${masterCode}. Tu ID de grupo es: ${randomID}`,
+                    esSistema: true,
+                    fecha: Date.now()
+                });
+
+                alert("¡Clase Creada! ID: " + randomID);
+                localStorage.setItem('currentGroup', randomID);
+                window.location.href = "home.html";
+
+            } catch (e) {
+                console.error(e);
+                alert("Error en la creación.");
+            }
+        };
     </script>
 </body>
 </html>
