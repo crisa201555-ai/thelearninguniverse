@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Revisión de Misión | The Learning Universe</title>
+    <style>
+        body { background: #060918; color: white; font-family: sans-serif; padding: 30px; }
+        .review-container { max-width: 900px; margin: auto; }
+        .q-box { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; margin-bottom: 15px; border-left: 5px solid #555; }
+        .correct { border-left-color: #1dd1a1; background: rgba(29, 209, 161, 0.1); }
+        .incorrect { border-left-color: #ff6b6b; background: rgba(255, 107, 107, 0.1); }
+        .nota-panel { position: sticky; bottom: 20px; background: #feca57; color: #000; padding: 20px; border-radius: 50px; display: flex; justify-content: space-around; align-items: center; font-weight: bold; }
+        input[type="text"] { padding: 10px; border-radius: 10px; border: none; width: 80px; text-align: center; font-size: 1.2rem; }
+    </style>
+</head>
+<body>
+    <div class="review-container">
+        <h1>Revisando Misión: <span id="studentName">...</span></h1>
+        <div id="testContent"></div>
+        
+        <div class="nota-panel">
+            <span>CALIFICACIÓN FINAL:</span>
+            <input type="text" id="finalGrade" placeholder="Ej: 7.0">
+            <button id="btnSave" style="padding:10px 20px; cursor:pointer; border-radius:20px; border:none; background:#060918; color:white;">GUARDAR NOTA</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyAu (Config Igual) ..." }; // Usa tu config completa
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        const params = new URLSearchParams(window.location.search);
+        const uid = params.get('uid');
+        const gID = params.get('grupo');
+
+        async function init() {
+            const tSnap = await getDoc(doc(db, "pruebas", gID));
+            const mSnap = await getDoc(doc(db, "grupos", gID, "miembros", uid));
+            
+            const test = tSnap.data();
+            const alum = mSnap.data();
+            document.getElementById('studentName').innerText = alum.nombre;
+
+            let html = "";
+            test.preguntas.forEach((q, i) => {
+                const respAlum = alum.respuestasAlumno[i] || "NO RESPONDIÓ";
+                const esCorrecta = respAlum === q.correcta;
+                
+                html += `
+                    <div class="q-box ${esCorrecta ? 'correct' : 'incorrect'}">
+                        <p><b>${i+1}. ${q.pregunta}</b></p>
+                        <p>Respuesta del Cadete: <span style="color:${esCorrecta?'#1dd1a1':'#ff6b6b'}">${respAlum}</span></p>
+                        <p style="font-size:0.8rem; opacity:0.7">Respuesta Correcta: ${q.correcta}</p>
+                    </div>`;
+            });
+            document.getElementById('testContent').innerHTML = html;
+        }
+
+        document.getElementById('btnSave').addEventListener('click', async () => {
+            const nota = document.getElementById('finalGrade').value;
+            if(!nota) return alert("Ingresa una nota");
+            
+            await updateDoc(doc(db, "grupos", gID, "miembros", uid), { nota: nota });
+            alert("Nota sincronizada. El cadete ya puede ver su resultado.");
+            window.history.back();
+        });
+        init();
+    </script>
+</body>
+</html>
