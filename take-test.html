@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Evaluación en Curso | The Learning Universe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Fredoka+One&display=swap" rel="stylesheet">
+    <style>
+        :root { --p: #48dbfb; --s: #feca57; --bg: #060918; }
+        body { background: var(--bg); color: white; font-family: 'Montserrat', sans-serif; padding: 20px; margin: 0; }
+        .container { max-width: 800px; margin: auto; padding-top: 40px; }
+        
+        .header { text-align: center; margin-bottom: 40px; }
+        .test-title { font-family: 'Fredoka One'; color: var(--s); font-size: 2rem; }
+        
+        .q-card { background: rgba(255,255,255,0.05); padding: 30px; border-radius: 20px; border: 1px solid rgba(72, 219, 251, 0.2); margin-bottom: 25px; transition: 0.3s; }
+        .q-text { font-size: 1.2rem; margin-bottom: 20px; font-weight: 600; }
+        
+        .option { display: block; background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; margin: 10px 0; cursor: pointer; border: 1px solid transparent; transition: 0.2s; }
+        .option:hover { background: rgba(72, 219, 251, 0.1); border-color: var(--p); }
+        .option input { margin-right: 15px; accent-color: var(--p); }
+        
+        .selected { background: rgba(72, 219, 251, 0.2) !important; border-color: var(--p) !important; }
+
+        .btn-submit { background: var(--p); color: var(--bg); border: none; padding: 20px; width: 100%; border-radius: 50px; font-family: 'Fredoka One'; font-size: 1.2rem; cursor: pointer; margin-top: 30px; box-shadow: 0 10px 20px rgba(72, 219, 251, 0.2); }
+        .btn-submit:disabled { background: #555; cursor: not-allowed; }
+
+        #timer { position: fixed; top: 20px; right: 20px; background: var(--s); color: black; padding: 10px 20px; border-radius: 50px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div id="timer">Sincronizando...</div>
+
+    <div class="container">
+        <div class="header">
+            <div id="tName" class="test-title">Cargando Desafío...</div>
+            <p>The Learning Universe - Módulo de Evaluación</p>
+        </div>
+
+        <div id="quiz-container">
+            </div>
+
+        <button id="btnFinish" class="btn-submit">ENVIAR RESPUESTAS A LA CLASE</button>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", authDomain: "thelearninguniverse-26.firebaseapp.com", projectId: "thelearninguniverse-26", storageBucket: "thelearninguniverse-26.firebasestorage.app", messagingSenderId: "85338996011", appId: "1:85338996011:web:1f3bb216900c07e735596e" };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        const params = new URLSearchParams(window.location.search);
+        const gID = params.get('grupo') || localStorage.getItem('currentGroup');
+        
+        let correctAnswers = {}; // Mapa para validar después
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) return window.location.href = "login.html";
+            loadTest();
+        });
+
+        async function loadTest() {
+            const tSnap = await getDoc(doc(db, "pruebas", gID));
+            if (!tSnap.exists()) return alert("No hay pruebas activas.");
+
+            const data = tSnap.data();
+            document.getElementById('tName').innerText = data.nombrePrueba;
+            document.getElementById('timer').innerText = "Misión Activa";
+
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = "";
+
+            data.preguntas.forEach((q, index) => {
+                // Guardamos la correcta en memoria (id de pregunta: texto de respuesta)
+                correctAnswers[index] = q.correcta;
+
+                // Mezclamos respuestas para que no siempre la primera sea la correcta
+                const allOptions = [q.correcta, ...q.incorrectas].sort(() => Math.random() - 0.5);
+
+                const qDiv = document.createElement('div');
+                qDiv.className = 'q-card';
+                qDiv.innerHTML = `
+                    <div class="q-text">${index + 1}. ${q.pregunta}</div>
+                    <div class="options-list">
+                        ${allOptions.map(opt => `
+                            <label class="option">
+                                <input type="radio" name="q${index}" value="${opt}">
+                                ${opt}
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(qDiv);
+            });
+
+            // Listener visual para selección
+            document.querySelectorAll('.option').forEach(el => {
+                el.addEventListener('click', function() {
+                    const name = this.querySelector('input').name;
+                    document.querySelectorAll(`input[name="${name}"]`).forEach(input => {
+                        input.parentElement.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                });
+            });
+        }
+
+        document.getElementById('btnFinish').addEventListener('click', async () => {
+            const btn = document.getElementById('btnFinish');
+            const questions = document.querySelectorAll('.q-card');
+            let score = 0;
+            let answeredCount = 0;
+
+            questions.forEach((q, index) => {
+                const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                if (selected) {
+                    answeredCount++;
+                    if (selected.value === correctAnswers[index]) {
+                        score++;
+                    }
+                }
+            });
+
+            if (answeredCount < questions.length) {
+                if (!confirm("No has respondido todas las preguntas. ¿Enviar de todas formas?")) return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "SINCROIZANDO RESULTADOS...";
+
+            try {
+                // Actualizamos el documento del miembro en la subcolección del grupo
+                const userRef = doc(db, "grupos", gID, "miembros", auth.currentUser.uid);
+                
+                await updateDoc(userRef, {
+                    enviado: true,
+                    nota: "Pendiente", // Esto activa el estado en activetests.html
+                    puntajeLogrado: score,
+                    fechaEnvio: Date.now()
+                });
+
+                alert("¡Misión cumplida! Tus respuestas han sido enviadas para revisión.");
+                window.location.href = `activetests.html?uid=${auth.currentUser.uid}&grupo=${gID}`;
+                
+            } catch (e) {
+                alert("Error al enviar: " + e.message);
+                btn.disabled = false;
+                btn.innerText = "REINTENTAR ENVÍO";
+            }
+        });
+    </script>
+</body>
+</html>
