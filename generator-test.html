@@ -6,25 +6,28 @@
     <style>
         body { background: #060918; color: white; font-family: sans-serif; padding: 20px; }
         .config-card, .q-card { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; border: 1px solid #feca57; margin-bottom: 20px; }
-        input { padding: 10px; margin: 5px; border-radius: 5px; border: 1px solid #ccc; }
+        input { padding: 10px; margin: 5px; border-radius: 5px; border: 1px solid #ccc; background: white; color: black; }
         .q-input { width: 90%; }
-        .btn-add { background: #48dbfb; padding: 10px; border: none; border-radius: 5px; cursor: pointer; }
-        .btn-save { background: #1dd1a1; padding: 20px; border: none; border-radius: 50px; width: 100%; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
+        .btn-add { background: #48dbfb; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-save { background: #1dd1a1; padding: 20px; border: none; border-radius: 50px; width: 100%; font-weight: bold; cursor: pointer; font-size: 1.1rem; margin-top: 20px; }
+        .header-input { width: 100%; font-size: 1.2rem; margin-bottom: 15px; border: 2px solid #48dbfb; }
     </style>
 </head>
 <body>
-    <h1>Creador de Exámenes</h1>
+    <h1>Creador de Exámenes - The Learning Universe</h1>
     
     <div class="config-card">
-        <h3>1. Configuración de Escala</h3>
+        <h3>1. Identificación y Escala</h3>
+        <input type="text" id="testName" class="header-input" placeholder="Nombre de la Prueba (ej: Control de Galaxias 1)">
+        <br>
         Puntos por pregunta: <input type="number" id="pts" value="1">
         Puntaje Máximo: <input type="number" id="max" value="10">
-        Escala: <select id="escala"><option value="60">60%</option><option value="50">50%</option></select>
+        Escala: <select id="escala" style="padding:10px;"><option value="60">60%</option><option value="50">50%</option></select>
     </div>
 
     <div id="questionsContainer"></div>
     <button class="btn-add" onclick="addQuestion()">+ AÑADIR PREGUNTA</button>
-    <hr>
+    <hr style="opacity:0.1; margin:20px 0;">
     <button class="btn-save" id="btnPublish">PUBLICAR PRUEBA</button>
 
     <script type="module">
@@ -52,6 +55,9 @@
         };
 
         document.getElementById('btnPublish').addEventListener('click', async () => {
+            const nombre = document.getElementById('testName').value;
+            if(!nombre) return alert("Ponle un nombre a la prueba");
+
             const qs = [];
             document.querySelectorAll('.q-card').forEach(card => {
                 qs.push({
@@ -62,14 +68,15 @@
             });
 
             await setDoc(doc(db, "pruebas", gID), {
+                nombrePrueba: nombre,
                 preguntas: qs,
                 puntosPregunta: document.getElementById('pts').value,
                 puntajeMax: document.getElementById('max').value,
                 escala: document.getElementById('escala').value,
                 activa: true
             });
-            alert("Prueba publicada en la clase.");
-            window.location.href = "home.html";
+            alert("Prueba '" + nombre + "' publicada con éxito.");
+            window.location.href = `viewmembers.html?grupo=${gID}`;
         });
         addQuestion();
     </script>
