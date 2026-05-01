@@ -2,76 +2,78 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Miembros | The Learning Universe</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <title>Miembros del Sector | TLU</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Fredoka+One&display=swap" rel="stylesheet">
     <style>
-        body { background: #060918; color: white; font-family: 'Montserrat'; padding: 40px; }
-        .container { max-width: 600px; margin: auto; background: rgba(255,255,255,0.05); padding: 30px; border-radius: 20px; border: 1px solid #48dbfb; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #48dbfb; background: none; color: white; box-sizing: border-box; }
-        button { padding: 12px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
-        .btn-invite { background: #48dbfb; color: #060918; }
-        .list-area { margin-top: 30px; text-align: left; }
-        .member-item { background: rgba(255,255,255,0.1); padding: 10px 15px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
-        .btn-del { background: #ff6b6b; color: white; width: 30px; height: 30px; padding: 0; border-radius: 50%; margin: 0; }
+        :root { --p: #48dbfb; --s: #feca57; --bg: #060918; }
+        body { background: var(--bg); color: white; font-family: 'Montserrat'; padding: 30px; }
+        .container { max-width: 900px; margin: auto; }
+        .member-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
+        .member-card { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; border: 1px solid rgba(72, 219, 251, 0.3); text-align: center; }
+        .member-card i { font-size: 2rem; display: block; margin-bottom: 10px; }
+        .member-card b { color: var(--p); display: block; }
+        .status { font-size: 0.8rem; margin-top: 5px; color: var(--s); }
+        .btn-back { background: none; border: 1px solid var(--p); color: var(--p); padding: 10px 20px; border-radius: 50px; cursor: pointer; margin-bottom: 20px; }
     </style>
 </head>
 <body>
+
     <div class="container">
-        <h2>Invitación a la Clase</h2>
-        <input type="text" id="sName" placeholder="Nombre del estudiante">
-        <input type="email" id="sEmail" placeholder="Correo del estudiante">
-        <button id="btnSend" class="btn-invite">ENVIAR INVITACIÓN</button>
-        
-        <div class="list-area">
-            <h3>Invitados Pendientes</h3>
-            <div id="inviteList"></div>
-        </div>
-        
-        <button onclick="irAPrueba()" style="background:#feca57; margin-top:30px;">SIGUIENTE: CREAR PRUEBA</button>
+        <button class="btn-back" onclick="location.href='home.html'">⬅ VOLVER AL DASHBOARD</button>
+        <h1 style="font-family:'Fredoka One'; margin:0;">CADETES EN ESTE SECTOR</h1>
+        <p id="groupInfo" style="opacity:0.6;">Cargando lista de tripulantes...</p>
+
+        <div class="member-grid" id="memberList">
+            </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, query, where, onSnapshot, deleteDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = { apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", authDomain: "thelearninguniverse-26.firebaseapp.com", projectId: "thelearninguniverse-26", storageBucket: "thelearninguniverse-26.firebasestorage.app", messagingSenderId: "85338996011", appId: "1:85338996011:web:1f3bb216900c07e735596e" };
+        const firebaseConfig = { 
+            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", 
+            authDomain: "thelearninguniverse-26.firebaseapp.com", 
+            projectId: "thelearninguniverse-26", 
+            storageBucket: "thelearninguniverse-26.firebasestorage.app", 
+            messagingSenderId: "85338996011", 
+            appId: "1:85338996011:web:1f3bb216900c07e735596e" 
+        };
+
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const auth = getAuth(app);
-        const gID = new URLSearchParams(window.location.search).get('grupo');
+        const gID = localStorage.getItem('currentGroup');
 
-        document.getElementById('btnSend').addEventListener('click', async () => {
-            const name = document.getElementById('sName').value;
-            const email = document.getElementById('sEmail').value.toLowerCase();
-            if(!name || !email) return alert("Completa los datos");
-
-            const gSnap = await getDoc(doc(db, "grupos", gID));
-            await addDoc(collection(db, "invitaciones"), {
-                nombreEstudiante: name,
-                para: email,
-                grupoID: gID,
-                nombreGrupo: gSnap.data().nombreGrupo,
-                estado: "pendiente"
+        if(!gID) {
+            document.getElementById('groupInfo').innerText = "❌ No has seleccionado un sector.";
+        } else {
+            // Cargar nombre del grupo
+            getDoc(doc(db, "grupos", gID)).then(s => {
+                if(s.exists()) document.getElementById('groupInfo').innerText = "Sector Activo: " + s.data().nombreGrupo;
             });
-            document.getElementById('sName').value = ""; document.getElementById('sEmail').value = "";
-        });
 
-        const q = query(collection(db, "invitaciones"), where("grupoID", "==", gID), where("estado", "==", "pendiente"));
-        onSnapshot(q, snap => {
-            const list = document.getElementById('inviteList');
-            list.innerHTML = "";
-            snap.forEach(d => {
-                const data = d.data();
-                list.innerHTML += `<div class="member-item">
-                    <span><b>${data.nombreEstudiante}</b> (${data.para})</span>
-                    <button class="btn-del" onclick="cancelar('${d.id}')">X</button>
-                </div>`;
+            // Escuchar miembros
+            onSnapshot(collection(db, "grupos", gID, "miembros"), (snap) => {
+                const list = document.getElementById('memberList');
+                list.innerHTML = "";
+                
+                if(snap.empty) {
+                    list.innerHTML = "<p>Aún no hay cadetes registrados en este sector.</p>";
+                    return;
+                }
+
+                snap.forEach(d => {
+                    const m = d.data();
+                    list.innerHTML += `
+                        <div class="member-card">
+                            <i>👨‍🚀</i>
+                            <b>${m.nombre}</b>
+                            <div class="status">${m.enviado ? '✅ Misión Completada' : '⏳ En Órbita'}</div>
+                        </div>
+                    `;
+                });
             });
-        });
-
-        window.cancelar = async (id) => { if(confirm("¿Cancelar invitación?")) await deleteDoc(doc(db, "invitaciones", id)); };
-        window.irAPrueba = () => { window.location.href = `generator-test.html?grupo=${gID}`; };
+        }
     </script>
 </body>
 </html>
