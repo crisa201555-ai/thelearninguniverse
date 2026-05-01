@@ -2,70 +2,153 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Clase | The Learning Universe</title>
+    <title>Muro de Clase | The Learning Universe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Fredoka+One&display=swap" rel="stylesheet">
     <style>
-        body { background: #060918; color: white; font-family: sans-serif; display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 15px; padding: 20px; }
-        .panel { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; border: 1px solid #48dbfb; }
-        #chat { height: 400px; overflow-y: auto; border-bottom: 1px solid #48dbfb; margin-bottom: 10px; }
-        .user-link { display: block; padding: 10px; color: #feca57; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
-        .user-link:hover { background: rgba(72, 219, 251, 0.1); }
-        input { width: 70%; padding: 10px; border-radius: 5px; }
+        :root { --p: #48dbfb; --s: #feca57; --bg: #060918; }
+        body { background: var(--bg); color: white; font-family: 'Montserrat'; display: grid; grid-template-columns: 280px 1fr 280px; gap: 20px; padding: 20px; height: 95vh; margin: 0; box-sizing: border-box; }
+        
+        .panel { background: rgba(255,255,255,0.05); border: 1px solid rgba(72, 219, 251, 0.2); border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; }
+        .panel-header { background: rgba(72, 219, 251, 0.1); padding: 15px; font-family: 'Fredoka One'; color: var(--p); text-align: center; border-bottom: 1px solid rgba(72, 219, 251, 0.2); }
+
+        /* Centro: Chat */
+        #chat-box { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .msg { background: rgba(255,255,255,0.07); padding: 10px 15px; border-radius: 15px; max-width: 80% ; border-left: 4px solid var(--p); }
+        .msg.me { align-self: flex-end; border-left: none; border-right: 4px solid var(--s); background: rgba(254, 202, 87, 0.1); }
+        .msg b { display: block; font-size: 0.8rem; color: var(--p); margin-bottom: 3px; }
+
+        .input-area { padding: 20px; display: flex; gap: 10px; background: rgba(0,0,0,0.3); }
+        input { flex: 1; background: #000; border: 1px solid var(--p); color: white; padding: 12px; border-radius: 10px; outline: none; }
+        
+        /* Laterales */
+        .user-card { padding: 10px 15px; margin: 5px 10px; border-radius: 10px; cursor: pointer; transition: 0.3s; font-size: 0.9rem; }
+        .user-card:hover { background: rgba(72, 219, 251, 0.1); }
+        
+        .btn-action { background: var(--s); border: none; padding: 15px; margin: 10px; border-radius: 10px; font-family: 'Fredoka One'; cursor: pointer; color: #000; }
+        .btn-sos { background: #ff6b6b; color: white; }
     </style>
 </head>
 <body>
+
     <div class="panel">
-        <h3>Mi Estado</h3>
-        <p id="myEmail">Cargando...</p>
-        <button id="btnTest" style="display:none; width:100%; background:#feca57; padding:10px; border:none; border-radius:10px; cursor:pointer;" onclick="location.href='take-test.html'">HACER PRUEBA</button>
+        <div class="panel-header">MI PERFIL</div>
+        <div style="padding: 20px; text-align: center;">
+            <p id="myEmail" style="font-size: 0.8rem; opacity: 0.7;">Cargando...</p>
+            <h3 id="myGrade">Nota: --</h3>
+            <button id="btnTest" class="btn-action" style="display:none;" onclick="location.href='take-test.html'">INICIAR PRUEBA</button>
+            <button id="btnSOS" class="btn-action btn-sos">HABLAR CON DOCENTE</button>
+        </div>
     </div>
 
     <div class="panel">
-        <h2 id="className">Clase</h2>
-        <div id="chat"></div>
-        <input type="text" id="msg" placeholder="Escribe un mensaje...">
-        <button id="send">ENVIAR</button>
+        <div class="panel-header" id="className">CARGANDO UNIVERSO...</div>
+        <div id="chat-box"></div>
+        <div class="input-area">
+            <input type="text" id="chatInput" placeholder="Escribe un mensaje y presiona Enter...">
+            <button id="btnSend" style="background:var(--p); border:none; border-radius:10px; padding:0 20px; cursor:pointer;">➤</button>
+        </div>
     </div>
 
     <div class="panel">
-        <h3>Compañeros</h3>
-        <div id="userList"></div>
+        <div class="panel-header">CADETES ONLINE</div>
+        <div id="userList" style="overflow-y: auto;"></div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, query, orderBy, onSnapshot, getDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        const firebaseConfig = { apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", authDomain: "thelearninguniverse-26.firebaseapp.com", projectId: "thelearninguniverse-26", storageBucket: "thelearninguniverse-26.firebasestorage.app", messagingSenderId: "85338996011", appId: "1:85338996011:web:1f3bb216900c07e735596e" };
+        const firebaseConfig = { /* TU CONFIG */ };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
         const gID = localStorage.getItem('currentGroup');
 
-        onAuthStateChanged(auth, async user => {
-            if(!user) return;
+        onAuthStateChanged(auth, async (user) => {
+            if(!user) return window.location.href = "login.html";
             document.getElementById('myEmail').innerText = user.email;
-            
-            // Cargar Miembros
-            onSnapshot(collection(db, "grupos", gID, "miembros"), snap => {
+
+            // 1. Datos del Grupo y Estado de Prueba
+            const gSnap = await getDoc(doc(db, "grupos", gID));
+            const groupData = gSnap.data();
+            document.getElementById('className').innerText = "CLASE: " + groupData.nombreGrupo;
+
+            // 2. Monitoreo de Miembros y Mi Nota
+            onSnapshot(doc(db, "grupos", gID, "miembros", user.uid), (d) => {
+                const me = d.data();
+                document.getElementById('myGrade').innerText = "Nota: " + (me.nota || "Pendiente");
+                
+                // BUG FIX: Ocultar botón si ya envió O si el docente cerró la prueba
+                onSnapshot(doc(db, "pruebas", gID), (t) => {
+                    const test = t.data();
+                    if(test && test.activa && !me.enviado) {
+                        document.getElementById('btnTest').style.display = "block";
+                    } else {
+                        document.getElementById('btnTest').style.display = "none";
+                    }
+                });
+            });
+
+            // 3. Lista de Cadetes Online
+            onSnapshot(collection(db, "grupos", gID, "miembros"), (snap) => {
                 const list = document.getElementById('userList');
                 list.innerHTML = "";
                 snap.forEach(d => {
                     const u = d.data();
-                    const a = document.createElement('a');
-                    a.className = "user-link";
-                    a.innerText = u.nombre;
-                    a.onclick = () => { window.location.href = `activetests.html?uid=${d.id}&grupo=${gID}`; };
-                    list.appendChild(a);
+                    list.innerHTML += `<div class="user-card" onclick="location.href='activetests.html?uid=${d.id}&grupo=${gID}'">
+                        ● ${u.nombre} <br><small style="opacity:0.5">${u.nota || 'Pendiente'}</small>
+                    </div>`;
                 });
             });
 
-            // Verificar Prueba
-            const tSnap = await getDoc(doc(db, "pruebas", gID));
-            if(tSnap.exists() && tSnap.data().activa) document.getElementById('btnTest').style.display = "block";
-        });
+            // 4. Chat en Tiempo Real
+            const qChat = query(collection(db, "grupos", gID, "chat"), orderBy("time", "asc"));
+            onSnapshot(qChat, (snap) => {
+                const box = document.getElementById('chat-box');
+                box.innerHTML = "";
+                snap.forEach(d => {
+                    const m = d.data();
+                    const isMe = m.uid === user.uid;
+                    box.innerHTML += `
+                        <div class="msg ${isMe ? 'me' : ''}">
+                            <b>${m.name}</b>
+                            ${m.text}
+                        </div>`;
+                });
+                box.scrollTop = box.scrollHeight;
+            });
 
-        // Chat y Nombre de Clase (Igual al anterior...)
+            // 5. Función Enviar Mensaje
+            const sendMsg = async () => {
+                const val = document.getElementById('chatInput').value.trim();
+                if(!val) return;
+                document.getElementById('chatInput').value = "";
+                await addDoc(collection(db, "grupos", gID, "chat"), {
+                    uid: user.uid,
+                    name: user.email.split('@')[0],
+                    text: val,
+                    time: Date.now()
+                });
+            };
+
+            document.getElementById('btnSend').onclick = sendMsg;
+            document.getElementById('chatInput').onkeypress = (e) => { if(e.key === 'Enter') sendMsg(); };
+
+            // 6. Hablar con Docente (Alerta SOS)
+            document.getElementById('btnSOS').onclick = async () => {
+                const msg = prompt("¿Qué mensaje urgente quieres enviar al docente?");
+                if(msg) {
+                    await addDoc(collection(db, "grupos", gID, "alertas"), {
+                        estudiante: user.email,
+                        mensaje: msg,
+                        fecha: Date.now(),
+                        leido: false
+                    });
+                    alert("Mensaje enviado al radar del docente.");
+                }
+            };
+        });
     </script>
 </body>
 </html>
