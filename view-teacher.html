@@ -2,38 +2,29 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Mando Central Docente | The Learning Universe</title>
+    <title>Radar Docente | The Learning Universe</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Fredoka+One&display=swap" rel="stylesheet">
     <style>
         :root { --p: #48dbfb; --s: #feca57; --bg: #060918; --danger: #ff6b6b; --success: #1dd1a1; }
         body { background: var(--bg); color: white; font-family: 'Montserrat'; padding: 30px; margin: 0; }
         .dashboard { max-width: 1100px; margin: auto; }
         
-        /* Cabecera y Controles */
         .header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid var(--p); padding-bottom: 20px; }
-        .btn-danger { background: var(--danger); color: white; border: none; padding: 12px 25px; border-radius: 10px; font-family: 'Fredoka One'; cursor: pointer; transition: 0.3s; }
-        .btn-danger:hover { box-shadow: 0 0 15px var(--danger); transform: scale(1.05); }
+        .btn-danger { background: var(--danger); color: white; border: none; padding: 12px 25px; border-radius: 10px; font-family: 'Fredoka One'; cursor: pointer; }
 
-        /* Alertas SOS */
         .sos-container { background: rgba(255, 107, 107, 0.1); border: 1px solid var(--danger); border-radius: 15px; padding: 20px; margin-bottom: 30px; }
-        .sos-card { background: #000; padding: 12px; border-radius: 8px; margin-top: 10px; border-left: 4px solid var(--danger); display: flex; justify-content: space-between; }
+        .sos-card { background: #000; padding: 12px; border-radius: 8px; margin-top: 10px; border-left: 4px solid var(--danger); }
 
-        /* Estadísticas rápidas */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .stat-card { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; border: 1px solid var(--p); text-align: center; }
-        .stat-card h2 { font-family: 'Fredoka One'; color: var(--s); margin: 5px 0 0 0; font-size: 2rem; }
-
-        /* Tabla de Estudiantes */
         table { width: 100%; border-collapse: collapse; background: rgba(255,255,255,0.02); border-radius: 15px; overflow: hidden; }
         th { background: var(--p); color: #000; font-family: 'Fredoka One'; padding: 15px; text-align: left; }
         td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
         
-        .badge { padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
+        .badge { padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
         .badge-sent { background: var(--success); color: #000; }
         .badge-waiting { background: #555; color: white; }
 
-        .btn-rev { background: var(--s); border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; font-family: 'Montserrat'; transition: 0.2s; }
-        .btn-rev:hover { background: white; }
+        .btn-rev { background: var(--s); border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-rev:hover { background: white; transform: scale(1.05); }
     </style>
 </head>
 <body>
@@ -42,48 +33,32 @@
         <div class="header-flex">
             <div>
                 <h1 style="font-family:'Fredoka One'; color:var(--p); margin:0;">RADAR DOCENTE</h1>
-                <p id="groupDisplay" style="opacity:0.7; margin:5px 0 0 0;">Cargando Galaxia...</p>
+                <p id="groupDisplay" style="opacity:0.7;">Identificando Sector...</p>
             </div>
-            <button id="btnCloseTest" class="btn-danger">🔒 CERRAR / BLOQUEAR PRUEBA</button>
+            <button id="btnCloseTest" class="btn-danger">🔒 CERRAR PRUEBA</button>
         </div>
 
         <div id="sosSection" class="sos-container" style="display:none;">
-            <h3 style="margin:0; font-family:'Fredoka One'; font-size: 1rem;">⚠️ COMUNICACIONES SOS RECIBIDAS</h3>
+            <h3 style="margin:0; font-family:'Fredoka One'; font-size: 1rem;">⚠️ ALERTAS SOS</h3>
             <div id="sosList"></div>
-        </div>
-
-        <div class="stats-grid">
-            <div class="stat-card">
-                <p>Cadetes en el Sistema</p>
-                <h2 id="totalCadetes">0</h2>
-            </div>
-            <div class="stat-card">
-                <p>Misiones Enviadas</p>
-                <h2 id="totalEnviados">0</h2>
-            </div>
-            <div class="stat-card">
-                <p>Estado de Prueba</p>
-                <h2 id="testStatusDisplay" style="font-size: 1.2rem;">VERIFICANDO...</h2>
-            </div>
         </div>
 
         <table>
             <thead>
                 <tr>
-                    <th>NOMBRE DEL CADETE</th>
+                    <th>CADETE</th>
                     <th>ESTADO</th>
-                    <th>CALIFICACIÓN</th>
-                    <th>ACCIONES</th>
+                    <th>NOTA</th>
+                    <th>ACCIÓN</th>
                 </tr>
             </thead>
-            <tbody id="studentTable">
-                </tbody>
+            <tbody id="studentTable"></tbody>
         </table>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, doc, getDoc, updateDoc, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, onSnapshot, collection, query, orderBy, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = { 
             apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", 
@@ -96,93 +71,52 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const gID = new URLSearchParams(window.location.search).get('grupo') || localStorage.getItem('currentGroup');
+        const gID = localStorage.getItem('currentGroup');
 
-        // 1. Cargar Info del Grupo y Estado de la Prueba
+        if(!gID) { alert("No hay grupo seleccionado"); window.location.href="home.html"; }
+
         onSnapshot(doc(db, "grupos", gID), (snap) => {
-            const data = snap.data();
-            document.getElementById('groupDisplay').innerText = `SECTOR: ${data.nombreGrupo} | DOCENTE: ${data.docente}`;
+            document.getElementById('groupDisplay').innerText = `Sector: ${snap.data().nombreGrupo} | ID: ${gID}`;
         });
 
-        onSnapshot(doc(db, "pruebas", gID), (snap) => {
-            const test = snap.data();
-            const statusEl = document.getElementById('testStatusDisplay');
-            if(test && test.activa) {
-                statusEl.innerText = "ACTIVA 🟢";
-                statusEl.style.color = "var(--success)";
-            } else {
-                statusEl.innerText = "BLOQUEADA 🔴";
-                statusEl.style.color = "var(--danger)";
-            }
-        });
-
-        // 2. Monitoreo de Estudiantes en Tiempo Real
+        // Monitor de Alumnos
         onSnapshot(collection(db, "grupos", gID, "miembros"), (snap) => {
             const table = document.getElementById('studentTable');
             table.innerHTML = "";
-            let total = 0;
-            let enviados = 0;
-
             snap.forEach(d => {
                 const s = d.data();
-                total++;
-                if(s.enviado) enviados++;
-
                 table.innerHTML += `
                     <tr>
                         <td><b>${s.nombre}</b></td>
-                        <td>
-                            <span class="badge ${s.enviado ? 'badge-sent' : 'badge-waiting'}">
-                                ${s.enviado ? 'Recibida' : 'Pendiente'}
-                            </span>
-                        </td>
+                        <td><span class="badge ${s.enviado ? 'badge-sent' : 'badge-waiting'}">${s.enviado ? 'ENVIADO' : 'PENDIENTE'}</span></td>
                         <td><span style="color:var(--p)">${s.nota || '---'}</span></td>
                         <td>
-                            ${s.enviado ? `<button class="btn-rev" onclick="location.href='review-test.html?uid=${d.id}&grupo=${gID}'">REVISAR</button>` : '<span style="opacity:0.3">Esperando...</span>'}
+                            ${s.enviado ? `<button class="btn-rev" onclick="location.href='review-test.html?uid=${d.id}'">REVISAR</button>` : '---'}
                         </td>
-                    </tr>
-                `;
+                    </tr>`;
             });
-
-            document.getElementById('totalCadetes').innerText = total;
-            document.getElementById('totalEnviados').innerText = enviados;
         });
 
-        // 3. Escuchar Alertas SOS
+        // Monitor SOS
         const qSOS = query(collection(db, "grupos", gID, "alertas"), orderBy("fecha", "desc"));
         onSnapshot(qSOS, (snap) => {
             const sosSection = document.getElementById('sosSection');
             const sosList = document.getElementById('sosList');
-            
-            if(snap.empty) {
-                sosSection.style.display = "none";
-                return;
-            }
-
+            if(snap.empty) return;
             sosSection.style.display = "block";
             sosList.innerHTML = "";
             snap.forEach(d => {
-                const alert = d.data();
-                sosList.innerHTML += `
-                    <div class="sos-card">
-                        <span><b>${alert.estudiante}:</b> ${alert.mensaje}</span>
-                        <small style="opacity:0.6">${new Date(alert.fecha).toLocaleTimeString()}</small>
-                    </div>`;
+                const a = d.data();
+                sosList.innerHTML += `<div class="sos-card"><b>${a.estudiante}:</b> ${a.mensaje}</div>`;
             });
         });
 
-        // 4. Función Cerrar Prueba
-        document.getElementById('btnCloseTest').addEventListener('click', async () => {
-            if(confirm("¿Estás seguro de que deseas cerrar la prueba? Los estudiantes que no hayan terminado ya no podrán acceder.")){
-                try {
-                    await updateDoc(doc(db, "pruebas", gID), { activa: false });
-                    alert("⚠️ PRUEBA BLOQUEADA GLOBALMENTE.");
-                } catch (e) {
-                    alert("Error al cerrar prueba: " + e.message);
-                }
+        document.getElementById('btnCloseTest').onclick = async () => {
+            if(confirm("¿Bloquear acceso a la prueba?")) {
+                await updateDoc(doc(db, "pruebas", gID), { activa: false });
+                alert("Prueba cerrada.");
             }
-        });
-
+        };
     </script>
 </body>
 </html>
