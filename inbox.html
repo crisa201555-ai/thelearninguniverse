@@ -2,54 +2,115 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Buzón | The Learning Universe</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <title>Inbox Galáctico | The Learning Universe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Fredoka+One&display=swap" rel="stylesheet">
     <style>
-        body { background: #060918; color: white; font-family: 'Montserrat'; padding: 40px; }
-        .inv-card { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid #1dd1a1; }
-        button { background: #1dd1a1; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        :root { --p: #48dbfb; --s: #feca57; --bg: #060918; }
+        body { background: var(--bg); color: white; font-family: 'Montserrat'; padding: 30px; }
+        .container { max-width: 800px; margin: auto; }
+        
+        .inv-card { 
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(72, 219, 251, 0.2);
+            padding: 20px; border-radius: 15px; margin-bottom: 15px;
+            display: flex; justify-content: space-between; align-items: center;
+            transition: 0.3s;
+        }
+        .inv-card:hover { border-color: var(--p); background: rgba(72, 219, 251, 0.05); }
+        
+        .info b { color: var(--p); font-size: 1.1rem; display: block; }
+        .info span { opacity: 0.7; font-size: 0.9rem; }
+
+        .btn-join { 
+            background: var(--s); color: #000; border: none; padding: 10px 20px; 
+            border-radius: 50px; font-family: 'Fredoka One'; cursor: pointer;
+        }
+        
+        /* Estilo para mensajes del sistema (Códigos) */
+        .system-msg { border-left: 5px solid var(--s) !important; background: rgba(254, 202, 87, 0.1) !important; }
     </style>
 </head>
 <body>
-    <h1>Invitaciones a Clases</h1>
-    <div id="list"></div>
+
+    <div class="container">
+        <h1 style="font-family:'Fredoka One'; color:var(--p)">MENSAJES Y TRANSMISIONES</h1>
+        <div id="invitationList">Cargando comunicaciones...</div>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, query, where, onSnapshot, doc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, query, where, onSnapshot, doc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        const firebaseConfig = { apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", authDomain: "thelearninguniverse-26.firebaseapp.com", projectId: "thelearninguniverse-26", storageBucket: "thelearninguniverse-26.firebasestorage.app", messagingSenderId: "85338996011", appId: "1:85338996011:web:1f3bb216900c07e735596e" };
+        const firebaseConfig = { /* TU CONFIGURACIÓN AQUÍ */ };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
 
         onAuthStateChanged(auth, (user) => {
-            if(user) {
-                const q = query(collection(db, "invitaciones"), where("para", "==", user.email), where("estado", "==", "pendiente"));
-                onSnapshot(q, (snap) => {
-                    const list = document.getElementById('list');
-                    list.innerHTML = snap.empty ? "<p>No tienes invitaciones pendientes.</p>" : "";
-                    snap.forEach(d => {
-                        const inv = d.data();
-                        const div = document.createElement('div');
-                        div.className = 'inv-card';
-                        div.innerHTML = `<span>Has sido invitado al grupo: <b>${inv.nombreGrupo}</b></span> 
-                                         <button onclick="aceptar('${d.id}', '${inv.grupoID}')">ACEPTAR</button>`;
-                        list.appendChild(div);
-                    });
+            if (!user) return window.location.href = "login.html";
+
+            // Escuchar invitaciones y mensajes del sistema
+            const q = query(collection(db, "invitaciones"), where("para", "==", user.email));
+            
+            onSnapshot(q, (snap) => {
+                const list = document.getElementById('invitationList');
+                list.innerHTML = "";
+
+                if (snap.empty) {
+                    list.innerHTML = "<p style='opacity:0.5'>No hay transmisiones entrantes.</p>";
+                    return;
+                }
+
+                snap.forEach(d => {
+                    const inv = d.data();
+                    
+                    if (inv.esSistema) {
+                        // Mensaje de CÓDIGO DE SEGURIDAD (Para el Docente)
+                        list.innerHTML += `
+                            <div class="inv-card system-msg">
+                                <div class="info">
+                                    <b>🛡️ SEGURIDAD: ${inv.titulo}</b>
+                                    <span>${inv.mensaje}</span>
+                                </div>
+                            </div>`;
+                    } else {
+                        // Invitación a Clase (Para el Alumno)
+                        list.innerHTML += `
+                            <div class="inv-card">
+                                <div class="info">
+                                    <b>🛸 INVITACIÓN A: ${inv.nombreGrupo}</b>
+                                    <span>Docente: ${inv.docente}</span>
+                                </div>
+                                <button class="btn-join" onclick="aceptarInvitacion('${inv.grupoID}', '${d.id}')">UNIRSE</button>
+                            </div>`;
+                    }
                 });
-            }
+            });
         });
 
-        window.aceptar = async (id, gID) => {
-            await setDoc(doc(db, "grupos", gID, "miembros", auth.currentUser.uid), {
-                nombre: auth.currentUser.email,
-                nota: "Pendiente"
-            });
-            await updateDoc(doc(db, "invitaciones", id), { estado: "aceptado" });
-            localStorage.setItem('currentGroup', gID);
-            window.location.href = "viewclass.html";
+        // Función para unirse y guardar el grupo en memoria
+        window.aceptarInvitacion = async (gID, invID) => {
+            const user = auth.currentUser;
+            
+            try {
+                // 1. Guardar el ID del grupo en la memoria del navegador para limpiar la URL luego
+                localStorage.setItem('currentGroup', gID);
+
+                // 2. Registrar al alumno en la subcolección de miembros del grupo
+                await updateDoc(doc(db, "grupos", gID, "miembros", user.uid), {
+                    nombre: user.email.split('@')[0],
+                    enviado: false,
+                    nota: "Pendiente"
+                });
+
+                alert("¡Te has unido al sector correctamente!");
+                // Redirigir al Home o directamente a la clase
+                window.location.href = "home.html";
+                
+            } catch (e) {
+                console.error(e);
+                alert("Error al unirse. Verifica si el grupo aún existe.");
+            }
         };
     </script>
 </body>
