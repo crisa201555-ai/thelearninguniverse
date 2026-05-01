@@ -2,54 +2,86 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Tests Activos | The Learning Universe</title>
+    <title>Estado de Pruebas | The Learning Universe</title>
     <style>
-        body { background: #060918; color: white; font-family: 'Montserrat', sans-serif; padding: 40px; }
-        .test-card { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; border-left: 5px solid #feca57; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .nota { font-size: 1.5rem; font-weight: bold; color: #48dbfb; }
-        .pendiente { color: #ff6b6b; font-style: italic; }
+        body { background: #060918; color: white; font-family: sans-serif; padding: 40px; }
+        .test-card { background: rgba(255,255,255,0.05); padding: 25px; border-radius: 15px; border-left: 5px solid #48dbfb; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .nota { font-size: 1.8rem; font-weight: bold; color: #1dd1a1; }
+        .pendiente { color: #feca57; font-style: italic; font-weight: bold; }
+        .btn-start { background: #48dbfb; color: #060918; padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .btn-start:hover { background: #feca57; }
     </style>
 </head>
 <body>
-    <button onclick="history.back()">⬅ VOLVER A LA CLASE</button>
-    <h1 id="title">Pruebas del Estudiante</h1>
-    <div id="testsContainer"></div>
+    <button onclick="history.back()" style="margin-bottom:20px; cursor:pointer;">⬅ Volver a la Clase</button>
+    <h1 id="userTitle">Expediente de Clase</h1>
+    <div id="testsContainer">Cargando datos estelares...</div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         const firebaseConfig = { apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", authDomain: "thelearninguniverse-26.firebaseapp.com", projectId: "thelearninguniverse-26", storageBucket: "thelearninguniverse-26.firebasestorage.app", messagingSenderId: "85338996011", appId: "1:85338996011:web:1f3bb216900c07e735596e" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app);
 
         const params = new URLSearchParams(window.location.search);
-        const uid = params.get('uid');
+        const viewUid = params.get('uid'); // UID del estudiante a consultar
         const gID = params.get('grupo');
 
-        async function loadTests() {
-            const mSnap = await getDoc(doc(db, "grupos", gID, "miembros", uid));
+        onAuthStateChanged(auth, async (me) => {
+            if(!me) return;
             const container = document.getElementById('testsContainer');
             
-            if(mSnap.exists()) {
-                const data = mSnap.data();
-                document.getElementById('title').innerText = "Expediente de: " + data.nombre;
-
-                // Simulando lista de tests (puedes expandir esto a una subcolección)
-                const notaDisplay = data.nota === "Pendiente" ? '<span class="pendiente">Pendiente...</span>' : `<span class="nota">${data.nota}</span>`;
-                
-                container.innerHTML = `
-                    <div class="test-card">
-                        <div>
-                            <h3>Examen de Unidad</h3>
-                            <p>Estado: ${data.nota === "Pendiente" ? "En revisión" : "Calificado"}</p>
-                        </div>
-                        <div>${notaDisplay}</div>
-                    </div>
-                `;
+            // 1. Obtener datos del alumno
+            const mSnap = await getDoc(doc(db, "grupos", gID, "miembros", viewUid));
+            if(!mSnap.exists()) {
+                container.innerHTML = "No se encontraron datos del miembro.";
+                return;
             }
-        }
-        loadTests();
+            const userData = mSnap.data();
+            document.getElementById('userTitle').innerText = "Pruebas de: " + userData.nombre;
+
+            // 2. Obtener datos de la prueba de la clase
+            const tSnap = await getDoc(doc(db, "pruebas", gID));
+            if(!tSnap.exists()) {
+                container.innerHTML = "<p>No hay pruebas creadas para este grupo aún.</p>";
+                return;
+            }
+            const testData = tSnap.data();
+
+            // 3. Determinar estado
+            let statusHTML = "";
+            
+            // Si ya tiene una nota numérica o revisada
+            if(userData.nota && userData.nota !== "Pendiente") {
+                statusHTML = `<span class="nota">${userData.nota}</span>`;
+            } 
+            // Si ya envió la prueba pero la nota sigue siendo "Pendiente"
+            else if(userData.nota === "Pendiente" && userData.enviado === true) {
+                statusHTML = `<span class="pendiente">Pendiente de revisión...</span>`;
+            }
+            // Si no ha enviado nada y es el propio usuario el que ve la página
+            else {
+                if(me.uid === viewUid) {
+                    statusHTML = `<button class="btn-start" onclick="location.href='take-test.html?grupo=${gID}'">INICIAR PRUEBA</button>`;
+                } else {
+                    statusHTML = `<span style="opacity:0.5">No realizada</span>`;
+                }
+            }
+
+            container.innerHTML = `
+                <div class="test-card">
+                    <div>
+                        <h2 style="margin:0; color:#48dbfb;">${testData.nombrePrueba || "Prueba sin nombre"}</h2>
+                        <p style="margin:5px 0; opacity:0.7;">Puntaje Máximo: ${testData.puntajeMax} pts</p>
+                    </div>
+                    <div>${statusHTML}</div>
+                </div>
+            `;
+        });
     </script>
 </body>
 </html>
