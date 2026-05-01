@@ -2,73 +2,152 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Revisión de Misión | The Learning Universe</title>
+    <title>Mando Central: Revisión | The Learning Universe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Fredoka+One&display=swap" rel="stylesheet">
     <style>
-        body { background: #060918; color: white; font-family: sans-serif; padding: 30px; }
-        .review-container { max-width: 900px; margin: auto; }
-        .q-box { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; margin-bottom: 15px; border-left: 5px solid #555; }
-        .correct { border-left-color: #1dd1a1; background: rgba(29, 209, 161, 0.1); }
-        .incorrect { border-left-color: #ff6b6b; background: rgba(255, 107, 107, 0.1); }
-        .nota-panel { position: sticky; bottom: 20px; background: #feca57; color: #000; padding: 20px; border-radius: 50px; display: flex; justify-content: space-around; align-items: center; font-weight: bold; }
-        input[type="text"] { padding: 10px; border-radius: 10px; border: none; width: 80px; text-align: center; font-size: 1.2rem; }
+        :root { --p: #48dbfb; --s: #feca57; --bg: #060918; --correct: #1dd1a1; --error: #ff6b6b; }
+        body { background: var(--bg); color: white; font-family: 'Montserrat'; padding: 30px; margin: 0; }
+        .container { max-width: 1000px; margin: auto; }
+        
+        /* Selector de Alumnos */
+        .selector-box { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; border: 1px solid var(--p); margin-bottom: 30px; }
+        select { background: #000; color: white; padding: 10px; border-radius: 8px; border: 1px solid var(--p); width: 100%; cursor: pointer; }
+
+        .header-test { border-bottom: 2px solid var(--p); padding-bottom: 10px; margin-bottom: 20px; }
+        
+        /* Tarjetas de preguntas */
+        .q-item { background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; margin-bottom: 15px; border-left: 6px solid #444; position: relative; }
+        .q-item.is-correct { border-left-color: var(--correct); background: rgba(29, 209, 161, 0.05); }
+        .q-item.is-wrong { border-left-color: var(--error); background: rgba(255, 107, 107, 0.05); }
+        
+        .points-badge { position: absolute; top: 15px; right: 20px; font-weight: bold; color: var(--s); }
+
+        /* Panel de Calificación y Seguridad */
+        .security-panel { background: #161b33; padding: 30px; border-radius: 20px; border: 2px solid var(--s); margin-top: 40px; }
+        .input-group { display: flex; gap: 15px; align-items: center; margin-top: 15px; }
+        input { background: #000; border: 1px solid var(--s); color: white; padding: 12px; border-radius: 10px; font-size: 1.1rem; }
+        .btn-save { background: var(--s); color: #000; border: none; padding: 15px 30px; border-radius: 50px; font-family: 'Fredoka One'; cursor: pointer; }
+        
+        .status-tag { padding: 4px 10px; border-radius: 5px; font-size: 0.8rem; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="review-container">
-        <h1>Revisando Misión: <span id="studentName">...</span></h1>
-        <div id="testContent"></div>
-        
-        <div class="nota-panel">
-            <span>CALIFICACIÓN FINAL:</span>
-            <input type="text" id="finalGrade" placeholder="Ej: 7.0">
-            <button id="btnSave" style="padding:10px 20px; cursor:pointer; border-radius:20px; border:none; background:#060918; color:white;">GUARDAR NOTA</button>
+    <div class="container">
+        <h1 style="font-family:'Fredoka One'; color:var(--p)">CENTRO DE REVISIÓN</h1>
+
+        <div class="selector-box">
+            <label>Seleccionar Estudiante que envió la prueba:</label>
+            <select id="studentSelect">
+                <option value="">Cargando lista de cadetes...</option>
+            </select>
+        </div>
+
+        <div id="content" style="display:none;">
+            <div class="header-test">
+                <h2 id="displayTestName">Nombre de la Prueba</h2>
+                <p>Estudiante: <b id="displayStudentName" style="color:var(--s)"></b></p>
+                <p id="statsLog"></p>
+            </div>
+
+            <div id="questionsContainer"></div>
+
+            <div class="security-panel">
+                <h3>Sincronización de Calificación</h3>
+                <p style="font-size: 0.9rem; opacity: 0.8;">Para guardar, ingresa el <b>Código de Autorización</b> enviado a tu Inbox.</p>
+                <div class="input-group">
+                    <input type="text" id="authCode" placeholder="Código (ej: 450313)" maxlength="6">
+                    <input type="text" id="finalGrade" placeholder="Nota Final" style="width: 100px;">
+                    <button class="btn-save" id="btnSave">VALIDAR Y SUBIR NOTA</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, updateDoc, collection, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = { apiKey: "AIzaSyAu (Config Igual) ..." }; // Usa tu config completa
+        const firebaseConfig = { /* TU CONFIG COMPLETA AQUÍ */ };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        
-        const params = new URLSearchParams(window.location.search);
-        const uid = params.get('uid');
-        const gID = params.get('grupo');
+        const gID = new URLSearchParams(window.location.search).get('grupo');
 
-        async function init() {
+        let currentStudentData = null;
+        let testData = null;
+
+        // 1. Cargar lista de estudiantes que ENVIARON la prueba
+        const q = query(collection(db, "grupos", gID, "miembros"), where("enviado", "==", true));
+        onSnapshot(q, (snap) => {
+            const select = document.getElementById('studentSelect');
+            select.innerHTML = '<option value="">-- Elige un cadete --</option>';
+            snap.forEach(d => {
+                const data = d.data();
+                select.innerHTML += `<option value="${d.id}">${data.nombre} (${data.nota === 'Pendiente' ? '⏳ Revisar' : '✅ Calificado'})</option>`;
+            });
+        });
+
+        // 2. Al seleccionar estudiante, cargar su prueba
+        document.getElementById('studentSelect').addEventListener('change', async (e) => {
+            if(!e.target.value) return;
+            loadReview(e.target.value);
+        });
+
+        async function loadReview(uid) {
             const tSnap = await getDoc(doc(db, "pruebas", gID));
             const mSnap = await getDoc(doc(db, "grupos", gID, "miembros", uid));
             
-            const test = tSnap.data();
-            const alum = mSnap.data();
-            document.getElementById('studentName').innerText = alum.nombre;
+            testData = tSnap.data();
+            currentStudentData = mSnap.data();
+            currentStudentData.uid = uid;
 
-            let html = "";
-            test.preguntas.forEach((q, i) => {
-                const respAlum = alum.respuestasAlumno[i] || "NO RESPONDIÓ";
+            document.getElementById('displayTestName').innerText = testData.nombrePrueba;
+            document.getElementById('displayStudentName').innerText = currentStudentData.nombre;
+            document.getElementById('content').style.display = "block";
+
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = "";
+            let correctas = 0;
+
+            testData.preguntas.forEach((q, i) => {
+                const respAlum = currentStudentData.respuestasAlumno[i] || "SIN RESPUESTA";
                 const esCorrecta = respAlum === q.correcta;
-                
-                html += `
-                    <div class="q-box ${esCorrecta ? 'correct' : 'incorrect'}">
+                if(esCorrecta) correctas++;
+
+                container.innerHTML += `
+                    <div class="q-item ${esCorrecta ? 'is-correct' : 'is-wrong'}">
+                        <div class="points-badge">${esCorrecta ? testData.puntosPregunta : 0} / ${testData.puntosPregunta} pts</div>
                         <p><b>${i+1}. ${q.pregunta}</b></p>
-                        <p>Respuesta del Cadete: <span style="color:${esCorrecta?'#1dd1a1':'#ff6b6b'}">${respAlum}</span></p>
+                        <p style="font-size:0.9rem">Respuesta Cadete: <b>${respAlum}</b></p>
                         <p style="font-size:0.8rem; opacity:0.7">Respuesta Correcta: ${q.correcta}</p>
                     </div>`;
             });
-            document.getElementById('testContent').innerHTML = html;
+
+            document.getElementById('statsLog').innerText = `Puntaje Bruto: ${correctas} de ${testData.preguntas.length} correctas.`;
         }
 
+        // 3. Guardar con validación de código
         document.getElementById('btnSave').addEventListener('click', async () => {
-            const nota = document.getElementById('finalGrade').value;
-            if(!nota) return alert("Ingresa una nota");
+            const code = document.getElementById('authCode').value.trim();
+            const grade = document.getElementById('finalGrade').value.trim();
             
-            await updateDoc(doc(db, "grupos", gID, "miembros", uid), { nota: nota });
-            alert("Nota sincronizada. El cadete ya puede ver su resultado.");
-            window.history.back();
+            // Verificamos el código de seguridad (guardado en el doc del grupo por el sistema)
+            const gSnap = await getDoc(doc(db, "grupos", gID));
+            const securityCode = gSnap.data().masterCode;
+
+            if(code !== securityCode) {
+                alert("❌ CÓDIGO DE AUTORIZACIÓN INCORRECTO. Acceso denegado.");
+                return;
+            }
+
+            if(!grade) return alert("Ingresa la nota final.");
+
+            await updateDoc(doc(db, "grupos", gID, "miembros", currentStudentData.uid), {
+                nota: grade
+            });
+
+            alert("✅ Nota sincronizada exitosamente.");
+            location.reload();
         });
-        init();
     </script>
 </body>
 </html>
