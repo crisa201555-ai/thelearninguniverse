@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Nuestra Historia | The Learning Universe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Fredoka+One&display=swap" rel="stylesheet">
+    <style>
+        :root { --p: #48dbfb; --s: #feca57; --bg: #060918; --glass: rgba(255, 255, 255, 0.05); }
+        
+        body { 
+            margin: 0; padding: 0; font-family: 'Montserrat'; color: white;
+            background: linear-gradient(to bottom, #060918, #0a1128);
+            line-height: 1.6;
+        }
+
+        .container { max-width: 900px; margin: auto; padding: 60px 20px; }
+
+        /* Encabezado */
+        .header-story { text-align: center; margin-bottom: 80px; }
+        .header-story h1 { font-family: 'Fredoka One'; font-size: 3.5rem; color: var(--p); margin: 0; }
+        .header-story p { font-size: 1.2rem; opacity: 0.8; color: var(--s); }
+
+        /* Sección Historia */
+        .content-box { 
+            background: var(--glass); border: 1px solid rgba(72, 219, 251, 0.2);
+            border-radius: 30px; padding: 40px; margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+        }
+
+        h2 { font-family: 'Fredoka One'; color: var(--s); border-bottom: 2px solid var(--p); display: inline-block; padding-bottom: 5px; }
+
+        /* Línea de tiempo */
+        .timeline { border-left: 3px solid var(--p); margin: 40px 0; padding-left: 30px; position: relative; }
+        .timeline-item { margin-bottom: 30px; position: relative; }
+        .timeline-item::before { 
+            content: ''; position: absolute; left: -39px; top: 5px;
+            width: 15px; height: 15px; background: var(--s); border-radius: 50%;
+            box-shadow: 0 0 10px var(--s);
+        }
+        .year { font-family: 'Fredoka One'; color: var(--p); font-size: 1.3rem; }
+
+        /* Etiquetas de plataformas */
+        .platforms { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
+        .tag { background: rgba(72, 219, 251, 0.1); border: 1px solid var(--p); padding: 5px 15px; border-radius: 50px; font-size: 0.85rem; font-weight: bold; }
+
+        /* Actualidad Stats */
+        .stats-box { 
+            display: flex; justify-content: center; align-items: center; 
+            gap: 20px; background: var(--s); color: #000; 
+            padding: 20px; border-radius: 20px; text-align: center;
+        }
+        .stats-box h3 { font-family: 'Fredoka One'; margin: 0; font-size: 2.5rem; }
+
+        .btn-back { 
+            display: inline-block; margin-top: 40px; text-decoration: none; 
+            color: var(--p); font-weight: bold; border: 1px solid var(--p);
+            padding: 10px 25px; border-radius: 50px; transition: 0.3s;
+        }
+        .btn-back:hover { background: var(--p); color: #000; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-story">
+            <h1>EL ORIGEN</h1>
+            <p>Bitácora de Administración y Creación</p>
+        </div>
+
+        <div class="content-box">
+            <h2>Nuestra Trayectoria</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="year">2024: La Idea</div>
+                    <p>Todo comenzó cuando el estudiante <b>Cristóbal Ignacio A.</b> decidió emprender un viaje ambicioso: crear una aplicación diseñada específicamente para que niños y niñas pudieran aprender de una manera mejor, más divertida y efectiva.</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="year">2025 - Inicio de Producción</div>
+                    <p>Junto con su grupo de amigos, Cristóbal dio los primeros pasos firmes en la arquitectura del proyecto. Tras meses de planificación, la producción oficial comenzó en <b>abril del 2026</b>.</p>
+                </div>
+            </div>
+
+            <h2>La Gran Unificación</h2>
+            <p>En su búsqueda por la excelencia, Cristóbal creó inicialmente varias plataformas especializadas, cada una con un propósito único:</p>
+            <div class="platforms">
+                <span class="tag">Kids Room</span>
+                <span class="tag">The Math</span>
+                <span class="tag">The Language</span>
+                <span class="tag">The Science</span>
+                <span class="tag">The English</span>
+            </div>
+            <p>Días después, "Cris" decidió centrarse en el concepto de <b>Educación Fácil</b>. Conectó todas sus antiguas páginas en una sola plataforma maestra, facilitando el acceso al conocimiento en un solo lugar.</p>
+        </div>
+
+        <div class="content-box" style="border-color: var(--s);">
+            <h2>Un Maravilloso Mundo</h2>
+            <p>Hoy, puedes aprender muchas cosas y hasta hablar con un avanzado sistema de IA. Lo más increíble es que <b>un niño de solo 10 años</b> logró construir todo este ecosistema de aprendizaje por su cuenta.</p>
+        </div>
+
+        <div class="stats-box">
+            <div>
+                <h3>100</h3>
+                <p><b>ALUMNOS</b></p>
+            </div>
+            <div style="text-align: left; max-width: 400px;">
+                <b>ESTADO ACTUAL:</b><br>
+                The Learning Universe sigue creciendo. Aunque 100 alumnos parece poco, es el inicio de una comunidad que busca cambiar el mundo.
+            </div>
+        </div>
+
+        <center>
+            <a href="home.html" class="btn-back">⬅ VOLVER AL DASHBOARD</a>
+        </center>
+    </div>
+
+</body>
+</html>
