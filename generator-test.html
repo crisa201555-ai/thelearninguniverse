@@ -2,82 +2,109 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Generador de Pruebas | The Learning Universe</title>
+    <title>Generador de Misiones | TLU</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Fredoka+One&display=swap" rel="stylesheet">
     <style>
-        body { background: #060918; color: white; font-family: sans-serif; padding: 20px; }
-        .config-card, .q-card { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; border: 1px solid #feca57; margin-bottom: 20px; }
-        input { padding: 10px; margin: 5px; border-radius: 5px; border: 1px solid #ccc; background: white; color: black; }
-        .q-input { width: 90%; }
-        .btn-add { background: #48dbfb; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .btn-save { background: #1dd1a1; padding: 20px; border: none; border-radius: 50px; width: 100%; font-weight: bold; cursor: pointer; font-size: 1.1rem; margin-top: 20px; }
-        .header-input { width: 100%; font-size: 1.2rem; margin-bottom: 15px; border: 2px solid #48dbfb; }
+        :root { --p: #48dbfb; --s: #feca57; --bg: #060918; }
+        body { background: var(--bg); color: white; font-family: 'Montserrat'; padding: 30px; }
+        .container { max-width: 800px; margin: auto; }
+        .q-card { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; border: 1px solid var(--p); margin-bottom: 20px; }
+        input, select { width: 100%; padding: 10px; margin: 10px 0; border-radius: 8px; border: 1px solid #444; background: #000; color: white; box-sizing: border-box; }
+        .row { display: flex; gap: 10px; }
+        .btn { background: var(--p); color: #000; border: none; padding: 15px 30px; border-radius: 10px; font-family: 'Fredoka One'; cursor: pointer; }
+        .btn-add { background: var(--s); margin-bottom: 20px; }
+        .points-input { width: 120px; border-color: var(--s); font-weight: bold; text-align: center; }
     </style>
 </head>
 <body>
-    <h1>Creador de Exámenes - The Learning Universe</h1>
-    
-    <div class="config-card">
-        <h3>1. Identificación y Escala</h3>
-        <input type="text" id="testName" class="header-input" placeholder="Nombre de la Prueba (ej: Control de Galaxias 1)">
-        <br>
-        Puntos por pregunta: <input type="number" id="pts" value="1">
-        Puntaje Máximo: <input type="number" id="max" value="10">
-        Escala: <select id="escala" style="padding:10px;"><option value="60">60%</option><option value="50">50%</option></select>
-    </div>
 
-    <div id="questionsContainer"></div>
-    <button class="btn-add" onclick="addQuestion()">+ AÑADIR PREGUNTA</button>
-    <hr style="opacity:0.1; margin:20px 0;">
-    <button class="btn-save" id="btnPublish">PUBLICAR PRUEBA</button>
+    <div class="container">
+        <h1 style="font-family:'Fredoka One'; color:var(--p)">CONFIGURACIÓN DE PRUEBA</h1>
+        <p>Ajusta las preguntas y asigna el puntaje para cada una.</p>
+
+        <div id="questionsContainer">
+            </div>
+
+        <button class="btn btn-add" id="btnAdd">➕ AÑADIR PREGUNTA</button>
+        <button class="btn" id="btnSave">🚀 PUBLICAR PRUEBA AL SECTOR</button>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        
-        const firebaseConfig = { apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", authDomain: "thelearninguniverse-26.firebaseapp.com", projectId: "thelearninguniverse-26", storageBucket: "thelearninguniverse-26.firebasestorage.app", messagingSenderId: "85338996011", appId: "1:85338996011:web:1f3bb216900c07e735596e" };
+
+        const firebaseConfig = { 
+            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", 
+            authDomain: "thelearninguniverse-26.firebaseapp.com", 
+            projectId: "thelearninguniverse-26", 
+            storageBucket: "thelearninguniverse-26.firebasestorage.app", 
+            messagingSenderId: "85338996011", 
+            appId: "1:85338996011:web:1f3bb216900c07e735596e" 
+        };
+
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const gID = new URLSearchParams(window.location.search).get('grupo');
+        const gID = localStorage.getItem('currentGroup');
 
         let qCount = 0;
-        window.addQuestion = () => {
+
+        const addQuestion = () => {
             qCount++;
             const div = document.createElement('div');
             div.className = 'q-card';
             div.innerHTML = `
-                <h4>Pregunta ${qCount}</h4>
-                <input type="text" class="q-text q-input" placeholder="Pregunta"><br>
-                Correcta: <input type="text" class="q-correct q-input" placeholder="Respuesta Correcta"><br>
-                Incorrecta 1: <input type="text" class="q-inc q-input" placeholder="Distractor 1"><br>
-                Incorrecta 2: <input type="text" class="q-inc q-input" placeholder="Distractor 2">
+                <div class="row">
+                    <b style="color:var(--s)">Pregunta ${qCount}</b>
+                    <input type="number" class="points-input" placeholder="Puntos" value="1" min="1">
+                </div>
+                <input type="text" class="p-text" placeholder="¿Cuál es la pregunta?">
+                <div class="row">
+                    <input type="text" class="opt" placeholder="Opción A">
+                    <input type="text" class="opt" placeholder="Opción B">
+                </div>
+                <div class="row">
+                    <input type="text" class="opt" placeholder="Opción C">
+                    <select class="correct">
+                        <option value="">Selecciona la correcta</option>
+                        <option value="A">Opción A</option>
+                        <option value="B">Opción B</option>
+                        <option value="C">Opción C</option>
+                    </select>
+                </div>
             `;
             document.getElementById('questionsContainer').appendChild(div);
         };
 
-        document.getElementById('btnPublish').addEventListener('click', async () => {
-            const nombre = document.getElementById('testName').value;
-            if(!nombre) return alert("Ponle un nombre a la prueba");
+        document.getElementById('btnAdd').onclick = addQuestion;
 
-            const qs = [];
-            document.querySelectorAll('.q-card').forEach(card => {
-                qs.push({
-                    pregunta: card.querySelector('.q-text').value,
-                    correcta: card.querySelector('.q-correct').value,
-                    incorrectas: Array.from(card.querySelectorAll('.q-inc')).map(i => i.value)
+        document.getElementById('btnSave').onclick = async () => {
+            const cards = document.querySelectorAll('.q-card');
+            const preguntas = [];
+
+            cards.forEach(card => {
+                const opts = card.querySelectorAll('.opt');
+                preguntas.push({
+                    pregunta: card.querySelector('.p-text').value,
+                    puntos: parseFloat(card.querySelector('.points-input').value),
+                    opciones: [opts[0].value, opts[1].value, opts[2].value],
+                    correcta: card.querySelector('.correct').value // Guarda 'A', 'B' o 'C'
                 });
             });
 
-            await setDoc(doc(db, "pruebas", gID), {
-                nombrePrueba: nombre,
-                preguntas: qs,
-                puntosPregunta: document.getElementById('pts').value,
-                puntajeMax: document.getElementById('max').value,
-                escala: document.getElementById('escala').value,
-                activa: true
-            });
-            alert("Prueba '" + nombre + "' publicada con éxito.");
-            window.location.href = `viewmembers.html?grupo=${gID}`;
-        });
+            if(!gID) return alert("No hay grupo seleccionado.");
+
+            try {
+                await setDoc(doc(db, "pruebas", gID), {
+                    preguntas: preguntas,
+                    activa: true,
+                    fecha: Date.now()
+                });
+                alert("Misión publicada con éxito en el sector " + gID);
+                window.location.href = "view-teacher.html";
+            } catch (e) { alert("Error: " + e.message); }
+        };
+
+        // Iniciar con una pregunta
         addQuestion();
     </script>
 </body>
