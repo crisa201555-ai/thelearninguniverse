@@ -2,97 +2,131 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Home | The Learning Universe</title>
+    <title>Dashboard | The Learning Universe</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Fredoka+One&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #48dbfb; --s: #feca57; --bg: #060918; }
+        :root { 
+            --p: #48dbfb; --s: #feca57; --bg: #060918; 
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(72, 219, 251, 0.3);
+        }
+
         body { 
-            background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%); 
-            color: white; font-family: 'Montserrat'; margin: 0; min-height: 100vh; 
-            display: flex; flex-direction: column; align-items: center;
+            margin: 0; padding: 0; font-family: 'Montserrat'; color: white;
+            background: #060918;
+            /* Fondo colorido nebuloso animado */
+            background: linear-gradient(125deg, #060918, #1b2735, #2c3e50, #000000);
+            background-size: 400% 400%;
+            animation: nebula 15s ease infinite;
+            min-height: 100vh; display: flex;
         }
 
-        /* Navbar */
-        nav { 
-            width: 100%; padding: 20px 50px; box-sizing: border-box; 
-            display: flex; justify-content: space-between; align-items: center;
-            background: rgba(0,0,0,0.5); backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(72, 219, 251, 0.2);
-        }
-        .logo { font-family: 'Fredoka One'; color: var(--p); font-size: 1.5rem; text-decoration: none; }
+        @keyframes nebula { 0% {background-position: 0% 50%} 50% {background-position: 100% 50%} 100% {background-position: 0% 50%} }
 
-        /* Contenido Principal */
-        .hero { text-align: center; margin-top: 50px; padding: 20px; }
-        .hero h1 { font-family: 'Fredoka One'; font-size: 3.5rem; color: var(--s); margin: 0; text-shadow: 0 0 20px rgba(254, 202, 87, 0.4); }
-        
-        .grid-modules { 
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
-            gap: 25px; max-width: 1000px; width: 90%; margin-top: 50px; 
+        /* --- MENÚ LATERAL IZQUIERDO --- */
+        #sidebar {
+            width: 260px; height: 100vh; background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(15px); border-right: 1px solid var(--border);
+            display: flex; flex-direction: column; position: fixed; left: 0; transition: 0.3s;
         }
 
-        .card { 
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(72, 219, 251, 0.3);
-            border-radius: 20px; padding: 30px; text-align: center; transition: 0.3s;
-            cursor: pointer; position: relative; overflow: hidden;
-        }
-        .card:hover { 
-            transform: translateY(-10px); background: rgba(72, 219, 251, 0.1); 
-            border-color: var(--p); box-shadow: 0 10px 30px rgba(72, 219, 251, 0.2);
-        }
-        .card i { font-size: 3rem; color: var(--p); margin-bottom: 15px; display: block; }
-        .card h3 { font-family: 'Fredoka One'; margin: 10px 0; color: #fff; }
-        .card p { font-size: 0.9rem; opacity: 0.7; line-height: 1.4; }
+        .side-header { padding: 30px 20px; text-align: center; border-bottom: 1px solid var(--border); }
+        .side-header b { font-family: 'Fredoka One'; color: var(--p); font-size: 1.2rem; }
 
-        .btn-logout { background: transparent; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 8px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; }
-        .btn-logout:hover { background: #ff6b6b; color: white; }
-
-        /* Badge de Rol */
-        .role-badge { 
-            background: var(--p); color: #000; padding: 5px 15px; 
-            border-radius: 50px; font-weight: bold; font-size: 0.8rem; margin-top: 10px;
+        .side-nav { flex: 1; padding: 20px 0; }
+        .side-item {
+            padding: 15px 25px; display: flex; align-items: center; gap: 15px;
+            cursor: pointer; transition: 0.3s; color: rgba(255,255,255,0.7); font-weight: 600;
         }
+        .side-item:hover { background: rgba(72, 219, 251, 0.1); color: var(--p); border-left: 4px solid var(--p); }
+
+        /* --- CONTENIDO PRINCIPAL --- */
+        main { margin-left: 260px; width: calc(100% - 260px); display: flex; flex-direction: column; min-height: 100vh; }
+
+        header { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; }
+
+        .hero { padding: 60px 40px; text-align: left; }
+        .hero h1 { font-family: 'Fredoka One'; font-size: 3rem; margin: 0; color: var(--s); }
+        .hero p { font-size: 1.1rem; opacity: 0.8; }
+
+        .grid-container {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px; padding: 0 40px 100px 40px;
+        }
+
+        .card {
+            background: var(--glass); border: 1px solid var(--border); border-radius: 20px;
+            padding: 25px; transition: 0.4s; position: relative; overflow: hidden;
+        }
+        .card:hover { transform: translateY(-5px); border-color: var(--s); background: rgba(254, 202, 87, 0.05); }
+        .card h3 { font-family: 'Fredoka One'; color: var(--p); margin-top: 0; }
+
+        /* --- FOOTER --- */
+        footer {
+            margin-top: auto; padding: 30px 40px; background: rgba(0,0,0,0.6);
+            border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;
+        }
+        .footer-links a { color: var(--p); text-decoration: none; margin-right: 20px; font-size: 0.9rem; transition: 0.3s; }
+        .footer-links a:hover { color: var(--s); }
+        .dev-tag { font-size: 0.8rem; opacity: 0.6; }
+
+        /* Estilo Botones Docente */
+        .docente-btn { border: 1px dashed var(--s) !important; display: none; }
     </style>
 </head>
 <body>
 
-    <nav>
-        <a href="#" class="logo">THE LEARNING UNIVERSE</a>
-        <div style="display: flex; align-items: center; gap: 20px;">
-            <span id="userMail" style="font-size: 0.9rem; opacity: 0.8;">Cargando cadete...</span>
-            <button class="btn-logout" id="btnLogout">CERRAR SESIÓN</button>
+    <div id="sidebar">
+        <div class="side-header">
+            <b>THE LEARNING<br>UNIVERSE</b>
         </div>
-    </nav>
-
-    <div class="hero">
-        <h1 id="welcomeText">BIENVENIDO, CADETE</h1>
-        <div id="roleIndicator" class="role-badge">Verificando Credenciales...</div>
+        <div class="side-nav">
+            <div class="side-item" onclick="location.href='home.html'">🏠 Inicio</div>
+            <div class="side-item" onclick="irA('inbox.html')">📩 Bandeja de Entrada</div>
+            <div class="side-item" onclick="irA('viewclass.html')">🪐 Mi Clase</div>
+            <div class="side-item docente-btn" onclick="irA('creategroup.html')">🛠️ Crear Grupo</div>
+            <div class="side-item docente-btn" onclick="irA('view-teacher.html')">📡 Radar Docente</div>
+        </div>
+        <div class="side-item" id="btnLogout" style="color: #ff6b6b; border-top: 1px solid rgba(255,255,255,0.1);">🚪 Salir</div>
     </div>
 
-    <div class="grid-modules" id="menuGrid">
-        <div class="card" onclick="irA('viewclass.html')">
-            <i>🪐</i>
-            <h3>MI CLASE</h3>
-            <p>Accede al muro, chatea con tu equipo y revisa tus misiones activas.</p>
+    <main>
+        <header>
+            <div id="roleIndicator" style="font-weight: bold; color: var(--p);">IDENTIFICANDO...</div>
+            <div id="userEmail" style="opacity: 0.7;">email@universe.com</div>
+        </header>
+
+        <section class="hero">
+            <h1 id="welcomeText">BIENVENIDO, CADETE</h1>
+            <p>Selecciona un módulo para iniciar tu misión diaria en el universo del conocimiento.</p>
+        </section>
+
+        <div class="grid-container">
+            <div class="card" onclick="irA('viewclass.html')">
+                <h3>🪐 MI SECTOR</h3>
+                <p>Visualiza el muro de la clase, consulta tus notas actuales y participa en el chat galáctico con otros cadetes.</p>
+            </div>
+            <div class="card" onclick="irA('inbox.html')">
+                <h3>📩 COMUNICACIONES</h3>
+                <p>Recibe invitaciones de nuevos docentes y alertas del sistema de seguridad. Mantente al día con tus avisos.</p>
+            </div>
+            <div class="card docente-btn" onclick="irA('view-teacher.html')">
+                <h3>📡 RADAR MAESTRO</h3>
+                <p>Acceso exclusivo para docentes. Supervisa el estado de las pruebas, revisa entregas y gestiona alertas SOS.</p>
+            </div>
         </div>
 
-        <div class="card" onclick="irA('inbox.html')">
-            <i>📩</i>
-            <h3>INBOX</h3>
-            <p>Revisa invitaciones a nuevos sectores y códigos de seguridad docente.</p>
-        </div>
-
-        <div class="card docente-only" style="display:none;" onclick="irA('creategroup.html')">
-            <i>🛠️</i>
-            <h3>CREAR GRUPO</h3>
-            <p>Establece un nuevo sector de aprendizaje y genera códigos de acceso.</p>
-        </div>
-
-        <div class="card docente-only" style="display:none;" onclick="irA('view-teacher.html')">
-            <i>📡</i>
-            <h3>RADAR DOCENTE</h3>
-            <p>Monitorea el progreso de tus cadetes y califica sus misiones enviadas.</p>
-        </div>
-    </div>
+        <footer>
+            <div class="footer-links">
+                <a href="mailto:soporte@tlu.com">Soporte y Contacto</a>
+                <a href="#">Términos del Espacio</a>
+                <a href="fandom.html">Wiki de la Comunidad</a>
+            </div>
+            <div class="dev-tag">
+                Sincronizado por <b>Creación Web TLU</b> | 2026 ©
+            </div>
+        </footer>
+    </main>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -113,44 +147,29 @@
         const db = getFirestore(app);
 
         onAuthStateChanged(auth, async (user) => {
-            if (!user) {
-                window.location.href = "login.html";
-                return;
-            }
-
-            document.getElementById('userMail').innerText = user.email;
+            if (!user) return window.location.href = "login.html";
             
-            // Lógica para detectar ROL
-            // Nota: Aquí asumo que guardas el perfil en una colección "usuarios" 
-            // o que verificas si el email es de un docente.
-            const userSnap = await getDoc(doc(db, "usuarios", user.uid));
-            const userData = userSnap.data();
+            document.getElementById('userEmail').innerText = user.email;
 
-            if (userData && userData.rol === "docente") {
+            // Detección de Rol para desbloquear menú
+            const userSnap = await getDoc(doc(db, "usuarios", user.uid));
+            if (userSnap.exists() && userSnap.data().rol === "docente") {
                 document.getElementById('welcomeText').innerText = "CENTRO DE MANDO DOCENTE";
-                document.getElementById('roleIndicator').innerText = "RANGO: ALMIRANTE (DOCENTE)";
-                document.getElementById('roleIndicator').style.background = "var(--s)";
-                
-                // Mostrar herramientas de docente
-                document.querySelectorAll('.docente-only').forEach(el => el.style.display = 'block');
+                document.getElementById('roleIndicator').innerText = "RANGO: DOCENTE";
+                document.querySelectorAll('.docente-btn').forEach(el => el.style.display = 'flex');
             } else {
-                document.getElementById('welcomeText').innerText = "SISTEMA DE CADETES";
-                document.getElementById('roleIndicator').innerText = "RANGO: CADETE ESPACIAL";
+                document.getElementById('roleIndicator').innerText = "RANGO: CADETE";
             }
         });
 
-        // Función de navegación global
         window.irA = (pagina) => {
             const gID = localStorage.getItem('currentGroup');
-            if(!gID && pagina !== 'creategroup.html' && pagina !== 'inbox.html') {
-                alert("Primero debes entrar a una clase desde tu Inbox.");
-                window.location.href = "inbox.html";
-                return;
+            if(!gID && pagina !== 'inbox.html' && pagina !== 'creategroup.html') {
+                return alert("Primero selecciona una clase en tu Inbox.");
             }
             window.location.href = `${pagina}?grupo=${gID}`;
         };
 
-        // Cerrar Sesión
         document.getElementById('btnLogout').onclick = () => {
             signOut(auth).then(() => {
                 localStorage.clear();
