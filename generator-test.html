@@ -2,28 +2,66 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Generador | TLU</title>
+    <title>Configuración de Misión | TLU</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Fredoka+One&display=swap" rel="stylesheet">
     <style>
         :root { --p: #48dbfb; --s: #feca57; --bg: #060918; }
         body { background: var(--bg); color: white; font-family: 'Montserrat'; padding: 30px; }
-        .container { max-width: 700px; margin: auto; background: rgba(255,255,255,0.05); padding: 30px; border-radius: 20px; }
-        input, select { width: 100%; padding: 10px; margin: 5px 0; border-radius: 8px; border: 1px solid #333; background: #000; color: white; box-sizing: border-box; }
-        .btn-pub { background: var(--p); color: #000; border: none; padding: 20px; border-radius: 10px; font-family: 'Fredoka One'; cursor: pointer; width: 100%; margin-top: 20px; font-size: 1.2rem; }
+        .container { max-width: 900px; margin: auto; }
+        .glass-card { background: rgba(255,255,255,0.05); padding: 25px; border-radius: 20px; border: 1px solid var(--p); margin-bottom: 25px; }
+        
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 15px; }
+        label { font-size: 0.8rem; color: var(--p); font-weight: bold; }
+        input, select { width: 100%; padding: 10px; margin-top: 5px; border-radius: 8px; border: 1px solid #444; background: #000; color: white; box-sizing: border-box; }
+        
+        .q-box { border-left: 5px solid var(--s); background: rgba(255,255,255,0.02); padding: 20px; margin-bottom: 15px; border-radius: 0 15px 15px 0; }
+        .btn-pub { background: var(--s); color: #000; border: none; padding: 20px; border-radius: 15px; font-family: 'Fredoka One'; width: 100%; font-size: 1.3rem; cursor: pointer; }
     </style>
 </head>
 <body>
+
     <div class="container">
-        <h1 style="font-family:'Fredoka One'; color:var(--s)">CREAR MISIÓN</h1>
-        <input type="text" id="testName" placeholder="Nombre de la Prueba">
-        <input type="date" id="testDate">
-        <div style="margin:15px 0;">
-            <input type="checkbox" id="aiHelp" style="width:auto;"> Habilitar Pistas de IA
+        <h1 style="font-family:'Fredoka One'; text-align:center;">CONFIGURACIÓN AVANZADA</h1>
+
+        <div class="glass-card">
+            <label>NOMBRE OBLIGATORIO DE LA PRUEBA</label>
+            <input type="text" id="testName" placeholder="Ej: Evaluación de Cálculo II">
+            
+            <div class="grid-3">
+                <div>
+                    <label>CLAVE DE ACCESO (OPCIONAL)</label>
+                    <input type="password" id="testPass" placeholder="Dejar vacío si no requiere">
+                </div>
+                <div>
+                    <label>EXIGENCIA (%)</label>
+                    <input type="number" id="exigencia" value="60">
+                </div>
+                <div>
+                    <label>FECHA LÍMITE</label>
+                    <input type="date" id="testDate">
+                </div>
+            </div>
+
+            <div class="grid-3">
+                <div>
+                    <label>NOTA MÍNIMA</label>
+                    <input type="number" id="notaMin" value="1.0" step="0.1">
+                </div>
+                <div>
+                    <label>NOTA MÁXIMA</label>
+                    <input type="number" id="notaMax" value="7.0" step="0.1">
+                </div>
+                <div>
+                    <label>AYUDA IA</label>
+                    <select id="aiHelp"><option value="false">Desactivada</option><option value="true">Activada</option></select>
+                </div>
+            </div>
         </div>
-        <div id="qContainer"></div>
-        <button onclick="addQ()" style="cursor:pointer; background:none; color:var(--p); border:none;">+ Añadir Pregunta</button>
-        
-        <button class="btn-pub" id="btnSave">PUBLICAR Y IR AL RADAR</button>
+
+        <div id="questions"></div>
+        <button onclick="addQ()" style="color:var(--p); background:none; border:none; cursor:pointer; margin-bottom: 20px;">+ AÑADIR PREGUNTA</button>
+
+        <button class="btn-pub" id="btnSave">🚀 PUBLICAR PRUEBA Y FINALIZAR</button>
     </div>
 
     <script type="module">
@@ -36,41 +74,51 @@
         const gID = localStorage.getItem('currentGroup');
 
         window.addQ = () => {
-            const d = document.createElement('div');
-            d.className = "q-block";
-            d.innerHTML = `
-                <input type="text" class="p-txt" placeholder="Pregunta">
-                <input type="number" class="pts" placeholder="Puntos" style="width:100px" value="1">
-                <input type="text" class="opt" placeholder="Opción A">
-                <input type="text" class="opt" placeholder="Opción B">
-                <select class="correct"><option value="A">A</option><option value="B">B</option></select>
-                <input type="text" class="hint" placeholder="Pista de IA">
-                <hr style="opacity:0.1">
+            const div = document.createElement('div');
+            div.className = "q-box";
+            div.innerHTML = `
+                <div style="display:flex; gap:10px;">
+                    <input type="text" class="p-txt" placeholder="Pregunta" style="flex:4">
+                    <input type="number" class="pts" placeholder="Puntos" style="flex:1" value="1">
+                </div>
+                <div class="grid-3">
+                    <input type="text" class="opt" placeholder="Opción A">
+                    <input type="text" class="opt" placeholder="Opción B">
+                    <select class="correct"><option value="A">Correcta: A</option><option value="B">Correcta: B</option></select>
+                </div>
+                <input type="text" class="hint" placeholder="Pista de IA para esta pregunta">
             `;
-            document.getElementById('qContainer').appendChild(d);
+            document.getElementById('questions').appendChild(div);
         };
 
         document.getElementById('btnSave').onclick = async () => {
+            const name = document.getElementById('testName').value;
+            if(!name) return alert("El nombre de la prueba es obligatorio.");
+
             const preguntas = [];
-            document.querySelectorAll('.q-block').forEach(b => {
+            document.querySelectorAll('.q-box').forEach(b => {
                 preguntas.push({
                     pregunta: b.querySelector('.p-txt').value,
-                    puntos: b.querySelector('.pts').value,
+                    puntos: parseFloat(b.querySelector('.pts').value),
+                    opciones: [b.querySelectorAll('.opt')[0].value, b.querySelectorAll('.opt')[1].value],
                     correcta: b.querySelector('.correct').value,
-                    pista: b.querySelector('.hint').value,
-                    opciones: [b.querySelectorAll('.opt')[0].value, b.querySelectorAll('.opt')[1].value]
+                    pista: b.querySelector('.hint').value
                 });
             });
 
             await setDoc(doc(db, "pruebas", gID), {
-                nombrePrueba: document.getElementById('testName').value,
+                nombre: name,
+                clave: document.getElementById('testPass').value,
+                exigencia: document.getElementById('exigencia').value,
+                notaMin: document.getElementById('notaMin').value,
+                notaMax: document.getElementById('notaMax').value,
                 fecha: document.getElementById('testDate').value,
-                aiHabilitada: document.getElementById('aiHelp').checked,
+                ai: document.getElementById('aiHelp').value === "true",
                 preguntas: preguntas,
                 activa: true
             });
 
-            alert("Prueba publicada. Entrando al Radar Docente...");
+            alert("Prueba publicada. Redirigiendo al Radar...");
             window.location.href = "view-teacher.html";
         };
 
