@@ -6,49 +6,73 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Fredoka+One&display=swap" rel="stylesheet">
     <style>
         :root { --p: #48dbfb; --s: #feca57; --bg: #060918; --danger: #ff4757; }
-        body { background: var(--bg); color: white; font-family: 'Montserrat'; padding: 40px 20px; margin: 0; }
+        body { 
+            background: var(--bg); color: white; font-family: 'Montserrat'; 
+            padding: 40px 20px; margin: 0;
+            background-image: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
+        }
         .container { max-width: 800px; margin: auto; }
         
         .welcome-header { text-align: center; margin-bottom: 40px; }
-        .welcome-header h1 { font-family: 'Fredoka One'; color: var(--p); text-transform: uppercase; letter-spacing: 2px; }
+        .welcome-header h1 { font-family: 'Fredoka One'; color: var(--p); text-transform: uppercase; margin: 0; }
         .welcome-header span { color: var(--s); }
+        .welcome-header p { opacity: 0.7; letter-spacing: 1px; margin-top: 10px; }
 
         .glass-panel { 
             background: rgba(255, 255, 255, 0.05); padding: 30px; border-radius: 20px; 
             border: 1px solid rgba(72, 219, 251, 0.3); backdrop-filter: blur(10px); margin-bottom: 30px;
         }
 
-        .input-group { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; margin-top: 20px; }
+        .input-group { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; }
         input { 
             background: #000; border: 1px solid #444; color: white; padding: 12px; 
-            border-radius: 10px; outline: none; transition: 0.3s;
+            border-radius: 10px; outline: none; transition: 0.3s; width: 100%; box-sizing: border-box;
         }
-        input:focus { border-color: var(--p); }
+        input:focus { border-color: var(--p); box-shadow: 0 0 10px rgba(72, 219, 251, 0.2); }
         
-        .btn-add { background: var(--p); color: #000; border: none; padding: 12px 20px; border-radius: 10px; font-family: 'Fredoka One'; cursor: pointer; }
-        .btn-ready { background: var(--s); color: #000; border: none; padding: 18px; border-radius: 15px; font-family: 'Fredoka One'; width: 100%; font-size: 1.2rem; cursor: pointer; margin-top: 20px; }
+        .btn-add { 
+            background: var(--p); color: #000; border: none; padding: 12px 25px; 
+            border-radius: 10px; font-family: 'Fredoka One'; cursor: pointer; transition: 0.3s;
+        }
+        .btn-add:hover { background: var(--s); transform: scale(1.05); }
 
-        .member-list { margin-top: 30px; }
+        .member-list { margin-top: 30px; max-height: 400px; overflow-y: auto; padding-right: 10px; }
         .member-item { 
             display: flex; justify-content: space-between; align-items: center; 
             background: rgba(255,255,255,0.03); padding: 15px 20px; border-radius: 12px; 
             margin-bottom: 10px; border-left: 4px solid var(--p);
+            animation: slideIn 0.3s ease-out;
         }
-        .member-info b { color: var(--p); }
-        .btn-del { background: var(--danger); color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-weight: bold; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+
+        .member-info b { color: var(--p); font-size: 1.1rem; }
+        .member-info span { display: block; font-size: 0.85rem; opacity: 0.6; }
+        
+        .btn-del { 
+            background: var(--danger); color: white; border: none; width: 35px; height: 35px; 
+            border-radius: 50%; cursor: pointer; font-weight: bold; transition: 0.2s;
+        }
+        .btn-del:hover { transform: rotate(90deg) scale(1.1); }
+
+        .btn-ready { 
+            background: var(--s); color: #000; border: none; padding: 20px; 
+            border-radius: 15px; font-family: 'Fredoka One'; width: 100%; 
+            font-size: 1.3rem; cursor: pointer; margin-top: 20px;
+            box-shadow: 0 10px 20px rgba(254, 202, 87, 0.2);
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
         <div class="welcome-header">
-            <h1 id="welcomeTxt">BIENVENIDO, <span id="docenteName">DOCENTE</span></h1>
-            <p>ELIGE A LOS ESTUDIANTES DE TU CLASE PARA ESTA MISIÓN</p>
+            <h1 id="welcomeTxt">BIENVENIDO, <span id="docenteName">EXPLORADOR</span></h1>
+            <p>ELIGE A LOS ESTUDIANTES DE TU CLASE DE ESTE SECTOR</p>
         </div>
 
         <div class="glass-panel">
             <div class="input-group">
-                <input type="text" id="stdName" placeholder="Nombre Estudiante">
+                <input type="text" id="stdName" placeholder="Nombre del Estudiante">
                 <input type="email" id="stdEmail" placeholder="Correo Electrónico">
                 <button class="btn-add" id="btnAdd">INVITAR</button>
             </div>
@@ -57,69 +81,109 @@
         <div class="member-list" id="memberList">
             </div>
 
-        <button class="btn-ready" onclick="location.href='generator-test.html'">¡LISTO! CONFIGURAR PRUEBA</button>
+        <button class="btn-ready" id="btnGoTest">🚀 ¡LISTO! CONFIGURAR PRUEBA</button>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, doc, getDoc, collection, addDoc, onSnapshot, deleteDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
-        const firebaseConfig = { /* TU CONFIG */ };
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+    <script>
+        const firebaseConfig = { 
+            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", 
+            authDomain: "thelearninguniverse-26.firebaseapp.com", 
+            projectId: "thelearninguniverse-26", 
+            storageBucket: "thelearninguniverse-26.firebasestorage.app", 
+            messagingSenderId: "85338996011", 
+            appId: "1:85338996011:web:1f3bb216900c07e735596e" 
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
         const gID = localStorage.getItem('currentGroup');
 
-        // Cargar nombre del docente desde el grupo
-        async function loadDocente() {
-            const snap = await getDoc(doc(db, "grupos", gID));
-            if(snap.exists()) {
-                // Suponiendo que el nombre se guardó o usamos el inicio del mail
-                document.getElementById('docenteName').innerText = snap.data().docente.split('@')[0].toUpperCase();
-            }
+        // 1. CARGAR DATOS DEL DOCENTE Y NOMBRE
+        if (!gID) {
+            alert("No se detectó un grupo activo. Volviendo al inicio.");
+            window.location.href = "home.html";
         }
 
-        // Escuchar invitaciones en tiempo real
-        onSnapshot(query(collection(db, "invitaciones"), where("grupoID", "==", gID)), (snap) => {
-            const list = document.getElementById('memberList');
-            list.innerHTML = "";
-            snap.forEach(d => {
-                const data = d.data();
-                if(!data.esSistema) { // Solo mostrar las de humanos
-                    list.innerHTML += `
-                    <div class="member-item">
-                        <div class="member-info"><b>${data.nombreEstudiante || 'Cadete'}</b> | ${data.para}</div>
-                        <button class="btn-del" onclick="window.eliminarInvitacion('${d.id}')">X</button>
-                    </div>`;
-                }
-            });
+        db.collection("grupos").doc(gID).get().then(doc => {
+            if (doc.exists) {
+                const data = doc.data();
+                // Extraer nombre del docente (antes del @ si es correo)
+                const nombreDoc = data.docente ? data.docente.split('@')[0].toUpperCase() : "DOCENTE";
+                document.getElementById('docenteName').innerText = nombreDoc;
+            }
         });
 
-        document.getElementById('btnAdd').onclick = async () => {
+        // 2. AÑADIR MIEMBRO
+        document.getElementById('btnAdd').onclick = async function() {
             const name = document.getElementById('stdName').value.trim();
             const email = document.getElementById('stdEmail').value.trim();
-            if(!name || !email) return alert("Completa ambos campos");
 
-            await addDoc(collection(db, "invitaciones"), {
-                para: email,
-                nombreEstudiante: name,
-                grupoID: gID,
-                esSistema: false,
-                fecha: Date.now()
+            if (!name || !email) {
+                alert("Debes completar el Nombre y el Correo.");
+                return;
+            }
+
+            try {
+                await db.collection("invitaciones").add({
+                    para: email,
+                    nombreEstudiante: name,
+                    grupoID: gID,
+                    esSistema: false,
+                    fecha: Date.now()
+                });
+                
+                document.getElementById('stdName').value = "";
+                document.getElementById('stdEmail').value = "";
+            } catch (e) {
+                alert("Error al invitar: " + e.message);
+            }
+        };
+
+        // 3. LISTA EN TIEMPO REAL
+        db.collection("invitaciones")
+            .where("grupoID", "==", gID)
+            .orderBy("fecha", "desc")
+            .onSnapshot(snapshot => {
+                const listContainer = document.getElementById('memberList');
+                listContainer.innerHTML = "";
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    if (!data.esSistema) {
+                        listContainer.innerHTML += `
+                            <div class="member-item">
+                                <div class="member-info">
+                                    <b>${data.nombreEstudiante}</b>
+                                    <span>${data.para}</span>
+                                </div>
+                                <button class="btn-del" onclick="cancelarInvitacion('${doc.id}')">X</button>
+                            </div>
+                        `;
+                    }
+                });
             });
-            document.getElementById('stdName').value = "";
-            document.getElementById('stdEmail').value = "";
+
+        // 4. CANCELAR INVITACIÓN
+        window.cancelarInvitacion = async function(id) {
+            if (confirm("¿Deseas eliminar a este estudiante de la lista?")) {
+                await db.collection("invitaciones").doc(id).delete();
+            }
         };
 
-        window.eliminarInvitacion = async (id) => {
-            if(confirm("¿Cancelar esta invitación?")) await deleteDoc(doc(db, "invitaciones", id));
+        // 5. NAVEGACIÓN
+        document.getElementById('btnGoTest').onclick = function() {
+            window.location.href = "generator-test.html";
         };
 
-        // El recordatorio de tiempo
+        // 6. RECORDATORIO CADA 1:30 MIN
         setInterval(() => {
-            if(confirm("¿Estás listo? Podemos darte más tiempo si lo necesitas.")) {}
+            if (confirm("¿Estás listo? Podemos darte más tiempo si lo necesitas.")) {
+                // El docente sigue aquí
+            }
         }, 90000);
-
-        loadDocente();
     </script>
 </body>
 </html>
