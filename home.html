@@ -19,11 +19,10 @@
 
         .container { max-width: 900px; margin: auto; padding: 40px 20px; }
 
-        header { text-align: center; margin-bottom: 60px; }
+        header { text-align: center; margin-bottom: 40px; }
         header h1 { font-family: 'Fredoka One'; font-size: 3.5rem; color: var(--p); margin: 0; letter-spacing: 3px; }
-        header p { opacity: 0.8; font-size: 1.1rem; letter-spacing: 2px; }
 
-        /* --- SEPARACIÓN DE CLASES --- */
+        /* --- SECCIÓN APRENDER CLASES --- */
         .divider-container {
             display: flex;
             align-items: center;
@@ -31,7 +30,7 @@
             margin: 50px 0 30px 0;
         }
         .line {
-            height: 2px;
+            height: 1px;
             flex-grow: 1;
             background: linear-gradient(to right, transparent, var(--p), transparent);
         }
@@ -39,43 +38,37 @@
             font-family: 'Fredoka One';
             color: var(--p);
             margin: 0 20px;
-            font-size: 1rem;
-            letter-spacing: 4px;
+            font-size: 0.9rem;
+            letter-spacing: 3px;
             text-transform: uppercase;
-            text-shadow: 0 0 10px var(--p);
         }
 
-        /* --- BOTÓN DE MATEMÁTICAS --- */
-        .class-grid { display: flex; justify-content: center; gap: 20px; }
-        
         .btn-math {
-            background: rgba(72, 219, 251, 0.05);
+            background: rgba(72, 219, 251, 0.1);
             border: 2px solid var(--p);
             color: white;
-            padding: 30px 50px;
-            border-radius: 20px;
+            padding: 20px 40px;
+            border-radius: 15px;
             text-decoration: none;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            box-shadow: 0 0 20px rgba(72, 219, 251, 0.1);
+            display: inline-block;
+            transition: 0.3s;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(72, 219, 251, 0.2);
+            text-align: center;
         }
 
         .btn-math:hover {
             background: var(--p);
             color: #000;
-            transform: scale(1.08);
-            box-shadow: 0 0 30px var(--p);
+            transform: scale(1.05);
         }
 
-        .btn-math h2 { font-family: 'Fredoka One'; margin: 0; font-size: 1.8rem; }
-        .btn-math span { font-weight: bold; font-size: 0.8rem; opacity: 0.7; }
+        .btn-math b { font-family: 'Fredoka One'; font-size: 1.5rem; display: block; }
 
         /* --- FOOTER --- */
         footer {
             margin-top: 80px;
-            padding: 30px;
+            padding: 20px;
             text-align: center;
             border-top: 1px solid rgba(255,255,255,0.1);
         }
@@ -83,9 +76,7 @@
             color: var(--p);
             text-decoration: none;
             font-weight: 600;
-            transition: 0.3s;
         }
-        .footer-link:hover { color: var(--s); text-shadow: 0 0 10px var(--s); }
     </style>
 </head>
 <body>
@@ -93,24 +84,23 @@
     <div class="container">
         <header>
             <h1>TLU CENTRAL</h1>
-            <p>SISTEMA DE NAVEGACIÓN DE APRENDIZAJE</p>
         </header>
 
-        <div class="divider-container">
-            <div class="line"></div>
-            <div class="divider-text">-- APRENDER CLASES --</div>
-            <div class="line"></div>
-        </div>
+        <div style="text-align: center;">
+            <div class="divider-container">
+                <div class="line"></div>
+                <div class="divider-text">-- APRENDER CLASES --</div>
+                <div class="line"></div>
+            </div>
 
-        <div class="class-grid">
             <a href="matematicas/home.html" class="btn-math">
-                <h2>🧮 MATEMÁTICAS</h2>
-                <span>SECTOR DE CÁLCULO Y LÓGICA</span>
+                <b>🧮 MATEMÁTICAS</b>
+                <span style="font-size: 0.8rem; font-weight: bold; opacity: 0.8;">SECTOR DE CÁLCULO ESTELAR</span>
             </a>
         </div>
 
         <footer>
-            <p style="opacity:0.5; font-size:0.8rem; margin-bottom: 10px;">&copy; 2026 The Learning Universe - Control de Misión</p>
+            <p style="opacity: 0.6; font-size: 0.8rem;">&copy; 2026 The Learning Universe</p>
             <a href="historia.html" class="footer-link">Historia e administración</a>
         </footer>
     </div>
