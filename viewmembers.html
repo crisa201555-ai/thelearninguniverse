@@ -2,74 +2,44 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Reclutamiento de Cadetes | TLU</title>
+    <title>Reclutamiento | TLU</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Fredoka+One&display=swap" rel="stylesheet">
     <style>
         :root { --p: #48dbfb; --s: #feca57; --bg: #060918; --danger: #ff4757; }
-        body { 
-            background: var(--bg); color: white; font-family: 'Montserrat'; 
-            padding: 40px 20px; margin: 0;
-            background-image: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
-        }
+        body { background: var(--bg); color: white; font-family: 'Montserrat'; padding: 30px; background-image: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%); }
         .container { max-width: 800px; margin: auto; }
-        .welcome-header { text-align: center; margin-bottom: 40px; }
-        .welcome-header h1 { font-family: 'Fredoka One'; color: var(--p); text-transform: uppercase; margin: 0; }
-        .welcome-header span { color: var(--s); }
-        .glass-panel { 
-            background: rgba(255, 255, 255, 0.05); padding: 30px; border-radius: 20px; 
-            border: 1px solid rgba(72, 219, 251, 0.3); backdrop-filter: blur(10px); margin-bottom: 30px;
-        }
+        .welcome-header { text-align: center; margin-bottom: 30px; }
+        .welcome-header h1 { font-family: 'Fredoka One'; color: var(--p); margin:0; }
+        .glass-panel { background: rgba(255, 255, 255, 0.05); padding: 25px; border-radius: 20px; border: 1px solid var(--p); backdrop-filter: blur(10px); }
         .input-group { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; }
-        input { 
-            background: #000; border: 1px solid #444; color: white; padding: 12px; 
-            border-radius: 10px; outline: none; width: 100%; box-sizing: border-box;
-        }
-        .btn-add { 
-            background: var(--p); color: #000; border: none; padding: 12px 25px; 
-            border-radius: 10px; font-family: 'Fredoka One'; cursor: pointer;
-        }
-        .member-list { margin-top: 30px; }
-        .member-item { 
-            display: flex; justify-content: space-between; align-items: center; 
-            background: rgba(255,255,255,0.05); padding: 15px 20px; border-radius: 12px; 
-            margin-bottom: 10px; border-left: 4px solid var(--p);
-        }
-        .btn-del { 
-            background: var(--danger); color: white; border: none; width: 35px; height: 35px; 
-            border-radius: 50%; cursor: pointer; font-weight: bold;
-        }
-        .btn-ready { 
-            background: var(--s); color: #000; border: none; padding: 20px; 
-            border-radius: 15px; font-family: 'Fredoka One'; width: 100%; 
-            font-size: 1.3rem; cursor: pointer; margin-top: 20px;
-        }
+        input { background: #000; border: 1px solid #444; color: white; padding: 12px; border-radius: 10px; outline: none; }
+        .btn-add { background: var(--p); color: #000; border: none; padding: 12px 20px; border-radius: 10px; font-family: 'Fredoka One'; cursor: pointer; }
+        .member-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-top: 10px; border-left: 4px solid var(--p); }
+        .btn-ready { background: var(--s); color: #000; border: none; padding: 20px; border-radius: 15px; font-family: 'Fredoka One'; width: 100%; font-size: 1.2rem; cursor: pointer; margin-top: 20px; }
     </style>
 </head>
 <body>
-
     <div class="container">
         <div class="welcome-header">
-            <h1 id="welcomeTxt">BIENVENIDO, <span id="docenteName">DOCENTE</span></h1>
-            <p>ELIGE A LOS ESTUDIANTES DE TU CLASE DE ESTE SECTOR</p>
+            <h1>BIENVENIDO, <span id="docenteName">DOCENTE</span></h1>
+            <p>INVITA A LOS ESTUDIANTES A ESTE SECTOR</p>
         </div>
 
         <div class="glass-panel">
             <div class="input-group">
                 <input type="text" id="stdName" placeholder="Nombre Estudiante">
-                <input type="email" id="stdEmail" placeholder="Correo">
+                <input type="email" id="stdEmail" placeholder="Correo del Estudiante">
                 <button class="btn-add" id="btnAdd">INVITAR</button>
             </div>
         </div>
 
-        <div id="memberList">
-            </div>
+        <div id="memberList" style="margin-top:20px;"></div>
 
-        <button class="btn-ready" id="btnGoTest">🚀 ¡LISTO! CONFIGURAR PRUEBA</button>
+        <button class="btn-ready" onclick="location.href='generator-test.html'">🚀 ¡LISTO! CONFIGURAR PRUEBA</button>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
     <script>
         const firebaseConfig = { 
             apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", 
@@ -79,84 +49,51 @@
             messagingSenderId: "85338996011", 
             appId: "1:85338996011:web:1f3bb216900c07e735596e" 
         };
-
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         const gID = localStorage.getItem('currentGroup');
 
-        // Verificar ID de grupo
-        if (!gID) {
-            alert("No hay un grupo activo en la memoria del navegador.");
-        }
-
-        // 1. Obtener nombre del docente
+        // Cargar nombre del docente
         db.collection("grupos").doc(gID).get().then(doc => {
-            if (doc.exists) {
-                const nombre = doc.data().docente.split('@')[0].toUpperCase();
-                document.getElementById('docenteName').innerText = nombre;
-            }
+            if(doc.exists) document.getElementById('docenteName').innerText = doc.data().docente.split('@')[0].toUpperCase();
         });
 
-        // 2. Escuchar lista (SIN ORDERBY para evitar errores de índice)
-        db.collection("invitaciones")
-            .where("grupoID", "==", gID)
-            .onSnapshot((snapshot) => {
-                const listContainer = document.getElementById('memberList');
-                listContainer.innerHTML = "";
-                
-                if(snapshot.empty) {
-                    listContainer.innerHTML = "<p style='text-align:center; opacity:0.5;'>Aún no hay invitados en este sector.</p>";
-                }
-
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    // Solo mostrar si tiene nombre de estudiante (para diferenciar de alertas de sistema)
-                    if (data.nombreEstudiante) {
-                        const div = document.createElement('div');
-                        div.className = 'member-item';
-                        div.innerHTML = `
-                            <div>
-                                <b>${data.nombreEstudiante}</b><br>
-                                <small style="opacity:0.6">${data.para}</small>
-                            </div>
-                            <button class="btn-del" onclick="eliminarInvitado('${doc.id}')">X</button>
-                        `;
-                        listContainer.appendChild(div);
-                    }
-                });
-            }, (error) => {
-                console.error("Error en Snapshot: ", error);
-            });
-
-        // 3. Función Añadir
+        // Enviar Invitación
         document.getElementById('btnAdd').onclick = async function() {
             const name = document.getElementById('stdName').value.trim();
             const email = document.getElementById('stdEmail').value.trim();
+            if(!name || !email) return alert("Faltan datos");
 
-            if (!name || !email) return alert("Llena todos los campos");
-
-            try {
-                await db.collection("invitaciones").add({
-                    para: email,
-                    nombreEstudiante: name,
-                    grupoID: gID,
-                    fecha: Date.now()
-                });
-                document.getElementById('stdName').value = "";
-                document.getElementById('stdEmail').value = "";
-            } catch (e) {
-                alert("Error al guardar: " + e.message);
-            }
+            await db.collection("invitaciones").add({
+                para: email.toLowerCase(), // Normalizamos a minúsculas
+                nombreEstudiante: name,
+                grupoID: gID,
+                titulo: "NUEVA MISIÓN DISPONIBLE",
+                mensaje: `Hola ${name}, has sido convocado al sector ${gID}.`,
+                esSistema: false,
+                fecha: Date.now()
+            });
+            alert("Invitación enviada");
+            document.getElementById('stdName').value = "";
+            document.getElementById('stdEmail').value = "";
         };
 
-        // 4. Función Eliminar
-        window.eliminarInvitado = function(id) {
-            if (confirm("¿Eliminar invitado?")) {
-                db.collection("invitaciones").doc(id).delete();
-            }
-        };
+        // Lista en tiempo real
+        db.collection("invitaciones").where("grupoID", "==", gID).onSnapshot(snap => {
+            const list = document.getElementById('memberList');
+            list.innerHTML = "";
+            snap.forEach(doc => {
+                const d = doc.data();
+                if(!d.esSistema) {
+                    list.innerHTML += `<div class="member-item">
+                        <div><b>${d.nombreEstudiante}</b><br><small>${d.para}</small></div>
+                        <button onclick="eliminar('${doc.id}')" style="background:none; border:none; color:red; cursor:pointer;">X</button>
+                    </div>`;
+                }
+            });
+        });
 
-        document.getElementById('btnGoTest').onclick = () => window.location.href = "generator-test.html";
+        window.eliminar = (id) => { if(confirm("¿Eliminar?")) db.collection("invitaciones").doc(id).delete(); };
     </script>
 </body>
 </html>
