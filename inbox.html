@@ -2,79 +2,92 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Inbox | TLU</title>
+    <title>Inbox Estelar | TLU</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Fredoka+One&display=swap" rel="stylesheet">
     <style>
         :root { --p: #48dbfb; --s: #feca57; --bg: #060918; }
         body { background: var(--bg); color: white; font-family: 'Montserrat'; padding: 20px; }
         .container { max-width: 600px; margin: auto; }
-        .filter-bar { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; }
-        .f-btn { background: rgba(255,255,255,0.1); border: none; color: white; padding: 10px 20px; border-radius: 20px; cursor: pointer; }
-        .f-btn.active { background: var(--p); color: #000; }
-        .msg-card { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; margin-bottom: 10px; border-left: 5px solid var(--p); }
+        .filter-bar { display: flex; gap: 10px; margin-bottom: 30px; justify-content: center; }
+        .f-btn { background: rgba(255,255,255,0.1); border: 2px solid transparent; color: white; padding: 10px 20px; border-radius: 25px; cursor: pointer; transition: 0.3s; }
+        .f-btn.active { border-color: var(--p); background: rgba(72, 219, 251, 0.2); color: var(--p); }
+        .msg-card { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; margin-bottom: 15px; border-left: 5px solid var(--p); animation: slide 0.3s ease; }
         .msg-card.clase { border-left-color: var(--s); }
-        .btn-join { background: var(--p); border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-top: 10px; font-weight: bold; }
+        @keyframes slide { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .btn-join { background: var(--s); border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: 'Fredoka One'; margin-top: 10px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 style="font-family:'Fredoka One'; text-align:center; color:var(--s);">INBOX</h1>
+        <h1 style="font-family:'Fredoka One'; text-align:center; color: var(--p);">BANDEJA DE ENTRADA</h1>
         
         <div class="filter-bar">
-            <button class="f-btn active" onclick="render('todo', this)">TODO</button>
-            <button class="f-btn" onclick="render('clase', this)">CLASES</button>
-            <button class="f-btn" onclick="render('sistema', this)">MENSAJES</button>
+            <button class="f-btn active" onclick="filtrar('todo', this)">TODO</button>
+            <button class="f-btn" onclick="filtrar('clase', this)">CLASES</button>
+            <button class="f-btn" onclick="filtrar('sistema', this)">MENSAJES</button>
         </div>
 
-        <div id="display"></div>
+        <div id="msgContainer"></div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script>
-        // MISMA CONFIG QUE ARRIBA
+        const firebaseConfig = { 
+            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", 
+            authDomain: "thelearninguniverse-26.firebaseapp.com", 
+            projectId: "thelearninguniverse-26", 
+            storageBucket: "thelearninguniverse-26.firebasestorage.app", 
+            messagingSenderId: "85338996011", 
+            appId: "1:85338996011:web:1f3bb216900c07e735596e" 
+        };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        
-        // IMPORTANTE: El inbox busca por el correo guardado en localStorage
+
+        // IMPORTANTE: Obtenemos el correo del usuario logueado
         const userEmail = (localStorage.getItem('userEmail') || "").toLowerCase();
-        let cache = [];
+        let mensajesLocales = [];
 
-        if(!userEmail) alert("Debes estar logueado para recibir mensajes.");
+        if(!userEmail) {
+            document.getElementById('msgContainer').innerHTML = "<p style='text-align:center;'>No se detectó sesión activa.</p>";
+        } else {
+            // Escuchar mensajes en tiempo real para este usuario
+            db.collection("invitaciones").where("para", "==", userEmail).onSnapshot(snap => {
+                mensajesLocales = [];
+                snap.forEach(doc => mensajesLocales.push({id: doc.id, ...doc.data()}));
+                filtrar('todo', document.querySelector('.f-btn'));
+            });
+        }
 
-        db.collection("invitaciones").where("para", "==", userEmail).onSnapshot(snap => {
-            cache = [];
-            snap.forEach(doc => cache.push({id: doc.id, ...doc.data()}));
-            render('todo', document.querySelector('.f-btn'));
-        });
-
-        function render(tipo, btn) {
+        function filtrar(tipo, btn) {
             document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
 
-            const container = document.getElementById('display');
+            const container = document.getElementById('msgContainer');
             container.innerHTML = "";
 
-            const filtrados = cache.filter(m => {
+            const filtrados = mensajesLocales.filter(m => {
                 if(tipo === 'todo') return true;
                 if(tipo === 'clase') return m.esSistema === false;
                 if(tipo === 'sistema') return m.esSistema === true;
             });
 
+            if(filtrados.length === 0) container.innerHTML = "<p style='text-align:center; opacity:0.5;'>Sin transmisiones.</p>";
+
             filtrados.forEach(m => {
-                const isClase = m.esSistema === false;
+                const esClase = m.esSistema === false;
                 container.innerHTML += `
-                    <div class="msg-card ${isClase ? 'clase' : ''}">
-                        <h3>${m.titulo}</h3>
+                    <div class="msg-card ${esClase ? 'clase' : ''}">
+                        <h3 style="margin:0; color:var(--s);">${m.titulo || 'Comunicado'}</h3>
                         <p>${m.mensaje}</p>
-                        ${isClase ? `<button class="btn-join" onclick="unirse('${m.grupoID}')">ACEPTAR</button>` : ''}
+                        ${esClase ? `<button class="btn-join" onclick="aceptar('${m.grupoID}')">ACEPTAR MISIÓN</button>` : ''}
                     </div>`;
             });
         }
 
-        window.unirse = (id) => {
+        window.aceptar = (id) => {
             localStorage.setItem('currentGroup', id);
-            alert("Unido al sector " + id);
+            alert("Misión aceptada. Entrando al sector...");
             location.href = "home-student.html";
         };
     </script>
