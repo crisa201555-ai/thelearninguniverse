@@ -3,107 +3,212 @@
 <head>
     <meta charset="UTF-8">
     <title>The Learning Universe | Home</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Fredoka+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #48dbfb; --s: #feca57; --bg: #060918; }
-        
-        body { 
-            background: var(--bg); 
-            color: white; 
-            font-family: 'Montserrat'; 
-            margin: 0; 
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #00cec9;
+            --accent: #fd79a8;
+            --dark-bg: #0f172a;
+        }
+
+        /* Eliminamos cualquier espacio entre el borde y el contenido */
+        body, html {
+            margin: 0;
             padding: 0;
-            background-image: radial-gradient(circle at top, #1b2735 0%, #090a0f 100%);
-            min-height: 100vh;
+            height: 100%;
+            width: 100%;
+            font-family: 'Fredoka', sans-serif;
+            overflow: hidden;
+            background: var(--dark-bg);
         }
 
-        .container { max-width: 900px; margin: auto; padding: 40px 20px; }
-
-        header { text-align: center; margin-bottom: 40px; }
-        header h1 { font-family: 'Fredoka One'; font-size: 3.5rem; color: var(--p); margin: 0; letter-spacing: 3px; }
-
-        /* --- SECCIÓN APRENDER CLASES --- */
-        .divider-container {
+        /* Contenedor principal sin fisuras */
+        .app-container {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 50px 0 30px 0;
+            width: 100vw;
+            height: 100vh;
         }
-        .line {
-            height: 1px;
-            flex-grow: 1;
-            background: linear-gradient(to right, transparent, var(--p), transparent);
+
+        /* --- BARRA LATERAL --- */
+        .sidebar {
+            width: 320px;
+            background: linear-gradient(180deg, #1e293b 0%, #111827 100%);
+            border-right: 2px solid rgba(0, 206, 201, 0.3);
+            display: flex;
+            flex-direction: column;
+            padding: 40px 20px;
+            box-sizing: border-box;
+            flex-shrink: 0;
         }
-        .divider-text {
-            font-family: 'Fredoka One';
-            color: var(--p);
-            margin: 0 20px;
-            font-size: 0.9rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
+
+        .sidebar h1 {
+            font-size: 1.8rem;
+            text-align: center;
+            color: var(--secondary);
+            margin-bottom: 50px;
+            text-shadow: 0 0 10px rgba(0, 206, 201, 0.5);
+        }
+
+        .nav-btn {
+            text-decoration: none;
+            color: white;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 15px;
+            font-weight: 700;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid transparent;
+            transition: 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: var(--primary);
+            border-color: white;
+            transform: scale(1.02);
+        }
+
+        .learn-box {
+            margin-top: auto;
+            background: rgba(253, 121, 168, 0.1);
+            border: 2px dashed var(--accent);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
         }
 
         .btn-math {
-            background: rgba(72, 219, 251, 0.1);
-            border: 2px solid var(--p);
-            color: white;
-            padding: 20px 40px;
-            border-radius: 15px;
+            display: block;
             text-decoration: none;
-            display: inline-block;
+            background: white;
+            color: var(--accent);
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 700;
+            margin-top: 10px;
             transition: 0.3s;
-            cursor: pointer;
-            box-shadow: 0 0 15px rgba(72, 219, 251, 0.2);
+        }
+
+        .btn-math:hover { background: var(--accent); color: white; }
+
+        /* --- CONTENIDO PRINCIPAL --- */
+        .main-content {
+            flex-grow: 1;
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Reloj */
+        .clock-capsule {
+            position: absolute;
+            top: 30px;
+            background: rgba(0, 206, 201, 0.1);
+            border: 1px solid var(--secondary);
+            padding: 10px 30px;
+            border-radius: 50px;
             text-align: center;
         }
 
-        .btn-math:hover {
-            background: var(--p);
-            color: #000;
-            transform: scale(1.05);
+        #time { font-size: 2rem; color: var(--secondary); font-weight: 700; display: block; }
+        #date { font-size: 0.8rem; color: white; opacity: 0.8; }
+
+        /* Logo Central Animado */
+        .hero-logo {
+            width: 300px;
+            filter: drop-shadow(0 0 25px var(--secondary));
+            animation: float 4s ease-in-out infinite;
         }
 
-        .btn-math b { font-family: 'Fredoka One'; font-size: 1.5rem; display: block; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
 
-        /* --- FOOTER --- */
-        footer {
-            margin-top: 80px;
-            padding: 20px;
+        /* Título de bienvenida forzado a BLANCO */
+        .welcome-title {
+            font-size: 4rem;
+            margin: 20px 0 0 0;
             text-align: center;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #ffffff !important; /* Forzado a blanco */
         }
+        .welcome-title span { color: var(--secondary); }
+
+        .typing-sub {
+            font-size: 1.5rem;
+            color: #a29bfe;
+            margin-top: 10px;
+            height: 30px;
+        }
+
         .footer-link {
-            color: var(--p);
+            position: absolute;
+            bottom: 20px;
+            color: white;
+            opacity: 0.5;
             text-decoration: none;
-            font-weight: 600;
+            font-size: 0.9rem;
         }
+        .footer-link:hover { opacity: 1; color: var(--secondary); }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <header>
-            <h1>TLU CENTRAL</h1>
-        </header>
+    <div class="app-container">
+        <aside class="sidebar">
+            <h1>THE LEARNING UNIVERSE</h1>
+            
+            <a href="creategroup.html" class="nav-btn">✨ Crear una clase</a>
+            <a href="viewclass.html" class="nav-btn">🚀 Ver mi clase</a>
 
-        <div style="text-align: center;">
-            <div class="divider-container">
-                <div class="line"></div>
-                <div class="divider-text">-- APRENDER CLASES --</div>
-                <div class="line"></div>
+            <div class="learn-box">
+                <span style="color: var(--accent); font-weight: 700;">¡VAMOS A APRENDER!</span>
+                <a href="/matematicas/home.html" class="btn-math">📐 Matemáticas</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="clock-capsule">
+                <span id="time">00:00:00</span>
+                <span id="date">Cargando...</span>
             </div>
 
-            <a href="matematicas/home.html" class="btn-math">
-                <b>🧮 MATEMÁTICAS</b>
-                <span style="font-size: 0.8rem; font-weight: bold; opacity: 0.8;">SECTOR DE CÁLCULO ESTELAR</span>
-            </a>
-        </div>
+            <img src="unnamed-removebg-preview.png" alt="Logo" class="hero-logo">
 
-        <footer>
-            <p style="opacity: 0.6; font-size: 0.8rem;">&copy; 2026 The Learning Universe</p>
-            <a href="historia.html" class="footer-link">Historia e administración</a>
-        </footer>
+            <h1 class="welcome-title">¡Hola, <span>EXPLORADOR</span>!</h1>
+            <div class="typing-sub" id="typewriter"></div>
+
+            <a href="historia.html" class="footer-link">⚙️ Administración del Sistema</a>
+        </main>
     </div>
 
+    <script>
+        // Actualizar Reloj
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('time').innerText = now.toLocaleTimeString('es-ES');
+            document.getElementById('date').innerText = now.toLocaleDateString('es-ES', { 
+                weekday: 'long', day: 'numeric', month: 'long' 
+            });
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Máquina de escribir
+        const text = "¡Hoy es un gran día para descubrir algo nuevo!";
+        let i = 0;
+        function type() {
+            if (i < text.length) {
+                document.getElementById("typewriter").innerHTML += text.charAt(i);
+                i++;
+                setTimeout(type, 50);
+            }
+        }
+        type();
+    </script>
 </body>
 </html>
