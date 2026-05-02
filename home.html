@@ -2,180 +2,118 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard | The Learning Universe</title>
+    <title>The Learning Universe | Home</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Fredoka+One&display=swap" rel="stylesheet">
     <style>
-        :root { 
-            --p: #48dbfb; --s: #feca57; --bg: #060918; 
-            --glass: rgba(255, 255, 255, 0.05);
-            --border: rgba(72, 219, 251, 0.3);
-        }
-
+        :root { --p: #48dbfb; --s: #feca57; --bg: #060918; }
+        
         body { 
-            margin: 0; padding: 0; font-family: 'Montserrat'; color: white;
-            background: #060918;
-            /* Fondo colorido nebuloso animado */
-            background: linear-gradient(125deg, #060918, #1b2735, #2c3e50, #000000);
-            background-size: 400% 400%;
-            animation: nebula 15s ease infinite;
-            min-height: 100vh; display: flex;
+            background: var(--bg); 
+            color: white; 
+            font-family: 'Montserrat'; 
+            margin: 0; 
+            padding: 0;
+            background-image: radial-gradient(circle at top, #1b2735 0%, #090a0f 100%);
+            min-height: 100vh;
         }
 
-        @keyframes nebula { 0% {background-position: 0% 50%} 50% {background-position: 100% 50%} 100% {background-position: 0% 50%} }
+        .container { max-width: 900px; margin: auto; padding: 40px 20px; }
 
-        /* --- MENÚ LATERAL IZQUIERDO --- */
-        #sidebar {
-            width: 260px; height: 100vh; background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(15px); border-right: 1px solid var(--border);
-            display: flex; flex-direction: column; position: fixed; left: 0; transition: 0.3s;
+        header { text-align: center; margin-bottom: 60px; }
+        header h1 { font-family: 'Fredoka One'; font-size: 3.5rem; color: var(--p); margin: 0; letter-spacing: 3px; }
+        header p { opacity: 0.8; font-size: 1.1rem; letter-spacing: 2px; }
+
+        /* --- SEPARACIÓN DE CLASES --- */
+        .divider-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 50px 0 30px 0;
+        }
+        .line {
+            height: 2px;
+            flex-grow: 1;
+            background: linear-gradient(to right, transparent, var(--p), transparent);
+        }
+        .divider-text {
+            font-family: 'Fredoka One';
+            color: var(--p);
+            margin: 0 20px;
+            font-size: 1rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px var(--p);
         }
 
-        .side-header { padding: 30px 20px; text-align: center; border-bottom: 1px solid var(--border); }
-        .side-header b { font-family: 'Fredoka One'; color: var(--p); font-size: 1.2rem; }
-
-        .side-nav { flex: 1; padding: 20px 0; }
-        .side-item {
-            padding: 15px 25px; display: flex; align-items: center; gap: 15px;
-            cursor: pointer; transition: 0.3s; color: rgba(255,255,255,0.7); font-weight: 600;
-        }
-        .side-item:hover { background: rgba(72, 219, 251, 0.1); color: var(--p); border-left: 4px solid var(--p); }
-
-        /* --- CONTENIDO PRINCIPAL --- */
-        main { margin-left: 260px; width: calc(100% - 260px); display: flex; flex-direction: column; min-height: 100vh; }
-
-        header { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; }
-
-        .hero { padding: 60px 40px; text-align: left; }
-        .hero h1 { font-family: 'Fredoka One'; font-size: 3rem; margin: 0; color: var(--s); }
-        .hero p { font-size: 1.1rem; opacity: 0.8; }
-
-        .grid-container {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px; padding: 0 40px 100px 40px;
+        /* --- BOTÓN DE MATEMÁTICAS --- */
+        .class-grid { display: flex; justify-content: center; gap: 20px; }
+        
+        .btn-math {
+            background: rgba(72, 219, 251, 0.05);
+            border: 2px solid var(--p);
+            color: white;
+            padding: 30px 50px;
+            border-radius: 20px;
+            text-decoration: none;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 0 20px rgba(72, 219, 251, 0.1);
         }
 
-        .card {
-            background: var(--glass); border: 1px solid var(--border); border-radius: 20px;
-            padding: 25px; transition: 0.4s; position: relative; overflow: hidden;
+        .btn-math:hover {
+            background: var(--p);
+            color: #000;
+            transform: scale(1.08);
+            box-shadow: 0 0 30px var(--p);
         }
-        .card:hover { transform: translateY(-5px); border-color: var(--s); background: rgba(254, 202, 87, 0.05); }
-        .card h3 { font-family: 'Fredoka One'; color: var(--p); margin-top: 0; }
+
+        .btn-math h2 { font-family: 'Fredoka One'; margin: 0; font-size: 1.8rem; }
+        .btn-math span { font-weight: bold; font-size: 0.8rem; opacity: 0.7; }
 
         /* --- FOOTER --- */
         footer {
-            margin-top: auto; padding: 30px 40px; background: rgba(0,0,0,0.6);
-            border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;
+            margin-top: 80px;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.1);
         }
-        .footer-links a { color: var(--p); text-decoration: none; margin-right: 20px; font-size: 0.9rem; transition: 0.3s; }
-        .footer-links a:hover { color: var(--s); }
-        .dev-tag { font-size: 0.8rem; opacity: 0.6; }
-
-        /* Estilo Botones Docente */
-        .docente-btn { border: 1px dashed var(--s) !important; display: none; }
+        .footer-link {
+            color: var(--p);
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .footer-link:hover { color: var(--s); text-shadow: 0 0 10px var(--s); }
     </style>
 </head>
 <body>
 
-    <div id="sidebar">
-        <div class="side-header">
-            <b>THE LEARNING<br>UNIVERSE</b>
-        </div>
-        <div class="side-nav">
-            <div class="side-item" onclick="location.href='home.html'">🏠 Inicio</div>
-            <div class="side-item" onclick="irA('inbox.html')">📩 Bandeja de Entrada</div>
-            <div class="side-item" onclick="irA('viewclass.html')">🪐 Mi Clase</div>
-            <div class="side-item docente-btn" onclick="irA('creategroup.html')">🛠️ Crear Grupo</div>
-            <div class="side-item docente-btn" onclick="irA('view-teacher.html')">📡 Radar Docente</div>
-        </div>
-        <div class="side-item" id="btnLogout" style="color: #ff6b6b; border-top: 1px solid rgba(255,255,255,0.1);">🚪 Salir</div>
-    </div>
-
-    <main>
+    <div class="container">
         <header>
-            <div id="roleIndicator" style="font-weight: bold; color: var(--p);">IDENTIFICANDO...</div>
-            <div id="userEmail" style="opacity: 0.7;">email@universe.com</div>
+            <h1>TLU CENTRAL</h1>
+            <p>SISTEMA DE NAVEGACIÓN DE APRENDIZAJE</p>
         </header>
 
-        <section class="hero">
-            <h1 id="welcomeText">BIENVENIDO, CADETE</h1>
-            <p>Selecciona un módulo para iniciar tu misión diaria en el universo del conocimiento.</p>
-        </section>
+        <div class="divider-container">
+            <div class="line"></div>
+            <div class="divider-text">-- APRENDER CLASES --</div>
+            <div class="line"></div>
+        </div>
 
-        <div class="grid-container">
-            <div class="card" onclick="irA('viewclass.html')">
-                <h3>🪐 MI SECTOR</h3>
-                <p>Visualiza el muro de la clase, consulta tus notas actuales y participa en el chat galáctico con otros cadetes.</p>
-            </div>
-            <div class="card" onclick="irA('inbox.html')">
-                <h3>📩 COMUNICACIONES</h3>
-                <p>Recibe invitaciones de nuevos docentes y alertas del sistema de seguridad. Mantente al día con tus avisos.</p>
-            </div>
-            <div class="card docente-btn" onclick="irA('view-teacher.html')">
-                <h3>📡 RADAR MAESTRO</h3>
-                <p>Acceso exclusivo para docentes. Supervisa el estado de las pruebas, revisa entregas y gestiona alertas SOS.</p>
-            </div>
+        <div class="class-grid">
+            <a href="matematicas/home.html" class="btn-math">
+                <h2>🧮 MATEMÁTICAS</h2>
+                <span>SECTOR DE CÁLCULO Y LÓGICA</span>
+            </a>
         </div>
 
         <footer>
-            <div class="footer-links">
-                <a href="mailto:soporte@tlu.com">Soporte y Contacto</a>
-                <a href="#">Términos del Espacio</a>
-                <a href="historia.html">Historia de The Learning Universe</a>
-            </div>
-            <div class="dev-tag">
-                Sincronizado por <b>Creación Web TLU</b> | 2026 ©
-            </div>
+            <p style="opacity:0.5; font-size:0.8rem; margin-bottom: 10px;">&copy; 2026 The Learning Universe - Control de Misión</p>
+            <a href="historia.html" class="footer-link">Historia e administración</a>
         </footer>
-    </main>
+    </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-        const firebaseConfig = { 
-            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", 
-            authDomain: "thelearninguniverse-26.firebaseapp.com", 
-            projectId: "thelearninguniverse-26", 
-            storageBucket: "thelearninguniverse-26.firebasestorage.app", 
-            messagingSenderId: "85338996011", 
-            appId: "1:85338996011:web:1f3bb216900c07e735596e" 
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        onAuthStateChanged(auth, async (user) => {
-            if (!user) return window.location.href = "login.html";
-            
-            document.getElementById('userEmail').innerText = user.email;
-
-            // Detección de Rol para desbloquear menú
-            const userSnap = await getDoc(doc(db, "usuarios", user.uid));
-            if (userSnap.exists() && userSnap.data().rol === "docente") {
-                document.getElementById('welcomeText').innerText = "CENTRO DE MANDO DOCENTE";
-                document.getElementById('roleIndicator').innerText = "RANGO: DOCENTE";
-                document.querySelectorAll('.docente-btn').forEach(el => el.style.display = 'flex');
-            } else {
-                document.getElementById('roleIndicator').innerText = "RANGO: CADETE";
-            }
-        });
-
-        window.irA = (pagina) => {
-            const gID = localStorage.getItem('currentGroup');
-            if(!gID && pagina !== 'inbox.html' && pagina !== 'creategroup.html') {
-                return alert("Primero selecciona una clase en tu Inbox.");
-            }
-            window.location.href = `${pagina}?grupo=${gID}`;
-        };
-
-        document.getElementById('btnLogout').onclick = () => {
-            signOut(auth).then(() => {
-                localStorage.clear();
-                window.location.href = "login.html";
-            });
-        };
-    </script>
 </body>
 </html>
