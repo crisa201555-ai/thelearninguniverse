@@ -12,53 +12,36 @@
             background-image: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
         }
         .container { max-width: 800px; margin: auto; }
-        
         .welcome-header { text-align: center; margin-bottom: 40px; }
         .welcome-header h1 { font-family: 'Fredoka One'; color: var(--p); text-transform: uppercase; margin: 0; }
         .welcome-header span { color: var(--s); }
-        .welcome-header p { opacity: 0.7; letter-spacing: 1px; margin-top: 10px; }
-
         .glass-panel { 
             background: rgba(255, 255, 255, 0.05); padding: 30px; border-radius: 20px; 
             border: 1px solid rgba(72, 219, 251, 0.3); backdrop-filter: blur(10px); margin-bottom: 30px;
         }
-
         .input-group { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; }
         input { 
             background: #000; border: 1px solid #444; color: white; padding: 12px; 
-            border-radius: 10px; outline: none; transition: 0.3s; width: 100%; box-sizing: border-box;
+            border-radius: 10px; outline: none; width: 100%; box-sizing: border-box;
         }
-        input:focus { border-color: var(--p); box-shadow: 0 0 10px rgba(72, 219, 251, 0.2); }
-        
         .btn-add { 
             background: var(--p); color: #000; border: none; padding: 12px 25px; 
-            border-radius: 10px; font-family: 'Fredoka One'; cursor: pointer; transition: 0.3s;
+            border-radius: 10px; font-family: 'Fredoka One'; cursor: pointer;
         }
-        .btn-add:hover { background: var(--s); transform: scale(1.05); }
-
-        .member-list { margin-top: 30px; max-height: 400px; overflow-y: auto; padding-right: 10px; }
+        .member-list { margin-top: 30px; }
         .member-item { 
             display: flex; justify-content: space-between; align-items: center; 
-            background: rgba(255,255,255,0.03); padding: 15px 20px; border-radius: 12px; 
+            background: rgba(255,255,255,0.05); padding: 15px 20px; border-radius: 12px; 
             margin-bottom: 10px; border-left: 4px solid var(--p);
-            animation: slideIn 0.3s ease-out;
         }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
-
-        .member-info b { color: var(--p); font-size: 1.1rem; }
-        .member-info span { display: block; font-size: 0.85rem; opacity: 0.6; }
-        
         .btn-del { 
             background: var(--danger); color: white; border: none; width: 35px; height: 35px; 
-            border-radius: 50%; cursor: pointer; font-weight: bold; transition: 0.2s;
+            border-radius: 50%; cursor: pointer; font-weight: bold;
         }
-        .btn-del:hover { transform: rotate(90deg) scale(1.1); }
-
         .btn-ready { 
             background: var(--s); color: #000; border: none; padding: 20px; 
             border-radius: 15px; font-family: 'Fredoka One'; width: 100%; 
             font-size: 1.3rem; cursor: pointer; margin-top: 20px;
-            box-shadow: 0 10px 20px rgba(254, 202, 87, 0.2);
         }
     </style>
 </head>
@@ -66,19 +49,19 @@
 
     <div class="container">
         <div class="welcome-header">
-            <h1 id="welcomeTxt">BIENVENIDO, <span id="docenteName">EXPLORADOR</span></h1>
+            <h1 id="welcomeTxt">BIENVENIDO, <span id="docenteName">DOCENTE</span></h1>
             <p>ELIGE A LOS ESTUDIANTES DE TU CLASE DE ESTE SECTOR</p>
         </div>
 
         <div class="glass-panel">
             <div class="input-group">
-                <input type="text" id="stdName" placeholder="Nombre del Estudiante">
-                <input type="email" id="stdEmail" placeholder="Correo Electrónico">
+                <input type="text" id="stdName" placeholder="Nombre Estudiante">
+                <input type="email" id="stdEmail" placeholder="Correo">
                 <button class="btn-add" id="btnAdd">INVITAR</button>
             </div>
         </div>
 
-        <div class="member-list" id="memberList">
+        <div id="memberList">
             </div>
 
         <button class="btn-ready" id="btnGoTest">🚀 ¡LISTO! CONFIGURAR PRUEBA</button>
@@ -101,89 +84,79 @@
         const db = firebase.firestore();
         const gID = localStorage.getItem('currentGroup');
 
-        // 1. CARGAR DATOS DEL DOCENTE Y NOMBRE
+        // Verificar ID de grupo
         if (!gID) {
-            alert("No se detectó un grupo activo. Volviendo al inicio.");
-            window.location.href = "home.html";
+            alert("No hay un grupo activo en la memoria del navegador.");
         }
 
+        // 1. Obtener nombre del docente
         db.collection("grupos").doc(gID).get().then(doc => {
             if (doc.exists) {
-                const data = doc.data();
-                // Extraer nombre del docente (antes del @ si es correo)
-                const nombreDoc = data.docente ? data.docente.split('@')[0].toUpperCase() : "DOCENTE";
-                document.getElementById('docenteName').innerText = nombreDoc;
+                const nombre = doc.data().docente.split('@')[0].toUpperCase();
+                document.getElementById('docenteName').innerText = nombre;
             }
         });
 
-        // 2. AÑADIR MIEMBRO
+        // 2. Escuchar lista (SIN ORDERBY para evitar errores de índice)
+        db.collection("invitaciones")
+            .where("grupoID", "==", gID)
+            .onSnapshot((snapshot) => {
+                const listContainer = document.getElementById('memberList');
+                listContainer.innerHTML = "";
+                
+                if(snapshot.empty) {
+                    listContainer.innerHTML = "<p style='text-align:center; opacity:0.5;'>Aún no hay invitados en este sector.</p>";
+                }
+
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    // Solo mostrar si tiene nombre de estudiante (para diferenciar de alertas de sistema)
+                    if (data.nombreEstudiante) {
+                        const div = document.createElement('div');
+                        div.className = 'member-item';
+                        div.innerHTML = `
+                            <div>
+                                <b>${data.nombreEstudiante}</b><br>
+                                <small style="opacity:0.6">${data.para}</small>
+                            </div>
+                            <button class="btn-del" onclick="eliminarInvitado('${doc.id}')">X</button>
+                        `;
+                        listContainer.appendChild(div);
+                    }
+                });
+            }, (error) => {
+                console.error("Error en Snapshot: ", error);
+            });
+
+        // 3. Función Añadir
         document.getElementById('btnAdd').onclick = async function() {
             const name = document.getElementById('stdName').value.trim();
             const email = document.getElementById('stdEmail').value.trim();
 
-            if (!name || !email) {
-                alert("Debes completar el Nombre y el Correo.");
-                return;
-            }
+            if (!name || !email) return alert("Llena todos los campos");
 
             try {
                 await db.collection("invitaciones").add({
                     para: email,
                     nombreEstudiante: name,
                     grupoID: gID,
-                    esSistema: false,
                     fecha: Date.now()
                 });
-                
                 document.getElementById('stdName').value = "";
                 document.getElementById('stdEmail').value = "";
             } catch (e) {
-                alert("Error al invitar: " + e.message);
+                alert("Error al guardar: " + e.message);
             }
         };
 
-        // 3. LISTA EN TIEMPO REAL
-        db.collection("invitaciones")
-            .where("grupoID", "==", gID)
-            .orderBy("fecha", "desc")
-            .onSnapshot(snapshot => {
-                const listContainer = document.getElementById('memberList');
-                listContainer.innerHTML = "";
-                
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    if (!data.esSistema) {
-                        listContainer.innerHTML += `
-                            <div class="member-item">
-                                <div class="member-info">
-                                    <b>${data.nombreEstudiante}</b>
-                                    <span>${data.para}</span>
-                                </div>
-                                <button class="btn-del" onclick="cancelarInvitacion('${doc.id}')">X</button>
-                            </div>
-                        `;
-                    }
-                });
-            });
-
-        // 4. CANCELAR INVITACIÓN
-        window.cancelarInvitacion = async function(id) {
-            if (confirm("¿Deseas eliminar a este estudiante de la lista?")) {
-                await db.collection("invitaciones").doc(id).delete();
+        // 4. Función Eliminar
+        window.eliminarInvitado = function(id) {
+            if (confirm("¿Eliminar invitado?")) {
+                db.collection("invitaciones").doc(id).delete();
             }
         };
 
-        // 5. NAVEGACIÓN
-        document.getElementById('btnGoTest').onclick = function() {
-            window.location.href = "generator-test.html";
-        };
-
-        // 6. RECORDATORIO CADA 1:30 MIN
-        setInterval(() => {
-            if (confirm("¿Estás listo? Podemos darte más tiempo si lo necesitas.")) {
-                // El docente sigue aquí
-            }
-        }, 90000);
+        document.getElementById('btnGoTest').onclick = () => window.location.href = "generator-test.html";
     </script>
 </body>
 </html>
