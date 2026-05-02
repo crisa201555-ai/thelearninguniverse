@@ -7,145 +7,165 @@
     <style>
         :root { --p: #48dbfb; --s: #feca57; --bg: #060918; }
         body { background: var(--bg); color: white; font-family: 'Montserrat'; padding: 30px; margin: 0; }
-        .container { max-width: 900px; margin: auto; }
+        .container { max-width: 800px; margin: auto; }
         
         .glass-card { background: rgba(255,255,255,0.05); padding: 25px; border-radius: 20px; border: 1px solid var(--p); margin-bottom: 25px; }
         .section-title { color: var(--s); font-family: 'Fredoka One'; margin-bottom: 15px; display: block; border-bottom: 1px solid rgba(254, 202, 87, 0.3); padding-bottom: 5px; }
         
-        .grid-flex { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; }
-        .field { flex: 1; min-width: 200px; }
-        
-        label { font-size: 0.75rem; color: var(--p); font-weight: bold; text-transform: uppercase; }
-        input { width: 100%; padding: 12px; margin-top: 5px; border-radius: 10px; border: 1px solid #333; background: #000; color: white; box-sizing: border-box; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #333; background: #000; color: white; box-sizing: border-box; }
 
-        .q-preview { background: rgba(255,255,255,0.02); padding: 15px; border-radius: 12px; margin-bottom: 10px; border-left: 4px solid var(--s); display: flex; justify-content: space-between; align-items: center; }
-        
-        .btn-add-q { background: transparent; color: var(--p); border: 2px dashed var(--p); padding: 15px; width: 100%; border-radius: 15px; cursor: pointer; font-weight: bold; margin-bottom: 20px; }
-        .btn-pub { background: var(--s); color: #000; border: none; padding: 20px; border-radius: 15px; font-family: 'Fredoka One'; width: 100%; font-size: 1.3rem; cursor: pointer; }
+        /* Estilo de las preguntas añadidas */
+        .q-preview { 
+            background: rgba(255,255,255,0.07); padding: 15px; border-radius: 12px; 
+            margin-bottom: 10px; border-left: 5px solid var(--s);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .btn-add-q { 
+            background: rgba(72, 219, 251, 0.1); color: var(--p); border: 2px dashed var(--p); 
+            padding: 20px; width: 100%; border-radius: 15px; cursor: pointer; 
+            font-family: 'Fredoka One'; font-size: 1.1rem; transition: 0.3s;
+        }
+        .btn-add-q:hover { background: var(--p); color: #000; }
+
+        .btn-pub { 
+            background: var(--s); color: #000; border: none; padding: 20px; 
+            border-radius: 15px; font-family: 'Fredoka One'; width: 100%; 
+            font-size: 1.3rem; cursor: pointer; margin-top: 20px;
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1 style="font-family:'Fredoka One'; text-align:center; color: var(--p);">CONFIGURACIÓN DE MISIÓN</h1>
+        <h1 style="font-family:'Fredoka One'; text-align:center; color: var(--p);">CREADOR DE PRUEBAS</h1>
 
         <div class="glass-card">
-            <span class="section-title">1. Detalles Generales y Horarios</span>
-            <input type="text" id="testName" placeholder="Nombre Obligatorio de la Prueba">
-            <div class="grid-flex" style="margin-top:15px;">
-                <div class="field">
-                    <label>Aparición (Fecha y Hora)</label>
-                    <div style="display:flex; gap:5px;">
-                        <input type="date" id="dateStart">
-                        <input type="time" id="timeStart">
-                    </div>
+            <span class="section-title">DETALLES DE LA MISIÓN</span>
+            <input type="text" id="testName" placeholder="Nombre de la Prueba (Obligatorio)">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;">
+                <div>
+                    <label style="font-size:0.7rem;">INICIO (Fecha y Hora)</label>
+                    <input type="date" id="dateStart"> <input type="time" id="timeStart">
                 </div>
-                <div class="field">
-                    <label>Cierre (Fecha y Hora)</label>
-                    <div style="display:flex; gap:5px;">
-                        <input type="date" id="dateEnd">
-                        <input type="time" id="timeEnd">
-                    </div>
+                <div>
+                    <label style="font-size:0.7rem;">CIERRE (Fecha y Hora)</label>
+                    <input type="date" id="dateEnd"> <input type="time" id="timeEnd">
                 </div>
             </div>
         </div>
 
-        <div class="glass-card">
-            <span class="section-title">2. Banco de Preguntas</span>
-            <div id="questionsPreview"></div>
-            <button class="btn-add-q" id="btnLaunchAlert">🚀 INICIAR SECUENCIA DE PREGUNTA</button>
-        </div>
+        <div id="questionsPreview"></div>
+
+        <button class="btn-add-q" id="btnLaunch">🚀 INICIAR SECUENCIA DE PREGUNTA</button>
 
         <button class="btn-pub" id="btnSave">PUBLICAR EN EL SECTOR</button>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
-        const firebaseConfig = { /* TU CONFIG */ };
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+    <script>
+        // Configuración de Firebase
+        const firebaseConfig = { 
+            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", 
+            authDomain: "thelearninguniverse-26.firebaseapp.com", 
+            projectId: "thelearninguniverse-26", 
+            storageBucket: "thelearninguniverse-26.firebasestorage.app", 
+            messagingSenderId: "85338996011", 
+            appId: "1:85338996011:web:1f3bb216900c07e735596e" 
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
         const gID = localStorage.getItem('currentGroup');
 
-        let preguntas = [];
+        let listaPreguntas = [];
 
-        document.getElementById('btnLaunchAlert').onclick = () => {
+        // LA SECUENCIA DE PREGUNTAS
+        document.getElementById('btnLaunch').onclick = function() {
             // PASO 1
-            const preguntaTxt = prompt("PASO 1: Escribe la pregunta:");
-            if (!preguntaTxt) return;
+            let q = prompt("PASO 1: Escribe la pregunta:");
+            if (!q) return;
 
             // PASO 2
-            let numRespuestas = parseInt(prompt("PASO 2: ¿Cuántas respuestas van a haber? (Máximo 5):", "2"));
-            if (isNaN(numRespuestas) || numRespuestas < 1) numRespuestas = 1;
-            if (numRespuestas > 5) numRespuestas = 5;
+            let n = parseInt(prompt("PASO 2: ¿Cuántas respuestas van a haber? (Máximo 5):", "2"));
+            if (isNaN(n) || n < 1) n = 2;
+            if (n > 5) n = 5;
 
-            // PASOS 3 al 7 (Dinámicos)
-            let opciones = [];
-            for (let i = 1; i <= numRespuestas; i++) {
-                const opt = prompt(`PASO ${2 + i}: Escribe la respuesta ${i}:`);
-                opciones.push(opt || "Opción vacía");
+            // PASOS 3 al 7 (Dinámicos según N)
+            let opts = [];
+            for (let i = 1; i <= n; i++) {
+                let textOpt = prompt("PASO " + (2 + i) + ": Escribe la respuesta " + i + ":");
+                opts.push(textOpt || "Opción " + i);
             }
 
             // PASO 8
-            const puntos = parseFloat(prompt("PASO 8: ¿Cuántos puntos dará la pregunta?", "1")) || 1;
+            let pts = parseFloat(prompt("PASO 8: ¿Cuántos puntos dará la pregunta?", "1")) || 1;
 
             // PASO FINAL
-            const correctaIndex = parseInt(prompt(`PASO FINAL: ¿Qué opción es la correcta? Escribe el número (1 al ${numRespuestas}):`, "1"));
+            let correct = parseInt(prompt("PASO FINAL: ¿Qué opción es la correcta? Escribe el número (1 al " + n + "):", "1"));
             
-            if (isNaN(correctaIndex) || correctaIndex < 1 || correctaIndex > numRespuestas) {
-                alert("❌ Error en el número de respuesta correcta. Pregunta descartada.");
-                return;
+            if (isNaN(correct) || correct < 1 || correct > n) {
+                alert("Número de respuesta incorrecto. Se asignará la opción 1 por defecto.");
+                correct = 1;
             }
 
-            preguntas.push({
-                pregunta: preguntaTxt,
-                opciones: opciones,
-                puntos: puntos,
-                correcta: correctaIndex - 1 // Guardamos el índice (0, 1, 2...)
+            // Guardar en el array
+            listaPreguntas.push({
+                titulo: q,
+                opciones: opts,
+                puntos: pts,
+                correcta: correct // Guardamos el número tal cual para facilitar lectura
             });
 
-            renderPreview();
+            actualizarVista();
         };
 
-        function renderPreview() {
-            const container = document.getElementById('questionsPreview');
-            container.innerHTML = "";
-            preguntas.forEach((q, i) => {
-                container.innerHTML += `
+        function actualizarVista() {
+            const box = document.getElementById('questionsPreview');
+            box.innerHTML = "";
+            listaPreguntas.forEach((item, index) => {
+                box.innerHTML += `
                     <div class="q-preview">
                         <div>
-                            <b>${i+1}. ${q.pregunta}</b><br>
-                            <small>${q.opciones.length} opciones | Vale ${q.puntos} pts</small>
+                            <b>${index + 1}. ${item.titulo}</b><br>
+                            <small style="color:var(--p)">${item.opciones.length} opciones | ${item.puntos} Pts | Correcta: #${item.correcta}</small>
                         </div>
-                        <button onclick="window.removeQ(${i})" style="color:#ff4757; border:none; background:none; cursor:pointer;">Eliminar</button>
-                    </div>`;
+                        <button onclick="eliminarQ(${index})" style="background:#ff4757; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">X</button>
+                    </div>
+                `;
             });
         }
 
-        window.removeQ = (index) => {
-            preguntas.splice(index, 1);
-            renderPreview();
-        };
+        window.eliminarQ = function(i) {
+            listaPreguntas.splice(i, 1);
+            actualizarVista();
+        }
 
-        document.getElementById('btnSave').onclick = async () => {
-            const name = document.getElementById('testName').value;
-            if(!name) return alert("Falta el nombre de la prueba.");
-            if(preguntas.length === 0) return alert("Añade al menos una pregunta.");
+        document.getElementById('btnSave').onclick = async function() {
+            const nombre = document.getElementById('testName').value;
+            if(!nombre) return alert("Debes ponerle un nombre a la prueba.");
+            if(listaPreguntas.length === 0) return alert("Añade al menos una pregunta.");
 
-            const data = {
-                nombre: name,
-                programacion: {
-                    inicio: `${document.getElementById('dateStart').value} ${document.getElementById('timeStart').value}`,
-                    fin: `${document.getElementById('dateEnd').value} ${document.getElementById('timeEnd').value}`
+            const testData = {
+                nombrePrueba: nombre,
+                horarios: {
+                    inicio: document.getElementById('dateStart').value + " " + document.getElementById('timeStart').value,
+                    fin: document.getElementById('dateEnd').value + " " + document.getElementById('timeEnd').value
                 },
-                preguntas: preguntas,
-                activa: true
+                preguntas: listaPreguntas,
+                activa: true,
+                creadaEl: Date.now()
             };
 
-            await setDoc(doc(db, "pruebas", gID), data);
-            alert("Misión publicada.");
-            window.location.href = "view-teacher.html";
+            try {
+                await db.collection("pruebas").doc(gID).set(testData);
+                alert("🚀 MISIÓN PUBLICADA CON ÉXITO");
+                window.location.href = "view-teacher.html";
+            } catch (e) {
+                alert("Error al guardar: " + e.message);
+            }
         };
     </script>
 </body>
