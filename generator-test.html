@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Generador | TLU</title>
+    <title>Generador de Misiones | TLU</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Fredoka+One&display=swap" rel="stylesheet">
     <style>
         :root { --p: #48dbfb; --s: #feca57; --bg: #060918; }
@@ -10,26 +10,27 @@
         .container { max-width: 800px; margin: auto; }
         .card { background: rgba(255,255,255,0.05); padding: 25px; border-radius: 20px; border: 1px solid var(--p); margin-bottom: 20px; }
         input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #333; background: #000; color: white; box-sizing: border-box; }
-        .btn-add-q { background: none; border: 2px dashed var(--p); color: var(--p); padding: 20px; width: 100%; border-radius: 15px; cursor: pointer; font-family: 'Fredoka One'; }
-        .btn-pub { background: var(--s); color: #000; border: none; padding: 20px; width: 100%; border-radius: 15px; font-family: 'Fredoka One'; cursor: pointer; margin-top: 20px; font-size: 1.2rem; }
-        .q-preview { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; margin-top: 10px; border-left: 4px solid var(--s); }
+        .btn-add { background: none; border: 2px dashed var(--p); color: var(--p); padding: 20px; width: 100%; border-radius: 15px; cursor: pointer; font-family: 'Fredoka One'; margin-top: 10px; }
+        .btn-pub { background: var(--s); color: #000; border: none; padding: 20px; width: 100%; border-radius: 15px; font-family: 'Fredoka One'; cursor: pointer; font-size: 1.2rem; margin-top: 30px; }
+        .q-item { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; margin-top: 10px; border-left: 5px solid var(--s); }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 style="font-family:'Fredoka One'; text-align:center;">CONFIGURAR PRUEBA</h1>
+        <h1 style="font-family:'Fredoka One'; text-align:center;">CONFIGURACIÓN DE PRUEBA</h1>
         
         <div class="card">
-            <input type="text" id="testName" placeholder="Nombre de la Prueba (Obligatorio)">
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <label>NOMBRE DE LA PRUEBA</label>
+            <input type="text" id="testName" placeholder="Obligatorio">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top:10px;">
                 <div><label>APARICIÓN</label><input type="date" id="dS"><input type="time" id="tS"></div>
                 <div><label>CIERRE</label><input type="date" id="dE"><input type="time" id="tE"></div>
             </div>
         </div>
 
-        <div id="qBox"></div>
-        <button class="btn-add-q" onclick="lanzarSecuencia()">🚀 AÑADIR PREGUNTA (PASO A PASO)</button>
-        <button class="btn-pub" onclick="publicar()">PUBLICAR MISIÓN</button>
+        <div id="preview"></div>
+        <button class="btn-add" onclick="nuevaQ()">+ AÑADIR PREGUNTA (SECUENCIA)</button>
+        <button class="btn-pub" onclick="guardarPrueba()">🚀 PUBLICAR PRUEBA</button>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -40,38 +41,43 @@
         const gID = localStorage.getItem('currentGroup');
         let preguntas = [];
 
-        window.lanzarSecuencia = () => {
-            const q = prompt("PASO 1: Pregunta:"); if(!q) return;
-            let n = parseInt(prompt("PASO 2: ¿Cuántas opciones? (Máx 5):", "2"));
+        window.nuevaQ = () => {
+            const q = prompt("PASO 1: Escribe la pregunta"); if(!q) return;
+            let n = parseInt(prompt("PASO 2: ¿Cuántas respuestas (Máx 5)?", "2"));
+            if(n > 5) n = 5;
+            
             let opts = [];
-            for(let i=1; i<=n; i++) opts.push(prompt(`PASO ${2+i}: Respuesta ${i}:`));
-            let pts = parseFloat(prompt("PASO 8: Puntos:", "1"));
-            let correct = parseInt(prompt(`FINAL: ¿Cuál es la correcta? (1 a ${n}):`));
+            for(let i=1; i<=n; i++) {
+                opts.push(prompt("PASO " + (2+i) + ": Respuesta " + i));
+            }
+            
+            let pts = parseFloat(prompt("PASO 8: Puntos de esta pregunta", "1")) || 1;
+            let correct = parseInt(prompt("PASO FINAL: Número de la respuesta correcta (1 a " + n + ")"));
 
             preguntas.push({titulo: q, opciones: opts, puntos: pts, correcta: correct});
-            dibujar();
+            mostrar();
         };
 
-        function dibujar() {
-            const box = document.getElementById('qBox');
-            box.innerHTML = "";
+        function mostrar() {
+            const p = document.getElementById('preview');
+            p.innerHTML = "";
             preguntas.forEach((item, i) => {
-                box.innerHTML += `<div class="q-preview"><b>${i+1}. ${item.titulo}</b> (${item.puntos} pts)</div>`;
+                p.innerHTML += `<div class="q-item"><b>${i+1}. ${item.titulo}</b> (${item.puntos} pts)</div>`;
             });
         }
 
-        window.publicar = async () => {
-            const name = document.getElementById('testName').value;
-            if(!name || preguntas.length === 0) return alert("Completa los datos");
+        window.guardarPrueba = async () => {
+            const nombre = document.getElementById('testName').value;
+            if(!nombre || preguntas.length === 0) return alert("Faltan datos");
 
             await db.collection("pruebas").doc(gID).set({
-                nombre: name,
+                nombrePrueba: nombre,
                 inicio: document.getElementById('dS').value + " " + document.getElementById('tS').value,
                 fin: document.getElementById('dE').value + " " + document.getElementById('tE').value,
                 preguntas: preguntas,
                 activa: true
             });
-            alert("Publicado");
+            alert("¡Prueba publicada!");
             location.href = "view-teacher.html";
         };
     </script>
