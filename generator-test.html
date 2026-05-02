@@ -6,123 +6,180 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Fredoka+One&display=swap" rel="stylesheet">
     <style>
         :root { --p: #48dbfb; --s: #feca57; --bg: #060918; }
-        body { background: var(--bg); color: white; font-family: 'Montserrat'; padding: 30px; }
+        body { background: var(--bg); color: white; font-family: 'Montserrat'; padding: 30px; margin: 0; }
         .container { max-width: 900px; margin: auto; }
+        
         .glass-card { background: rgba(255,255,255,0.05); padding: 25px; border-radius: 20px; border: 1px solid var(--p); margin-bottom: 25px; }
+        .section-title { color: var(--s); font-family: 'Fredoka One'; margin-bottom: 15px; display: block; border-bottom: 1px solid rgba(254, 202, 87, 0.3); padding-bottom: 5px; }
         
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 15px; }
-        label { font-size: 0.8rem; color: var(--p); font-weight: bold; }
-        input, select { width: 100%; padding: 10px; margin-top: 5px; border-radius: 8px; border: 1px solid #444; background: #000; color: white; box-sizing: border-box; }
+        .grid-flex { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; }
+        .field { flex: 1; min-width: 200px; }
         
-        .q-box { border-left: 5px solid var(--s); background: rgba(255,255,255,0.02); padding: 20px; margin-bottom: 15px; border-radius: 0 15px 15px 0; }
-        .btn-pub { background: var(--s); color: #000; border: none; padding: 20px; border-radius: 15px; font-family: 'Fredoka One'; width: 100%; font-size: 1.3rem; cursor: pointer; }
+        label { font-size: 0.75rem; color: var(--p); font-weight: bold; text-transform: uppercase; }
+        input, select { width: 100%; padding: 12px; margin-top: 5px; border-radius: 10px; border: 1px solid #333; background: #000; color: white; box-sizing: border-box; outline: none; }
+        input:focus { border-color: var(--s); }
+
+        .q-preview { background: rgba(255,255,255,0.02); padding: 15px; border-radius: 12px; margin-bottom: 10px; border-left: 4px solid var(--s); display: flex; justify-content: space-between; align-items: center; }
+        
+        .btn-add-q { background: transparent; color: var(--p); border: 2px dashed var(--p); padding: 15px; width: 100%; border-radius: 15px; cursor: pointer; font-weight: bold; margin-bottom: 20px; transition: 0.3s; }
+        .btn-add-q:hover { background: rgba(72, 219, 251, 0.1); }
+        
+        .btn-pub { background: var(--s); color: #000; border: none; padding: 20px; border-radius: 15px; font-family: 'Fredoka One'; width: 100%; font-size: 1.3rem; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1 style="font-family:'Fredoka One'; text-align:center;">CONFIGURACIÓN AVANZADA</h1>
+        <h1 style="font-family:'Fredoka One'; text-align:center; color: var(--p); letter-spacing: 2px;">PANEL DE CONFIGURACIÓN</h1>
 
         <div class="glass-card">
-            <label>NOMBRE OBLIGATORIO DE LA PRUEBA</label>
-            <input type="text" id="testName" placeholder="Ej: Evaluación de Cálculo II">
+            <span class="section-title">1. Identificación de Prueba</span>
+            <label>Nombre de la Prueba (Obligatorio)</label>
+            <input type="text" id="testName" placeholder="Ej: Misión Espacial de Álgebra">
             
-            <div class="grid-3">
-                <div>
-                    <label>CLAVE DE ACCESO (OPCIONAL)</label>
-                    <input type="password" id="testPass" placeholder="Dejar vacío si no requiere">
+            <div class="grid-flex" style="margin-top:15px;">
+                <div class="field">
+                    <label>Clave de Acceso Estudiantes (Opcional)</label>
+                    <input type="password" id="testPass" placeholder="Clave secreta">
                 </div>
-                <div>
-                    <label>EXIGENCIA (%)</label>
+                <div class="field">
+                    <label>Exigencia (%)</label>
                     <input type="number" id="exigencia" value="60">
-                </div>
-                <div>
-                    <label>FECHA LÍMITE</label>
-                    <input type="date" id="testDate">
-                </div>
-            </div>
-
-            <div class="grid-3">
-                <div>
-                    <label>NOTA MÍNIMA</label>
-                    <input type="number" id="notaMin" value="1.0" step="0.1">
-                </div>
-                <div>
-                    <label>NOTA MÁXIMA</label>
-                    <input type="number" id="notaMax" value="7.0" step="0.1">
-                </div>
-                <div>
-                    <label>AYUDA IA</label>
-                    <select id="aiHelp"><option value="false">Desactivada</option><option value="true">Activada</option></select>
                 </div>
             </div>
         </div>
 
-        <div id="questions"></div>
-        <button onclick="addQ()" style="color:var(--p); background:none; border:none; cursor:pointer; margin-bottom: 20px;">+ AÑADIR PREGUNTA</button>
+        <div class="glass-card">
+            <span class="section-title">2. Programación de Tiempo (Aparición y Cierre)</span>
+            <div class="grid-flex">
+                <div class="field">
+                    <label>Fecha de Aparición</label>
+                    <input type="date" id="dateStart">
+                </div>
+                <div class="field">
+                    <label>Hora de Aparición</label>
+                    <input type="time" id="timeStart">
+                </div>
+            </div>
+            <div class="grid-flex">
+                <div class="field">
+                    <label>Fecha Límite (Cierre)</label>
+                    <input type="date" id="dateEnd">
+                </div>
+                <div class="field">
+                    <label>Hora Límite (Cierre)</label>
+                    <input type="time" id="timeEnd">
+                </div>
+            </div>
+        </div>
 
-        <button class="btn-pub" id="btnSave">🚀 PUBLICAR PRUEBA Y FINALIZAR</button>
+        <div class="glass-card">
+            <span class="section-title">3. Reactivos de la Misión</span>
+            <div id="questionsPreview"></div>
+            <button class="btn-add-q" id="btnLaunchAlert">+ AÑADIR PREGUNTA (VÍA COMANDO)</button>
+        </div>
+
+        <button class="btn-pub" id="btnSave">🚀 PUBLICAR EN EL SECTOR</button>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = { /* TU CONFIG */ };
+        const firebaseConfig = { 
+            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", 
+            authDomain: "thelearninguniverse-26.firebaseapp.com", 
+            projectId: "thelearninguniverse-26", 
+            storageBucket: "thelearninguniverse-26.firebasestorage.app", 
+            messagingSenderId: "85338996011", 
+            appId: "1:85338996011:web:1f3bb216900c07e735596e" 
+        };
+
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const gID = localStorage.getItem('currentGroup');
 
-        window.addQ = () => {
-            const div = document.createElement('div');
-            div.className = "q-box";
-            div.innerHTML = `
-                <div style="display:flex; gap:10px;">
-                    <input type="text" class="p-txt" placeholder="Pregunta" style="flex:4">
-                    <input type="number" class="pts" placeholder="Puntos" style="flex:1" value="1">
-                </div>
-                <div class="grid-3">
-                    <input type="text" class="opt" placeholder="Opción A">
-                    <input type="text" class="opt" placeholder="Opción B">
-                    <select class="correct"><option value="A">Correcta: A</option><option value="B">Correcta: B</option></select>
-                </div>
-                <input type="text" class="hint" placeholder="Pista de IA para esta pregunta">
-            `;
-            document.getElementById('questions').appendChild(div);
+        let preguntas = [];
+
+        // FUNCIÓN USANDO ALERT/PROMPT PARA AÑADIR PREGUNTA
+        document.getElementById('btnLaunchAlert').onclick = () => {
+            const txt = prompt("PASO 1: Escribe la PREGUNTA:");
+            if(!txt) return;
+
+            const pts = prompt("PASO 2: ¿Cuántos PUNTOS vale esta pregunta?", "1");
+            const optA = prompt("PASO 3: Escribe la OPCIÓN A:");
+            const optB = prompt("PASO 4: Escribe la OPCIÓN B:");
+            const correct = prompt("PASO 5: ¿Cuál es la correcta? (Escribe A o B)").toUpperCase();
+            const hint = prompt("PASO 6: Pista de IA (Opcional):");
+
+            if(correct !== "A" && correct !== "B") {
+                alert("Error: Debes elegir entre A o B. Intenta de nuevo.");
+                return;
+            }
+
+            const nuevaQ = {
+                pregunta: txt,
+                puntos: parseFloat(pts) || 1,
+                opciones: [optA, optB],
+                correcta: correct,
+                pista: hint || ""
+            };
+
+            preguntas.push(nuevaQ);
+            renderPreview();
+        };
+
+        function renderPreview() {
+            const container = document.getElementById('questionsPreview');
+            container.innerHTML = "";
+            preguntas.forEach((q, i) => {
+                container.innerHTML += `
+                    <div class="q-preview">
+                        <div>
+                            <b>${i+1}. ${q.pregunta}</b><br>
+                            <small style="color:var(--p)">Valor: ${q.puntos} pts | Correcta: ${q.correcta}</small>
+                        </div>
+                        <button onclick="window.removeQ(${i})" style="background:none; border:none; color:#ff4757; cursor:pointer; font-weight:bold;">ELIMINAR</button>
+                    </div>`;
+            });
+        }
+
+        window.removeQ = (index) => {
+            preguntas.splice(index, 1);
+            renderPreview();
         };
 
         document.getElementById('btnSave').onclick = async () => {
             const name = document.getElementById('testName').value;
-            if(!name) return alert("El nombre de la prueba es obligatorio.");
+            if(!name) return alert("¡El nombre de la prueba es obligatorio!");
+            if(preguntas.length === 0) return alert("Debes añadir al menos una pregunta.");
 
-            const preguntas = [];
-            document.querySelectorAll('.q-box').forEach(b => {
-                preguntas.push({
-                    pregunta: b.querySelector('.p-txt').value,
-                    puntos: parseFloat(b.querySelector('.pts').value),
-                    opciones: [b.querySelectorAll('.opt')[0].value, b.querySelectorAll('.opt')[1].value],
-                    correcta: b.querySelector('.correct').value,
-                    pista: b.querySelector('.hint').value
-                });
-            });
-
-            await setDoc(doc(db, "pruebas", gID), {
+            const testData = {
                 nombre: name,
                 clave: document.getElementById('testPass').value,
                 exigencia: document.getElementById('exigencia').value,
-                notaMin: document.getElementById('notaMin').value,
-                notaMax: document.getElementById('notaMax').value,
-                fecha: document.getElementById('testDate').value,
-                ai: document.getElementById('aiHelp').value === "true",
+                // Programación de tiempo
+                aparicion: {
+                    fecha: document.getElementById('dateStart').value,
+                    hora: document.getElementById('timeStart').value
+                },
+                limite: {
+                    fecha: document.getElementById('dateEnd').value,
+                    hora: document.getElementById('timeEnd').value
+                },
                 preguntas: preguntas,
-                activa: true
-            });
+                activa: true,
+                fechaCreacion: Date.now()
+            };
 
-            alert("Prueba publicada. Redirigiendo al Radar...");
-            window.location.href = "view-teacher.html";
+            try {
+                await setDoc(doc(db, "pruebas", gID), testData);
+                alert("✅ Misión Publicada y Programada Correctamente.");
+                window.location.href = "view-teacher.html";
+            } catch (e) {
+                alert("Error al guardar: " + e.message);
+            }
         };
-
-        addQ();
     </script>
 </body>
 </html>
