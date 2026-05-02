@@ -2,55 +2,124 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Invitar Cadetes | TLU</title>
+    <title>Reclutamiento de Cadetes | TLU</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Fredoka+One&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #48dbfb; --s: #feca57; --bg: #060918; }
-        body { background: var(--bg); color: white; font-family: 'Montserrat'; padding: 30px; text-align: center; }
-        .container { max-width: 600px; margin: auto; background: rgba(255,255,255,0.05); padding: 40px; border-radius: 25px; border: 1px solid var(--p); }
-        input { width: 100%; padding: 15px; margin: 20px 0; border-radius: 10px; border: 1px solid var(--p); background: #000; color: white; box-sizing: border-box; }
-        .btn-invite { background: var(--p); color: #000; border: none; padding: 15px; border-radius: 50px; font-family: 'Fredoka One'; cursor: pointer; width: 100%; margin-bottom: 10px; }
-        .btn-ready { background: var(--s); color: #000; border: none; padding: 15px; border-radius: 50px; font-family: 'Fredoka One'; cursor: pointer; width: 100%; font-size: 1.2rem; }
+        :root { --p: #48dbfb; --s: #feca57; --bg: #060918; --danger: #ff4757; }
+        body { background: var(--bg); color: white; font-family: 'Montserrat'; padding: 40px 20px; margin: 0; }
+        .container { max-width: 800px; margin: auto; }
+        
+        .welcome-header { text-align: center; margin-bottom: 40px; }
+        .welcome-header h1 { font-family: 'Fredoka One'; color: var(--p); text-transform: uppercase; letter-spacing: 2px; }
+        .welcome-header span { color: var(--s); }
+
+        .glass-panel { 
+            background: rgba(255, 255, 255, 0.05); padding: 30px; border-radius: 20px; 
+            border: 1px solid rgba(72, 219, 251, 0.3); backdrop-filter: blur(10px); margin-bottom: 30px;
+        }
+
+        .input-group { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; margin-top: 20px; }
+        input { 
+            background: #000; border: 1px solid #444; color: white; padding: 12px; 
+            border-radius: 10px; outline: none; transition: 0.3s;
+        }
+        input:focus { border-color: var(--p); }
+        
+        .btn-add { background: var(--p); color: #000; border: none; padding: 12px 20px; border-radius: 10px; font-family: 'Fredoka One'; cursor: pointer; }
+        .btn-ready { background: var(--s); color: #000; border: none; padding: 18px; border-radius: 15px; font-family: 'Fredoka One'; width: 100%; font-size: 1.2rem; cursor: pointer; margin-top: 20px; }
+
+        .member-list { margin-top: 30px; }
+        .member-item { 
+            display: flex; justify-content: space-between; align-items: center; 
+            background: rgba(255,255,255,0.03); padding: 15px 20px; border-radius: 12px; 
+            margin-bottom: 10px; border-left: 4px solid var(--p);
+        }
+        .member-info b { color: var(--p); }
+        .btn-del { background: var(--danger); color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
+
     <div class="container">
-        <h1>RECLUTAMIENTO</h1>
-        <p>Invita a tus alumnos antes de crear la prueba.</p>
-        <input type="email" id="studentEmail" placeholder="Correo del alumno...">
-        <button class="btn-invite" id="btnSend">ENVIAR INVITACIÓN</button>
-        
-        <hr style="opacity:0.2; margin: 20px 0;">
-        
-        <button class="btn-ready" onclick="window.location.href='generator-test.html'">¡ESTOY LISTO! CREAR PRUEBA</button>
+        <div class="welcome-header">
+            <h1 id="welcomeTxt">BIENVENIDO, <span id="docenteName">DOCENTE</span></h1>
+            <p>ELIGE A LOS ESTUDIANTES DE TU CLASE PARA ESTA MISIÓN</p>
+        </div>
+
+        <div class="glass-panel">
+            <div class="input-group">
+                <input type="text" id="stdName" placeholder="Nombre Estudiante">
+                <input type="email" id="stdEmail" placeholder="Correo Electrónico">
+                <button class="btn-add" id="btnAdd">INVITAR</button>
+            </div>
+        </div>
+
+        <div class="member-list" id="memberList">
+            </div>
+
+        <button class="btn-ready" onclick="location.href='generator-test.html'">¡LISTO! CONFIGURAR PRUEBA</button>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, addDoc, onSnapshot, deleteDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = { /* TU CONFIG */ };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const gID = localStorage.getItem('currentGroup');
 
-        // Lógica de recordatorio cada 1:30 minutos (90,000 ms)
-        setInterval(() => {
-            const respuesta = confirm("¿Estás listo? Podemos darte más tiempo si lo necesitas.");
-            if(respuesta) {
-                // Si dice que está listo, no hace nada (espera a que toque el botón Listo)
+        // Cargar nombre del docente desde el grupo
+        async function loadDocente() {
+            const snap = await getDoc(doc(db, "grupos", gID));
+            if(snap.exists()) {
+                // Suponiendo que el nombre se guardó o usamos el inicio del mail
+                document.getElementById('docenteName').innerText = snap.data().docente.split('@')[0].toUpperCase();
             }
+        }
+
+        // Escuchar invitaciones en tiempo real
+        onSnapshot(query(collection(db, "invitaciones"), where("grupoID", "==", gID)), (snap) => {
+            const list = document.getElementById('memberList');
+            list.innerHTML = "";
+            snap.forEach(d => {
+                const data = d.data();
+                if(!data.esSistema) { // Solo mostrar las de humanos
+                    list.innerHTML += `
+                    <div class="member-item">
+                        <div class="member-info"><b>${data.nombreEstudiante || 'Cadete'}</b> | ${data.para}</div>
+                        <button class="btn-del" onclick="window.eliminarInvitacion('${d.id}')">X</button>
+                    </div>`;
+                }
+            });
+        });
+
+        document.getElementById('btnAdd').onclick = async () => {
+            const name = document.getElementById('stdName').value.trim();
+            const email = document.getElementById('stdEmail').value.trim();
+            if(!name || !email) return alert("Completa ambos campos");
+
+            await addDoc(collection(db, "invitaciones"), {
+                para: email,
+                nombreEstudiante: name,
+                grupoID: gID,
+                esSistema: false,
+                fecha: Date.now()
+            });
+            document.getElementById('stdName').value = "";
+            document.getElementById('stdEmail').value = "";
+        };
+
+        window.eliminarInvitacion = async (id) => {
+            if(confirm("¿Cancelar esta invitación?")) await deleteDoc(doc(db, "invitaciones", id));
+        };
+
+        // El recordatorio de tiempo
+        setInterval(() => {
+            if(confirm("¿Estás listo? Podemos darte más tiempo si lo necesitas.")) {}
         }, 90000);
 
-        document.getElementById('btnSend').onclick = async () => {
-            const email = document.getElementById('studentEmail').value;
-            if(!email) return;
-            await addDoc(collection(db, "invitaciones"), {
-                para: email, grupoID: gID, fecha: Date.now()
-            });
-            alert("Invitación enviada.");
-            document.getElementById('studentEmail').value = "";
-        };
+        loadDocente();
     </script>
 </body>
 </html>
