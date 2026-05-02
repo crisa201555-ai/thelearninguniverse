@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>TLU | Juegos de Matemáticas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #00cec9;
+            --accent: #fd79a8;
+            --dark-bg: #0f172a;
+        }
+
+        body, html {
+            margin: 0; padding: 0; height: 100%;
+            font-family: 'Fredoka', sans-serif;
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+            color: white; display: flex; flex-direction: column; align-items: center;
+        }
+
+        header { margin-top: 50px; text-align: center; }
+        header h1 { font-size: 3rem; color: var(--secondary); margin: 0; }
+        header p { font-size: 1.2rem; opacity: 0.8; }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            width: 80%;
+            max-width: 1000px;
+            margin-top: 50px;
+        }
+
+        .game-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 3px solid var(--primary);
+            border-radius: 25px;
+            padding: 20px;
+            text-align: center;
+            transition: 0.3s;
+            text-decoration: none;
+            color: white;
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            background: rgba(108, 92, 231, 0.2);
+            border-color: var(--secondary);
+        }
+
+        .game-icon { font-size: 4rem; margin-bottom: 15px; display: block; }
+        .game-card h2 { margin: 10px 0; color: var(--secondary); }
+
+        .btn-back {
+            margin-top: 50px;
+            padding: 15px 30px;
+            background: var(--accent);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .btn-back:hover { filter: brightness(1.1); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🎮 Zona de Juegos</h1>
+        <p>¡Aprende matemáticas mientras te diviertes, Explorador!</p>
+    </header>
+
+    <div class="games-grid">
+        <a href="juegos/sumas-espaciales.html" class="game-card">
+            <span class="game-icon">🚀</span>
+            <h2>Sumas Espaciales</h2>
+            <p>¡Ayuda al cohete a llegar a la Luna sumando correctamente!</p>
+        </a>
+
+        <div class="game-card" style="opacity: 0.5; cursor: not-allowed;">
+            <span class="game-icon">🧩</span>
+            <h2>Próximamente...</h2>
+            <p>Estamos preparando nuevas misiones para ti.</p>
+        </div>
+    </div>
+
+    <a href="/matematicas/home.html" class="btn-back">⬅️ Volver a Matemáticas</a>
+
+</body>
+</html>
