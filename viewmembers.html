@@ -2,78 +2,55 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Miembros del Sector | TLU</title>
+    <title>Invitar Cadetes | TLU</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Fredoka+One&display=swap" rel="stylesheet">
     <style>
         :root { --p: #48dbfb; --s: #feca57; --bg: #060918; }
-        body { background: var(--bg); color: white; font-family: 'Montserrat'; padding: 30px; }
-        .container { max-width: 900px; margin: auto; }
-        .member-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
-        .member-card { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; border: 1px solid rgba(72, 219, 251, 0.3); text-align: center; }
-        .member-card i { font-size: 2rem; display: block; margin-bottom: 10px; }
-        .member-card b { color: var(--p); display: block; }
-        .status { font-size: 0.8rem; margin-top: 5px; color: var(--s); }
-        .btn-back { background: none; border: 1px solid var(--p); color: var(--p); padding: 10px 20px; border-radius: 50px; cursor: pointer; margin-bottom: 20px; }
+        body { background: var(--bg); color: white; font-family: 'Montserrat'; padding: 30px; text-align: center; }
+        .container { max-width: 600px; margin: auto; background: rgba(255,255,255,0.05); padding: 40px; border-radius: 25px; border: 1px solid var(--p); }
+        input { width: 100%; padding: 15px; margin: 20px 0; border-radius: 10px; border: 1px solid var(--p); background: #000; color: white; box-sizing: border-box; }
+        .btn-invite { background: var(--p); color: #000; border: none; padding: 15px; border-radius: 50px; font-family: 'Fredoka One'; cursor: pointer; width: 100%; margin-bottom: 10px; }
+        .btn-ready { background: var(--s); color: #000; border: none; padding: 15px; border-radius: 50px; font-family: 'Fredoka One'; cursor: pointer; width: 100%; font-size: 1.2rem; }
     </style>
 </head>
 <body>
-
     <div class="container">
-        <button class="btn-back" onclick="location.href='home.html'">⬅ VOLVER AL DASHBOARD</button>
-        <h1 style="font-family:'Fredoka One'; margin:0;">CADETES EN ESTE SECTOR</h1>
-        <p id="groupInfo" style="opacity:0.6;">Cargando lista de tripulantes...</p>
-
-        <div class="member-grid" id="memberList">
-            </div>
+        <h1>RECLUTAMIENTO</h1>
+        <p>Invita a tus alumnos antes de crear la prueba.</p>
+        <input type="email" id="studentEmail" placeholder="Correo del alumno...">
+        <button class="btn-invite" id="btnSend">ENVIAR INVITACIÓN</button>
+        
+        <hr style="opacity:0.2; margin: 20px 0;">
+        
+        <button class="btn-ready" onclick="window.location.href='generator-test.html'">¡ESTOY LISTO! CREAR PRUEBA</button>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = { 
-            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", 
-            authDomain: "thelearninguniverse-26.firebaseapp.com", 
-            projectId: "thelearninguniverse-26", 
-            storageBucket: "thelearninguniverse-26.firebasestorage.app", 
-            messagingSenderId: "85338996011", 
-            appId: "1:85338996011:web:1f3bb216900c07e735596e" 
-        };
-
+        const firebaseConfig = { /* TU CONFIG */ };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const gID = localStorage.getItem('currentGroup');
 
-        if(!gID) {
-            document.getElementById('groupInfo').innerText = "❌ No has seleccionado un sector.";
-        } else {
-            // Cargar nombre del grupo
-            getDoc(doc(db, "grupos", gID)).then(s => {
-                if(s.exists()) document.getElementById('groupInfo').innerText = "Sector Activo: " + s.data().nombreGrupo;
-            });
+        // Lógica de recordatorio cada 1:30 minutos (90,000 ms)
+        setInterval(() => {
+            const respuesta = confirm("¿Estás listo? Podemos darte más tiempo si lo necesitas.");
+            if(respuesta) {
+                // Si dice que está listo, no hace nada (espera a que toque el botón Listo)
+            }
+        }, 90000);
 
-            // Escuchar miembros
-            onSnapshot(collection(db, "grupos", gID, "miembros"), (snap) => {
-                const list = document.getElementById('memberList');
-                list.innerHTML = "";
-                
-                if(snap.empty) {
-                    list.innerHTML = "<p>Aún no hay cadetes registrados en este sector.</p>";
-                    return;
-                }
-
-                snap.forEach(d => {
-                    const m = d.data();
-                    list.innerHTML += `
-                        <div class="member-card">
-                            <i>👨‍🚀</i>
-                            <b>${m.nombre}</b>
-                            <div class="status">${m.enviado ? '✅ Misión Completada' : '⏳ En Órbita'}</div>
-                        </div>
-                    `;
-                });
+        document.getElementById('btnSend').onclick = async () => {
+            const email = document.getElementById('studentEmail').value;
+            if(!email) return;
+            await addDoc(collection(db, "invitaciones"), {
+                para: email, grupoID: gID, fecha: Date.now()
             });
-        }
+            alert("Invitación enviada.");
+            document.getElementById('studentEmail').value = "";
+        };
     </script>
 </body>
 </html>
