@@ -2,110 +2,79 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Generador de Misiones | TLU</title>
+    <title>Generador | TLU</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Fredoka+One&display=swap" rel="stylesheet">
     <style>
         :root { --p: #48dbfb; --s: #feca57; --bg: #060918; }
         body { background: var(--bg); color: white; font-family: 'Montserrat'; padding: 30px; }
-        .container { max-width: 800px; margin: auto; }
-        .q-card { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; border: 1px solid var(--p); margin-bottom: 20px; }
-        input, select { width: 100%; padding: 10px; margin: 10px 0; border-radius: 8px; border: 1px solid #444; background: #000; color: white; box-sizing: border-box; }
-        .row { display: flex; gap: 10px; }
-        .btn { background: var(--p); color: #000; border: none; padding: 15px 30px; border-radius: 10px; font-family: 'Fredoka One'; cursor: pointer; }
-        .btn-add { background: var(--s); margin-bottom: 20px; }
-        .points-input { width: 120px; border-color: var(--s); font-weight: bold; text-align: center; }
+        .container { max-width: 700px; margin: auto; background: rgba(255,255,255,0.05); padding: 30px; border-radius: 20px; }
+        input, select { width: 100%; padding: 10px; margin: 5px 0; border-radius: 8px; border: 1px solid #333; background: #000; color: white; box-sizing: border-box; }
+        .btn-pub { background: var(--p); color: #000; border: none; padding: 20px; border-radius: 10px; font-family: 'Fredoka One'; cursor: pointer; width: 100%; margin-top: 20px; font-size: 1.2rem; }
     </style>
 </head>
 <body>
-
     <div class="container">
-        <h1 style="font-family:'Fredoka One'; color:var(--p)">CONFIGURACIÓN DE PRUEBA</h1>
-        <p>Ajusta las preguntas y asigna el puntaje para cada una.</p>
-
-        <div id="questionsContainer">
-            </div>
-
-        <button class="btn btn-add" id="btnAdd">➕ AÑADIR PREGUNTA</button>
-        <button class="btn" id="btnSave">🚀 PUBLICAR PRUEBA AL SECTOR</button>
+        <h1 style="font-family:'Fredoka One'; color:var(--s)">CREAR MISIÓN</h1>
+        <input type="text" id="testName" placeholder="Nombre de la Prueba">
+        <input type="date" id="testDate">
+        <div style="margin:15px 0;">
+            <input type="checkbox" id="aiHelp" style="width:auto;"> Habilitar Pistas de IA
+        </div>
+        <div id="qContainer"></div>
+        <button onclick="addQ()" style="cursor:pointer; background:none; color:var(--p); border:none;">+ Añadir Pregunta</button>
+        
+        <button class="btn-pub" id="btnSave">PUBLICAR Y IR AL RADAR</button>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = { 
-            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", 
-            authDomain: "thelearninguniverse-26.firebaseapp.com", 
-            projectId: "thelearninguniverse-26", 
-            storageBucket: "thelearninguniverse-26.firebasestorage.app", 
-            messagingSenderId: "85338996011", 
-            appId: "1:85338996011:web:1f3bb216900c07e735596e" 
-        };
-
+        const firebaseConfig = { /* TU CONFIG */ };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const gID = localStorage.getItem('currentGroup');
 
-        let qCount = 0;
-
-        const addQuestion = () => {
-            qCount++;
-            const div = document.createElement('div');
-            div.className = 'q-card';
-            div.innerHTML = `
-                <div class="row">
-                    <b style="color:var(--s)">Pregunta ${qCount}</b>
-                    <input type="number" class="points-input" placeholder="Puntos" value="1" min="1">
-                </div>
-                <input type="text" class="p-text" placeholder="¿Cuál es la pregunta?">
-                <div class="row">
-                    <input type="text" class="opt" placeholder="Opción A">
-                    <input type="text" class="opt" placeholder="Opción B">
-                </div>
-                <div class="row">
-                    <input type="text" class="opt" placeholder="Opción C">
-                    <select class="correct">
-                        <option value="">Selecciona la correcta</option>
-                        <option value="A">Opción A</option>
-                        <option value="B">Opción B</option>
-                        <option value="C">Opción C</option>
-                    </select>
-                </div>
+        window.addQ = () => {
+            const d = document.createElement('div');
+            d.className = "q-block";
+            d.innerHTML = `
+                <input type="text" class="p-txt" placeholder="Pregunta">
+                <input type="number" class="pts" placeholder="Puntos" style="width:100px" value="1">
+                <input type="text" class="opt" placeholder="Opción A">
+                <input type="text" class="opt" placeholder="Opción B">
+                <select class="correct"><option value="A">A</option><option value="B">B</option></select>
+                <input type="text" class="hint" placeholder="Pista de IA">
+                <hr style="opacity:0.1">
             `;
-            document.getElementById('questionsContainer').appendChild(div);
+            document.getElementById('qContainer').appendChild(d);
         };
 
-        document.getElementById('btnAdd').onclick = addQuestion;
-
         document.getElementById('btnSave').onclick = async () => {
-            const cards = document.querySelectorAll('.q-card');
             const preguntas = [];
-
-            cards.forEach(card => {
-                const opts = card.querySelectorAll('.opt');
+            document.querySelectorAll('.q-block').forEach(b => {
                 preguntas.push({
-                    pregunta: card.querySelector('.p-text').value,
-                    puntos: parseFloat(card.querySelector('.points-input').value),
-                    opciones: [opts[0].value, opts[1].value, opts[2].value],
-                    correcta: card.querySelector('.correct').value // Guarda 'A', 'B' o 'C'
+                    pregunta: b.querySelector('.p-txt').value,
+                    puntos: b.querySelector('.pts').value,
+                    correcta: b.querySelector('.correct').value,
+                    pista: b.querySelector('.hint').value,
+                    opciones: [b.querySelectorAll('.opt')[0].value, b.querySelectorAll('.opt')[1].value]
                 });
             });
 
-            if(!gID) return alert("No hay grupo seleccionado.");
+            await setDoc(doc(db, "pruebas", gID), {
+                nombrePrueba: document.getElementById('testName').value,
+                fecha: document.getElementById('testDate').value,
+                aiHabilitada: document.getElementById('aiHelp').checked,
+                preguntas: preguntas,
+                activa: true
+            });
 
-            try {
-                await setDoc(doc(db, "pruebas", gID), {
-                    preguntas: preguntas,
-                    activa: true,
-                    fecha: Date.now()
-                });
-                alert("Misión publicada con éxito en el sector " + gID);
-                window.location.href = "view-teacher.html";
-            } catch (e) { alert("Error: " + e.message); }
+            alert("Prueba publicada. Entrando al Radar Docente...");
+            window.location.href = "view-teacher.html";
         };
 
-        // Iniciar con una pregunta
-        addQuestion();
+        addQ();
     </script>
 </body>
 </html>
