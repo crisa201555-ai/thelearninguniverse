@@ -2,116 +2,143 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Inbox Galáctico | The Learning Universe</title>
+    <title>Terminal de Comunicaciones | TLU</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Fredoka+One&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #48dbfb; --s: #feca57; --bg: #060918; }
-        body { background: var(--bg); color: white; font-family: 'Montserrat'; padding: 30px; }
-        .container { max-width: 800px; margin: auto; }
-        
-        .inv-card { 
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(72, 219, 251, 0.2);
-            padding: 20px; border-radius: 15px; margin-bottom: 15px;
-            display: flex; justify-content: space-between; align-items: center;
-            transition: 0.3s;
+        :root { --p: #48dbfb; --s: #feca57; --bg: #060918; --glass: rgba(255, 255, 255, 0.05); }
+        body { 
+            background: var(--bg); color: white; font-family: 'Montserrat'; padding: 20px; 
+            background-image: radial-gradient(circle at top, #1b2735 0%, #090a0f 100%); min-height: 100vh;
         }
-        .inv-card:hover { border-color: var(--p); background: rgba(72, 219, 251, 0.05); }
+        .container { max-width: 700px; margin: auto; }
         
-        .info b { color: var(--p); font-size: 1.1rem; display: block; }
-        .info span { opacity: 0.7; font-size: 0.9rem; }
+        h1 { font-family: 'Fredoka One'; color: var(--p); text-align: center; letter-spacing: 2px; }
 
-        .btn-join { 
-            background: var(--s); color: #000; border: none; padding: 10px 20px; 
-            border-radius: 50px; font-family: 'Fredoka One'; cursor: pointer;
+        /* Filtros */
+        .filter-bar { 
+            display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; 
+            background: var(--glass); padding: 10px; border-radius: 50px; border: 1px solid rgba(72, 219, 251, 0.2);
         }
+        .filter-btn { 
+            background: none; border: none; color: white; padding: 10px 20px; border-radius: 40px; 
+            cursor: pointer; font-weight: 600; transition: 0.3s; opacity: 0.6;
+        }
+        .filter-btn.active { background: var(--p); color: #000; opacity: 1; }
+
+        /* Mensajes */
+        .message-card { 
+            background: var(--glass); border: 1px solid rgba(255,255,255,0.1); 
+            padding: 20px; border-radius: 15px; margin-bottom: 15px; 
+            border-left: 5px solid var(--p); animation: fadeIn 0.4s ease-out;
+        }
+        .message-card.clase { border-left-color: var(--s); }
+        .message-card h3 { margin: 0 0 10px 0; font-family: 'Fredoka One'; color: var(--s); font-size: 1.1rem; }
+        .message-card p { margin: 0; font-size: 0.95rem; line-height: 1.4; opacity: 0.9; }
+        .message-card .meta { font-size: 0.75rem; margin-top: 15px; opacity: 0.5; display: flex; justify-content: space-between; }
         
-        /* Estilo para mensajes del sistema (Códigos) */
-        .system-msg { border-left: 5px solid var(--s) !important; background: rgba(254, 202, 87, 0.1) !important; }
+        .btn-action { 
+            background: var(--p); color: #000; border: none; padding: 8px 15px; 
+            border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 10px;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1 style="font-family:'Fredoka One'; color:var(--p)">MENSAJES Y TRANSMISIONES</h1>
-        <div id="invitationList">Cargando comunicaciones...</div>
+        <h1>INBOX ESTELAR</h1>
+
+        <div class="filter-bar">
+            <button class="filter-btn active" onclick="filtrar('todo', this)">TODO</button>
+            <button class="filter-btn" onclick="filtrar('clase', this)">CLASES</button>
+            <button class="filter-btn" onclick="filtrar('sistema', this)">MENSAJES</button>
+        </div>
+
+        <div id="msgContainer">
+            </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, query, where, onSnapshot, doc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
-        const firebaseConfig = { /* TU CONFIGURACIÓN AQUÍ */ };
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-
-        onAuthStateChanged(auth, (user) => {
-            if (!user) return window.location.href = "login.html";
-
-            // Escuchar invitaciones y mensajes del sistema
-            const q = query(collection(db, "invitaciones"), where("para", "==", user.email));
-            
-            onSnapshot(q, (snap) => {
-                const list = document.getElementById('invitationList');
-                list.innerHTML = "";
-
-                if (snap.empty) {
-                    list.innerHTML = "<p style='opacity:0.5'>No hay transmisiones entrantes.</p>";
-                    return;
-                }
-
-                snap.forEach(d => {
-                    const inv = d.data();
-                    
-                    if (inv.esSistema) {
-                        // Mensaje de CÓDIGO DE SEGURIDAD (Para el Docente)
-                        list.innerHTML += `
-                            <div class="inv-card system-msg">
-                                <div class="info">
-                                    <b>🛡️ SEGURIDAD: ${inv.titulo}</b>
-                                    <span>${inv.mensaje}</span>
-                                </div>
-                            </div>`;
-                    } else {
-                        // Invitación a Clase (Para el Alumno)
-                        list.innerHTML += `
-                            <div class="inv-card">
-                                <div class="info">
-                                    <b>🛸 INVITACIÓN A: ${inv.nombreGrupo}</b>
-                                    <span>Docente: ${inv.docente}</span>
-                                </div>
-                                <button class="btn-join" onclick="aceptarInvitacion('${inv.grupoID}', '${d.id}')">UNIRSE</button>
-                            </div>`;
-                    }
-                });
-            });
-        });
-
-        // Función para unirse y guardar el grupo en memoria
-        window.aceptarInvitacion = async (gID, invID) => {
-            const user = auth.currentUser;
-            
-            try {
-                // 1. Guardar el ID del grupo en la memoria del navegador para limpiar la URL luego
-                localStorage.setItem('currentGroup', gID);
-
-                // 2. Registrar al alumno en la subcolección de miembros del grupo
-                await updateDoc(doc(db, "grupos", gID, "miembros", user.uid), {
-                    nombre: user.email.split('@')[0],
-                    enviado: false,
-                    nota: "Pendiente"
-                });
-
-                alert("¡Te has unido al sector correctamente!");
-                // Redirigir al Home o directamente a la clase
-                window.location.href = "home.html";
-                
-            } catch (e) {
-                console.error(e);
-                alert("Error al unirse. Verifica si el grupo aún existe.");
-            }
+    <script>
+        const firebaseConfig = { 
+            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", 
+            authDomain: "thelearninguniverse-26.firebaseapp.com", 
+            projectId: "thelearninguniverse-26", 
+            storageBucket: "thelearninguniverse-26.firebasestorage.app", 
+            messagingSenderId: "85338996011", 
+            appId: "1:85338996011:web:1f3bb216900c07e735596e" 
         };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // Simulamos el usuario actual (esto debería venir de tu Auth)
+        // Usaremos el localStorage como respaldo si no hay Auth activo
+        const userEmail = localStorage.getItem('userEmail') || "usuario@ejemplo.com"; 
+
+        let todosLosMensajes = [];
+
+        function cargarMensajes() {
+            // Buscamos todas las invitaciones/mensajes dirigidos a este correo
+            db.collection("invitaciones")
+                .where("para", "==", userEmail)
+                .onSnapshot(snapshot => {
+                    todosLosMensajes = [];
+                    snapshot.forEach(doc => {
+                        todosLosMensajes.push({ id: doc.id, ...doc.data() });
+                    });
+                    renderizar('todo');
+                });
+        }
+
+        function renderizar(filtro) {
+            const container = document.getElementById('msgContainer');
+            container.innerHTML = "";
+
+            const filtrados = todosLosMensajes.filter(m => {
+                if (filtro === 'todo') return true;
+                if (filtro === 'clase') return m.esSistema === false || m.nombreEstudiante;
+                if (filtro === 'sistema') return m.esSistema === true;
+            });
+
+            if (filtrados.length === 0) {
+                container.innerHTML = "<p style='text-align:center; opacity:0.5;'>No hay transmisiones en esta frecuencia.</p>";
+                return;
+            }
+
+            filtrados.forEach(m => {
+                const esClase = m.esSistema === false || m.nombreEstudiante;
+                const card = document.createElement('div');
+                card.className = `message-card ${esClase ? 'clase' : ''}`;
+                
+                card.innerHTML = `
+                    <h3>${m.titulo || (esClase ? 'Invitación a Sector' : 'Aviso del Sistema')}</h3>
+                    <p>${m.mensaje || `Has sido invitado al grupo por un docente. ID de Grupo: <b>${m.grupoID}</b>`}</p>
+                    <div class="meta">
+                        <span>${new Date(m.fecha).toLocaleDateString()}</span>
+                        ${esClase ? `<button class="btn-action" onclick="unirse('${m.grupoID}')">UNIRME AL SECTOR</button>` : ''}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        window.filtrar = function(tipo, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderizar(tipo);
+        };
+
+        window.unirse = function(id) {
+            localStorage.setItem('currentGroup', id);
+            alert("¡Te has unido al sector " + id + "!");
+            window.location.href = "home-student.html"; // O a donde corresponda
+        };
+
+        cargarMensajes();
     </script>
 </body>
 </html>
