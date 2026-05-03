@@ -9,10 +9,11 @@
             --primary: #6c5ce7;
             --secondary: #00cec9;
             --accent: #fd79a8;
+            --danger: #ff7675;
             --dark-bg: #0f172a;
         }
 
-        /* Reset total para unir sidebar y contenido sin grietas */
+        /* Reset para diseño unido */
         body, html {
             margin: 0;
             padding: 0;
@@ -23,14 +24,13 @@
             background: var(--dark-bg);
         }
 
-        /* Contenedor Flex para pegar las piezas */
         .app-container {
             display: flex;
             width: 100vw;
             height: 100vh;
         }
 
-        /* --- SIDEBAR IZQUIERDA --- */
+        /* --- SIDEBAR --- */
         .sidebar {
             width: 320px;
             background: linear-gradient(180deg, #1e293b 0%, #111827 100%);
@@ -69,7 +69,25 @@
             transform: scale(1.02);
         }
 
-        /* Sección Aprender al final de la sidebar */
+        /* Botón Cerrar Sesión */
+        .logout-btn {
+            margin-top: 15px;
+            text-decoration: none;
+            color: var(--danger);
+            padding: 12px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-align: center;
+            border: 2px solid var(--danger);
+            border-radius: 15px;
+            transition: 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: var(--danger);
+            color: white;
+        }
+
         .learn-box {
             margin-top: auto;
             background: rgba(253, 121, 168, 0.1);
@@ -93,7 +111,7 @@
 
         .btn-math:hover { background: var(--accent); color: white; }
 
-        /* --- CONTENIDO DERECHO --- */
+        /* --- CONTENIDO PRINCIPAL --- */
         .main-content {
             flex-grow: 1;
             background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
@@ -104,7 +122,6 @@
             position: relative;
         }
 
-        /* Reloj y Fecha arriba */
         .clock-capsule {
             position: absolute;
             top: 30px;
@@ -118,7 +135,6 @@
         #time { font-size: 2rem; color: var(--secondary); font-weight: 700; display: block; }
         #date { font-size: 0.8rem; color: white; opacity: 0.8; }
 
-        /* Imagen del logo animada */
         .hero-logo {
             width: 280px;
             filter: drop-shadow(0 0 25px var(--secondary));
@@ -130,7 +146,6 @@
             50% { transform: translateY(-20px); }
         }
 
-        /* Título de bienvenida (Blanco corregido) */
         .welcome-title {
             font-size: 3.5rem;
             margin: 25px 0 0 0;
@@ -145,17 +160,6 @@
             margin-top: 10px;
             height: 30px;
         }
-
-        .admin-link {
-            position: absolute;
-            bottom: 20px;
-            color: white;
-            opacity: 0.4;
-            text-decoration: none;
-            font-size: 0.85rem;
-            transition: 0.3s;
-        }
-        .admin-link:hover { opacity: 1; color: var(--secondary); }
     </style>
 </head>
 <body>
@@ -167,6 +171,8 @@
             <a href="creategroup.html" class="nav-btn">✨ Crear una clase</a>
             <a href="viewclass.html" class="nav-btn">🚀 Ver mi clase</a>
             <a href="inbox.html" class="nav-btn">📧 Bandeja de entrada</a>
+            
+            <a href="#" class="logout-btn" onclick="logout()">Cerrar sesión...</a>
 
             <div class="learn-box">
                 <span style="color: var(--accent); font-weight: 700; font-size: 0.9rem;">¡ZONA DE ESTUDIO!</span>
@@ -184,13 +190,23 @@
 
             <h1 class="welcome-title">¡Hola, <span>EXPLORADOR</span>!</h1>
             <div class="typing-sub" id="typewriter"></div>
-
-            <a href="historia.html" class="admin-link">Configuración del Sistema</a>
         </main>
     </div>
 
     <script>
-        // Reloj en tiempo real
+function logout() {
+    if(confirm("¿Estás seguro de que quieres cerrar sesión? 🚀")) {
+        // Limpiamos los datos del usuario
+        localStorage.removeItem('userClass');
+        localStorage.setItem('isLoggedIn', 'false'); // Opcional: para control de acceso
+        
+        alert("Sesión cerrada. ¡Vuelve pronto, Explorador!");
+        
+        // Redirigimos al login
+        window.location.href = "login.html"; 
+    }
+}
+
         function updateClock() {
             const now = new Date();
             document.getElementById('time').innerText = now.toLocaleTimeString('es-ES');
@@ -201,7 +217,6 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // Efecto de escritura
         const text = "¡Hoy es un gran día para descubrir algo nuevo!";
         let i = 0;
         function type() {
