@@ -13,131 +13,75 @@
             --dark-bg: #0f172a;
         }
 
-        /* Reset para diseño unido */
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-            font-family: 'Fredoka', sans-serif;
-            overflow: hidden;
-            background: var(--dark-bg);
+        /* Evitamos el "parpadeo" ocultando el body hasta que Firebase confirme al usuario */
+        body { 
+            margin: 0; padding: 0; height: 100%; width: 100%;
+            font-family: 'Fredoka', sans-serif; overflow: hidden;
+            background: var(--dark-bg); display: none; 
         }
 
-        .app-container {
-            display: flex;
-            width: 100vw;
-            height: 100vh;
-        }
+        .app-container { display: flex; width: 100vw; height: 100vh; }
 
         /* --- SIDEBAR --- */
         .sidebar {
             width: 320px;
             background: linear-gradient(180deg, #1e293b 0%, #111827 100%);
             border-right: 2px solid rgba(0, 206, 201, 0.3);
-            display: flex;
-            flex-direction: column;
-            padding: 40px 20px;
-            box-sizing: border-box;
-            flex-shrink: 0;
+            display: flex; flex-direction: column; padding: 40px 20px;
+            box-sizing: border-box; flex-shrink: 0;
         }
 
         .sidebar h1 {
-            font-size: 1.8rem;
-            text-align: center;
-            color: var(--secondary);
-            margin-bottom: 40px;
-            text-shadow: 0 0 10px rgba(0, 206, 201, 0.5);
+            font-size: 1.8rem; text-align: center; color: var(--secondary);
+            margin-bottom: 40px; text-shadow: 0 0 10px rgba(0, 206, 201, 0.5);
         }
 
         .nav-btn {
-            text-decoration: none;
-            color: white;
-            padding: 15px;
-            margin-bottom: 12px;
-            border-radius: 15px;
-            font-weight: 700;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid transparent;
-            transition: 0.3s;
+            text-decoration: none; color: white; padding: 15px;
+            margin-bottom: 12px; border-radius: 15px; font-weight: 700;
+            text-align: center; background: rgba(255, 255, 255, 0.05);
+            border: 2px solid transparent; transition: 0.3s;
         }
 
-        .nav-btn:hover {
-            background: var(--primary);
-            border-color: white;
-            transform: scale(1.02);
-        }
+        .nav-btn:hover { background: var(--primary); border-color: white; transform: scale(1.02); }
 
-        /* Botón Cerrar Sesión */
         .logout-btn {
-            margin-top: 15px;
-            text-decoration: none;
-            color: var(--danger);
-            padding: 12px;
-            font-size: 0.9rem;
-            font-weight: 700;
-            text-align: center;
-            border: 2px solid var(--danger);
-            border-radius: 15px;
-            transition: 0.3s;
+            margin-top: 15px; text-decoration: none; color: var(--danger);
+            padding: 12px; font-size: 0.9rem; font-weight: 700;
+            text-align: center; border: 2px solid var(--danger);
+            border-radius: 15px; cursor: pointer; transition: 0.3s;
         }
 
-        .logout-btn:hover {
-            background: var(--danger);
-            color: white;
-        }
+        .logout-btn:hover { background: var(--danger); color: white; }
 
         .learn-box {
-            margin-top: auto;
-            background: rgba(253, 121, 168, 0.1);
-            border: 2px dashed var(--accent);
-            border-radius: 20px;
-            padding: 20px;
-            text-align: center;
+            margin-top: auto; background: rgba(253, 121, 168, 0.1);
+            border: 2px dashed var(--accent); border-radius: 20px;
+            padding: 20px; text-align: center;
         }
 
         .btn-math {
-            display: block;
-            text-decoration: none;
-            background: white;
-            color: var(--accent);
-            padding: 12px;
-            border-radius: 12px;
-            font-weight: 700;
-            margin-top: 10px;
-            transition: 0.3s;
+            display: block; text-decoration: none; background: white;
+            color: var(--accent); padding: 12px; border-radius: 12px;
+            font-weight: 700; margin-top: 10px; transition: 0.3s;
         }
 
-        .btn-math:hover { background: var(--accent); color: white; }
-
-        /* --- CONTENIDO PRINCIPAL --- */
+        /* --- CONTENIDO --- */
         .main-content {
-            flex-grow: 1;
+            flex-grow: 1; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; position: relative;
             background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
         }
 
         .clock-capsule {
-            position: absolute;
-            top: 30px;
-            background: rgba(0, 206, 201, 0.1);
-            border: 1px solid var(--secondary);
-            padding: 10px 30px;
-            border-radius: 50px;
-            text-align: center;
+            position: absolute; top: 30px; background: rgba(0, 206, 201, 0.1);
+            border: 1px solid var(--secondary); padding: 10px 30px; border-radius: 50px;
         }
 
         #time { font-size: 2rem; color: var(--secondary); font-weight: 700; display: block; }
-        #date { font-size: 0.8rem; color: white; opacity: 0.8; }
-
+        
         .hero-logo {
-            width: 280px;
-            filter: drop-shadow(0 0 25px var(--secondary));
+            width: 280px; filter: drop-shadow(0 0 25px var(--secondary));
             animation: float 4s ease-in-out infinite;
         }
 
@@ -146,36 +90,26 @@
             50% { transform: translateY(-20px); }
         }
 
-        .welcome-title {
-            font-size: 3.5rem;
-            margin: 25px 0 0 0;
-            text-align: center;
-            color: #ffffff !important;
-        }
+        .welcome-title { font-size: 3.5rem; color: white; margin-top: 25px; }
         .welcome-title span { color: var(--secondary); }
 
-        .typing-sub {
-            font-size: 1.4rem;
-            color: #a29bfe;
-            margin-top: 10px;
-            height: 30px;
-        }
+        .typing-sub { font-size: 1.4rem; color: #a29bfe; margin-top: 10px; height: 30px; }
     </style>
 </head>
 <body>
 
     <div class="app-container">
         <aside class="sidebar">
-            <h1>THE LEARNING UNIVERSE</h1>
+            <h1>UNIVERSE</h1>
             
             <a href="creategroup.html" class="nav-btn">✨ Crear una clase</a>
             <a href="viewclass.html" class="nav-btn">🚀 Ver mi clase</a>
             <a href="inbox.html" class="nav-btn">📧 Bandeja de entrada</a>
             
-            <a href="#" class="logout-btn" onclick="logout()">Cerrar sesión...</a>
+            <div class="logout-btn" id="logoutBtn">Cerrar sesión...</div>
 
             <div class="learn-box">
-                <span style="color: var(--accent); font-weight: 700; font-size: 0.9rem;">¡ZONA DE ESTUDIO!</span>
+                <span style="color: var(--accent); font-weight: 700;">¡ZONA DE ESTUDIO!</span>
                 <a href="/matematicas/home.html" class="btn-math">📐 Matemáticas</a>
             </div>
         </aside>
@@ -183,29 +117,63 @@
         <main class="main-content">
             <div class="clock-capsule">
                 <span id="time">00:00:00</span>
-                <span id="date">Cargando...</span>
+                <span id="date" style="color:white; opacity:0.7">Cargando...</span>
             </div>
 
             <img src="unnamed-removebg-preview.png" alt="Logo" class="hero-logo">
 
-            <h1 class="welcome-title">¡Hola, <span>EXPLORADOR</span>!</h1>
+            <h1 class="welcome-title">¡Hola, <span id="userName">EXPLORADOR</span>!</h1>
             <div class="typing-sub" id="typewriter"></div>
         </main>
     </div>
 
-    <script>
-function logout() {
-    if(confirm("¿Estás seguro de que quieres cerrar sesión? 🚀")) {
-        // Limpiamos los datos del usuario
-        localStorage.removeItem('userClass');
-        localStorage.setItem('isLoggedIn', 'false'); // Opcional: para control de acceso
-        
-        alert("Sesión cerrada. ¡Vuelve pronto, Explorador!");
-        
-        // Redirigimos al login
-        window.location.href = "login.html"; 
-    }
-}
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
+            authDomain: "thelearninguniverse-26.firebaseapp.com",
+            projectId: "thelearninguniverse-26",
+            storageBucket: "thelearninguniverse-26.firebasestorage.app",
+            messagingSenderId: "85338996011",
+            appId: "1:85338996011:web:1f3bb216900c07e735596e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // --- 1. GUARDIÁN DE RUTA ---
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Usuario autenticado: mostramos la página y su nombre
+                document.body.style.display = "block";
+                if(user.displayName) {
+                    document.getElementById('userName').innerText = user.displayName.split(' ')[0].toUpperCase();
+                }
+                startApp();
+            } else {
+                // No hay usuario: expulsión inmediata
+                window.location.replace("login.html");
+            }
+        });
+
+        // --- 2. CERRAR SESIÓN ---
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            if(confirm("¿Quieres cerrar tu sesión espacial? 🚀")) {
+                signOut(auth).then(() => {
+                    localStorage.clear();
+                    window.location.replace("login.html");
+                });
+            }
+        });
+
+        // --- 3. LÓGICA DE LA INTERFAZ ---
+        function startApp() {
+            updateClock();
+            setInterval(updateClock, 1000);
+            typeEffect();
+        }
 
         function updateClock() {
             const now = new Date();
@@ -214,19 +182,16 @@ function logout() {
                 weekday: 'long', day: 'numeric', month: 'long' 
             });
         }
-        setInterval(updateClock, 1000);
-        updateClock();
 
         const text = "¡Hoy es un gran día para descubrir algo nuevo!";
         let i = 0;
-        function type() {
+        function typeEffect() {
             if (i < text.length) {
                 document.getElementById("typewriter").innerHTML += text.charAt(i);
                 i++;
-                setTimeout(type, 50);
+                setTimeout(typeEffect, 50);
             }
         }
-        type();
     </script>
 </body>
 </html>
