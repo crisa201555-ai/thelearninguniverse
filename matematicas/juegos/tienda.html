@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Tienda Galáctica | TLU</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --fondo: #0c1445;
+            --celeste: #48dbfb;
+            --amarillo: #feca57;
+            --rosa: #fd79a8;
+            --blanco: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Fredoka', sans-serif;
+            background: var(--fondo);
+            background-image: radial-gradient(circle, #1b277a 0%, #0c1445 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            overflow: hidden;
+        }
+
+        .game-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            padding: 30px;
+            border-radius: 40px;
+            border: 3px solid var(--celeste);
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .header h1 { color: var(--amarillo); margin: 0; font-size: 2rem; }
+        .header p { opacity: 0.8; margin-bottom: 20px; }
+
+        .market-display {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .item { color: var(--celeste); font-weight: 700; }
+        .price { color: var(--amarillo); }
+
+        .input-area { margin: 20px 0; }
+        input {
+            width: 120px;
+            padding: 15px;
+            border-radius: 20px;
+            border: none;
+            font-size: 1.5rem;
+            text-align: center;
+            font-family: 'Fredoka';
+            outline: none;
+        }
+
+        .btn-check {
+            background: var(--rosa);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.3s;
+            box-shadow: 0 5px 0 #d63031;
+        }
+
+        .btn-check:active { transform: translateY(5px); box-shadow: none; }
+
+        .feedback { margin-top: 20px; font-weight: 700; min-height: 24px; }
+        
+        .btn-home {
+            display: inline-block;
+            margin-top: 20px;
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-card">
+        <div class="header">
+            <h1>🛒 La Tienda Galáctica</h1>
+            <p id="mission-text">Misión: ¡Calcula el total de la compra!</p>
+        </div>
+
+        <div class="market-display" id="problem-area">
+            Cargando productos...
+        </div>
+
+        <div class="input-area">
+            <input type="number" id="userAnswer" placeholder="?">
+            <br>
+            <button class="btn-check" onclick="checkAnswer()">REVISAR 🚀</button>
+        </div>
+
+        <div class="feedback" id="feedback"></div>
+
+        <a href="home.html" class="btn-home">⬅ Volver al menú espacial</a>
+    </div>
+
+    <script>
+        let currentAnswer = 0;
+        let isVueltoMode = false;
+
+        function generateProblem() {
+            const feedback = document.getElementById('feedback');
+            const problemArea = document.getElementById('problem-area');
+            const missionText = document.getElementById('mission-text');
+            const input = document.getElementById('userAnswer');
+            
+            feedback.innerText = "";
+            input.value = "";
+            
+            // Decidir si es suma (compra) o resta (vuelto)
+            isVueltoMode = Math.random() > 0.5;
+
+            if (!isVueltoMode) {
+                // MODO SUMA
+                const chicle = 100;
+                const helado = 200;
+                currentAnswer = chicle + helado;
+                
+                missionText.innerText = "Misión: ¡Calcula el total de la compra!";
+                problemArea.innerHTML = `
+                    Has elegido: <br>
+                    <span class="item">🍬 Chicle Espacial:</span> <span class="price">$${chicle}</span><br>
+                    <span class="item">🍦 Helado Lunar:</span> <span class="price">$${helado}</span><br>
+                    <hr style="opacity:0.2">
+                    <strong>¿Cuánto debes pagar en total?</strong>
+                `;
+            } else {
+                // MODO RESTA (Vuelto)
+                const totalCompra = 300;
+                const pagoCon = 500;
+                currentAnswer = pagoCon - totalCompra;
+
+                missionText.innerText = "Misión: ¡Calcula el vuelto!";
+                problemArea.innerHTML = `
+                    El total es <span class="price">$${totalCompra}</span>.<br>
+                    Pagas con un billete de <span class="item">$${pagoCon}</span>.<br>
+                    <hr style="opacity:0.2">
+                    <strong>¿Cuánto vuelto recibirás?</strong>
+                `;
+            }
+        }
+
+        function checkAnswer() {
+            const userAnswer = parseInt(document.getElementById('userAnswer').value);
+            const feedback = document.getElementById('feedback');
+
+            if (userAnswer === currentAnswer) {
+                feedback.style.color = "#55efc4";
+                feedback.innerText = "¡EXCELENTE! ¡Eres un gran comerciante! 🌟";
+                setTimeout(generateProblem, 2000);
+            } else {
+                feedback.style.color = "#ff7675";
+                feedback.innerText = "¡Ups! Inténtalo de nuevo, tú puedes. 🛰️";
+            }
+        }
+
+        // Iniciar el primer problema
+        window.onload = generateProblem;
+    </script>
+</body>
+</html>
