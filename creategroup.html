@@ -2,7 +2,8 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>TLU | Centro de Comando de Clases</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TLU | Centro de Comando</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -13,61 +14,70 @@
         }
 
         body, html {
-            margin: 0; padding: 0; height: 100%;
+            margin: 0; padding: 0; min-height: 100vh;
             font-family: 'Fredoka', sans-serif;
             background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
             color: white; display: flex; justify-content: center; align-items: center;
         }
 
         .container {
-            width: 100%;
+            width: 95%;
             max-width: 600px;
             padding: 20px;
+            box-sizing: border-box;
         }
 
         .command-panel {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
-            border-radius: 40px;
+            border-radius: 30px;
             border: 3px solid var(--primary);
-            padding: 40px;
+            padding: 30px;
             box-shadow: 0 25px 50px rgba(0,0,0,0.5);
             text-align: center;
+            animation: slideIn 0.6s ease-out;
         }
 
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .icon-box { font-size: clamp(2rem, 10vw, 3.5rem); margin-bottom: 10px; }
+
         .panel-header h1 {
-            font-size: 2.5rem;
+            font-size: clamp(1.5rem, 8vw, 2.5rem);
             color: var(--secondary);
             margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
         }
 
         .panel-header p {
+            font-size: clamp(0.9rem, 4vw, 1.1rem);
             opacity: 0.7;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
-        /* Formulario Estilo Moderno */
+        /* Formulario Responsivo */
         .input-group {
             text-align: left;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .input-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
             font-weight: 700;
             color: var(--accent);
-            padding-left: 10px;
+            font-size: 0.95rem;
         }
 
         .input-group input, .input-group textarea {
             width: 100%;
-            padding: 15px;
-            border-radius: 15px;
+            padding: 12px 15px;
+            border-radius: 12px;
             border: 2px solid rgba(255,255,255,0.1);
-            background: rgba(0,0,0,0.2);
+            background: rgba(0,0,0,0.3);
             color: white;
             font-family: 'Fredoka';
             font-size: 1rem;
@@ -78,55 +88,47 @@
 
         .input-group input:focus {
             border-color: var(--secondary);
-            background: rgba(0,0,0,0.4);
+            background: rgba(0,0,0,0.5);
         }
 
-        /* Botones */
+        /* Botones Adaptables */
         .actions {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            margin-top: 30px;
+            gap: 12px;
+            margin-top: 25px;
         }
 
         .btn-create {
             background: linear-gradient(to right, var(--primary), var(--secondary));
             color: white;
             border: none;
-            padding: 18px;
+            padding: 16px;
             border-radius: 50px;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 10px 20px rgba(108, 92, 231, 0.3);
             transition: 0.3s;
         }
 
-        .btn-create:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(108, 92, 231, 0.5);
-        }
+        .btn-create:active { transform: scale(0.95); }
 
         .btn-home {
             background: transparent;
             color: white;
             border: 2px solid rgba(255,255,255,0.2);
-            padding: 12px;
+            padding: 10px;
             border-radius: 50px;
             text-decoration: none;
             font-weight: 700;
+            font-size: 0.9rem;
             transition: 0.3s;
-            display: inline-block;
         }
 
-        .btn-home:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: white;
-        }
-
-        .icon-box {
-            font-size: 3rem;
-            margin-bottom: 10px;
+        /* Media Query para pantallas muy pequeñas */
+        @media (max-width: 400px) {
+            .command-panel { padding: 20px; }
+            .btn-create { font-size: 1.1rem; }
         }
     </style>
 </head>
@@ -137,26 +139,26 @@
             <div class="icon-box">🛰️</div>
             <div class="panel-header">
                 <h1>Nueva Misión</h1>
-                <p>Configura los parámetros de tu nueva clase educativa</p>
+                <p>Configura tu clase estelar</p>
             </div>
 
             <div class="input-group">
                 <label>Nombre de la Clase</label>
-                <input type="text" id="className" placeholder="Ej: Exploradores de Marte">
+                <input type="text" id="className" placeholder="Ej: Viaje a Júpiter">
             </div>
 
             <div class="input-group">
-                <label>Profesor a Cargo</label>
-                <input type="text" id="teacherName" placeholder="Tu nombre o alias">
+                <label>Profesor / Capitán</label>
+                <input type="text" id="teacherName" placeholder="Tu nombre">
             </div>
 
             <div class="input-group">
-                <label>Objetivo de la Misión</label>
-                <textarea id="description" rows="3" placeholder="¿Qué aprenderemos hoy?"></textarea>
+                <label>Objetivo (Opcional)</label>
+                <textarea id="description" rows="2" placeholder="¿Qué vamos a descubrir?"></textarea>
             </div>
 
             <div class="actions">
-                <button class="btn-create" onclick="crearClase()">✨ INICIAR CLASE</button>
+                <button class="btn-create" onclick="crearClase()">✨ INICIAR MISIÓN</button>
                 <a href="home.html" class="btn-home">⬅ Volver al Home</a>
             </div>
         </div>
@@ -166,31 +168,30 @@
         function crearClase() {
             const nombre = document.getElementById('className').value;
             const profe = document.getElementById('teacherName').value;
-            const desc = document.getElementById('description').value;
 
             if (!nombre || !profe) {
-                alert("⚠️ ¡Capitán! Necesitamos el nombre de la clase y del profesor para despegar.");
+                alert("⚠️ ¡Faltan datos para el despegue, Capitán!");
                 return;
             }
 
-            // 1. Guardar para la vista activa
+            // Guardar Datos
             localStorage.setItem('userClass', nombre);
             localStorage.setItem('userTeacher', profe);
 
-            // 2. Generar mensaje para el Inbox
+            // Generar Mensaje Inbox
             const nuevoMensaje = {
                 id: Date.now(),
-                titulo: "🚀 ¡Misión Iniciada!",
-                cuerpo: `La clase "${nombre}" ha sido creada con éxito bajo el mando del profesor ${profe}. ¡A aprender!`,
+                titulo: "🚀 Misión: " + nombre,
+                cuerpo: `¡Despegue confirmado! Has iniciado la clase con el profesor ${profe}.`,
                 hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                fecha: new Date().toLocaleDateString(),
+                fecha: new Date().toLocaleDateString()
             };
 
             let bandeja = JSON.parse(localStorage.getItem('inboxMessages')) || [];
             bandeja.unshift(nuevoMensaje);
             localStorage.setItem('inboxMessages', JSON.stringify(bandeja));
 
-            alert("✨ ¡Clase creada! Los datos han sido enviados a tu Bandeja de Entrada.");
+            alert("✨ ¡Misión creada con éxito!");
             window.location.href = "home.html";
         }
     </script>
