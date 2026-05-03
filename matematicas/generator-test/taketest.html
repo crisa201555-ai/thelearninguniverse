@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>TLU | Realizando Test</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #00cec9;
+            --dark-bg: #0f172a;
+        }
+
+        body {
+            background: var(--dark-bg);
+            color: white;
+            font-family: 'Fredoka', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .test-container {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 40px;
+            border-radius: 30px;
+            border: 3px solid var(--primary);
+            text-align: center;
+            width: 400px;
+        }
+
+        .question-number { color: var(--secondary); font-size: 1.2rem; }
+        .math-problem { font-size: 4rem; margin: 20px 0; }
+        
+        input {
+            width: 150px;
+            padding: 15px;
+            font-size: 2rem;
+            border-radius: 15px;
+            border: none;
+            text-align: center;
+            font-family: 'Fredoka';
+        }
+
+        .btn-next {
+            background: var(--secondary);
+            color: var(--dark-bg);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 15px;
+            font-weight: 700;
+            margin-top: 25px;
+            cursor: pointer;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="clickSound" src="../mouse-click-sound.mp3"></audio>
+
+    <div class="test-container" id="quiz-box">
+        <div class="question-number">Pregunta <span id="q-num">1</span> de 10</div>
+        <div class="math-problem" id="problem">...</div>
+        <input type="number" id="ans" placeholder="?" autofocus>
+        <button class="btn-next" onclick="nextQuestion()">Siguiente</button>
+    </div>
+
+    <script>
+        const clickSound = document.getElementById('clickSound');
+        const difficulty = localStorage.getItem('test_difficulty') || 'facil';
+        let currentStep = 1;
+        let correctAnswers = 0;
+        let num1, num2, result;
+
+        function playClick() {
+            clickSound.currentTime = 0;
+            clickSound.play();
+        }
+
+        function generateProblem() {
+            let max = difficulty === 'facil' ? 10 : (difficulty === 'medio' ? 50 : 100);
+            num1 = Math.floor(Math.random() * max) + 1;
+            num2 = Math.floor(Math.random() * max) + 1;
+            result = num1 + num2;
+            document.getElementById('problem').innerText = `${num1} + ${num2}`;
+            document.getElementById('ans').value = '';
+            document.getElementById('ans').focus();
+        }
+
+        function nextQuestion() {
+            playClick();
+            const userAns = parseInt(document.getElementById('ans').value);
+            
+            if (userAns === result) correctAnswers++;
+
+            if (currentStep < 10) {
+                currentStep++;
+                document.getElementById('q-num').innerText = currentStep;
+                generateProblem();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            const score = (correctAnswers / 10) * 7; // Escala de 1 a 7 (típica en Chile)
+            document.getElementById('quiz-box').innerHTML = `
+                <h1 style="color:var(--secondary)">Test Finalizado</h1>
+                <p style="font-size: 1.5rem">Acertaste ${correctAnswers} de 10</p>
+                <div style="font-size: 3rem; margin: 20px 0">Nota: ${score.toFixed(1)}</div>
+                <button class="btn-next" onclick="window.location.href='../generator-test.html'">Volver</button>
+            `;
+        }
+
+        // Iniciar
+        generateProblem();
+    </script>
+</body>
+</html>
