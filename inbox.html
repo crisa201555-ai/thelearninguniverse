@@ -2,94 +2,239 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Inbox Estelar | TLU</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Fredoka+One&display=swap" rel="stylesheet">
+    <title>TLU | Centro de Comunicaciones</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #48dbfb; --s: #feca57; --bg: #060918; }
-        body { background: var(--bg); color: white; font-family: 'Montserrat'; padding: 20px; }
-        .container { max-width: 600px; margin: auto; }
-        .filter-bar { display: flex; gap: 10px; margin-bottom: 30px; justify-content: center; }
-        .f-btn { background: rgba(255,255,255,0.1); border: 2px solid transparent; color: white; padding: 10px 20px; border-radius: 25px; cursor: pointer; transition: 0.3s; }
-        .f-btn.active { border-color: var(--p); background: rgba(72, 219, 251, 0.2); color: var(--p); }
-        .msg-card { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; margin-bottom: 15px; border-left: 5px solid var(--p); animation: slide 0.3s ease; }
-        .msg-card.clase { border-left-color: var(--s); }
-        @keyframes slide { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .btn-join { background: var(--s); border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: 'Fredoka One'; margin-top: 10px; }
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #00cec9;
+            --accent: #fd79a8;
+            --dark-bg: #0f172a;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        body, html {
+            margin: 0; padding: 0; height: 100%;
+            font-family: 'Fredoka', sans-serif;
+            background: radial-gradient(circle at top right, #1e293b 0%, #0f172a 100%);
+            color: white; display: flex; flex-direction: column;
+        }
+
+        /* --- HEADER --- */
+        .inbox-header {
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .inbox-header h1 {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            margin: 0;
+            text-shadow: 0 0 15px rgba(0, 206, 201, 0.3);
+        }
+
+        /* --- FILTROS --- */
+        .filter-bar {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .filter-link {
+            text-decoration: none;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 50px;
+            background: var(--glass);
+            border: 2px solid transparent;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .filter-link:hover, .filter-link.active {
+            background: var(--primary);
+            border-color: white;
+            transform: translateY(-2px);
+        }
+
+        /* --- CONTENEDOR DE MENSAJES --- */
+        .inbox-container {
+            max-width: 800px;
+            width: 90%;
+            margin: 0 auto 50px auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message-card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            border-left: 6px solid var(--secondary);
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 0.5s ease forwards;
+            transition: 0.3s;
+        }
+
+        .message-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.01);
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .message-title {
+            font-size: 1.2rem;
+            color: var(--secondary);
+            font-weight: 700;
+        }
+
+        .message-date {
+            font-size: 0.8rem;
+            opacity: 0.6;
+        }
+
+        .message-body {
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .message-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn-delete {
+            background: none;
+            border: none;
+            color: var(--accent);
+            cursor: pointer;
+            font-family: 'Fredoka';
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+
+        .btn-delete:hover { color: #ff7675; text-decoration: underline; }
+
+        /* --- BOTÓN VOLVER --- */
+        .btn-back-home {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: var(--secondary);
+            color: var(--dark-bg);
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(0, 206, 201, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+            opacity: 0.5;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 style="font-family:'Fredoka One'; text-align:center; color: var(--p);">BANDEJA DE ENTRADA</h1>
-        
-        <div class="filter-bar">
-            <button class="f-btn active" onclick="filtrar('todo', this)">TODO</button>
-            <button class="f-btn" onclick="filtrar('clase', this)">CLASES</button>
-            <button class="f-btn" onclick="filtrar('sistema', this)">MENSAJES</button>
-        </div>
 
-        <div id="msgContainer"></div>
+    <header class="inbox-header">
+        <h1>📧 Bandeja de Entrada</h1>
+        <p>Tus comunicaciones del universo educativo</p>
+    </header>
+
+    <div class="filter-bar">
+        <a href="inbox.html" class="filter-link" id="filter-all">Todos</a>
+        <a href="inbox.html?filtro=clases" class="filter-link" id="filter-clases">Clases</a>
+        <a href="inbox.html?filtro=sistema" class="filter-link" id="filter-sistema">Sistema</a>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <main class="inbox-container" id="inbox-list">
+        </main>
+
+    <a href="home.html" class="btn-back-home">⬅ Volver al Home</a>
+
     <script>
-        const firebaseConfig = { 
-            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", 
-            authDomain: "thelearninguniverse-26.firebaseapp.com", 
-            projectId: "thelearninguniverse-26", 
-            storageBucket: "thelearninguniverse-26.firebasestorage.app", 
-            messagingSenderId: "85338996011", 
-            appId: "1:85338996011:web:1f3bb216900c07e735596e" 
+        // 1. Obtener el filtro de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentFilter = urlParams.get('filtro');
+
+        window.onload = function() {
+            highlightFilter();
+            renderMessages();
         };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
 
-        // IMPORTANTE: Obtenemos el correo del usuario logueado
-        const userEmail = (localStorage.getItem('userEmail') || "").toLowerCase();
-        let mensajesLocales = [];
-
-        if(!userEmail) {
-            document.getElementById('msgContainer').innerHTML = "<p style='text-align:center;'>No se detectó sesión activa.</p>";
-        } else {
-            // Escuchar mensajes en tiempo real para este usuario
-            db.collection("invitaciones").where("para", "==", userEmail).onSnapshot(snap => {
-                mensajesLocales = [];
-                snap.forEach(doc => mensajesLocales.push({id: doc.id, ...doc.data()}));
-                filtrar('todo', document.querySelector('.f-btn'));
-            });
+        // Resaltar el botón del filtro activo
+        function highlightFilter() {
+            if (!currentFilter) {
+                document.getElementById('filter-all').classList.add('active');
+            } else {
+                const activeBtn = document.getElementById('filter-' + currentFilter);
+                if (activeBtn) activeBtn.classList.add('active');
+            }
         }
 
-        function filtrar(tipo, btn) {
-            document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+        function renderMessages() {
+            const container = document.getElementById('inbox-list');
+            const mensajes = JSON.parse(localStorage.getItem('inboxMessages')) || [];
+            
+            // 2. Lógica de Filtrado
+            let mensajesFiltrados = mensajes;
+            if (currentFilter === 'clases') {
+                mensajesFiltrados = mensajes.filter(m => m.titulo.toLowerCase().includes('clase') || m.titulo.toLowerCase().includes('misión'));
+            } else if (currentFilter === 'sistema') {
+                mensajesFiltrados = mensajes.filter(m => !m.titulo.toLowerCase().includes('clase'));
+            }
 
-            const container = document.getElementById('msgContainer');
-            container.innerHTML = "";
-
-            const filtrados = mensajesLocales.filter(m => {
-                if(tipo === 'todo') return true;
-                if(tipo === 'clase') return m.esSistema === false;
-                if(tipo === 'sistema') return m.esSistema === true;
-            });
-
-            if(filtrados.length === 0) container.innerHTML = "<p style='text-align:center; opacity:0.5;'>Sin transmisiones.</p>";
-
-            filtrados.forEach(m => {
-                const esClase = m.esSistema === false;
-                container.innerHTML += `
-                    <div class="msg-card ${esClase ? 'clase' : ''}">
-                        <h3 style="margin:0; color:var(--s);">${m.titulo || 'Comunicado'}</h3>
-                        <p>${m.mensaje}</p>
-                        ${esClase ? `<button class="btn-join" onclick="aceptar('${m.grupoID}')">ACEPTAR MISIÓN</button>` : ''}
+            if (mensajesFiltrados.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <p style="font-size: 4rem;">🛸</p>
+                        <p>No hay mensajes en esta categoría.</p>
                     </div>`;
+                return;
+            }
+
+            container.innerHTML = "";
+            mensajesFiltrados.forEach((msg, index) => {
+                container.innerHTML += `
+                    <div class="message-card">
+                        <div class="message-header">
+                            <span class="message-title">${msg.titulo}</span>
+                            <span class="message-date">${msg.fecha} | ${msg.hora}</span>
+                        </div>
+                        <div class="message-body">${msg.cuerpo}</div>
+                        <div class="message-actions">
+                            <button class="btn-delete" onclick="borrarMensaje(${index})">Eliminar Registro</button>
+                        </div>
+                    </div>
+                `;
             });
         }
 
-        window.aceptar = (id) => {
-            localStorage.setItem('currentGroup', id);
-            alert("Misión aceptada. Entrando al sector...");
-            location.href = "home-student.html";
-        };
+        function borrarMensaje(index) {
+            let mensajes = JSON.parse(localStorage.getItem('inboxMessages')) || [];
+            mensajes.splice(index, 1);
+            localStorage.setItem('inboxMessages', JSON.stringify(mensajes));
+            renderMessages();
+        }
     </script>
 </body>
 </html>
