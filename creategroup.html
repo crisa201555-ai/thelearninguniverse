@@ -2,143 +2,197 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Crear Sector | The Learning Universe</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Fredoka+One&display=swap" rel="stylesheet">
+    <title>TLU | Centro de Comando de Clases</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #48dbfb; --s: #feca57; --bg: #060918; }
-        body { 
-            background: var(--bg); color: white; font-family: 'Montserrat'; 
-            display: flex; justify-content: center; align-items: center; 
-            min-height: 100vh; margin: 0; 
-            background-image: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #00cec9;
+            --accent: #fd79a8;
+            --dark-bg: #0f172a;
         }
-        .card { 
-            background: rgba(255,255,255,0.05); padding: 40px; border-radius: 25px; 
-            border: 1px solid var(--p); width: 100%; max-width: 400px; 
-            text-align: center; backdrop-filter: blur(10px);
-            box-shadow: 0 0 40px rgba(72, 219, 251, 0.1);
+
+        body, html {
+            margin: 0; padding: 0; height: 100%;
+            font-family: 'Fredoka', sans-serif;
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+            color: white; display: flex; justify-content: center; align-items: center;
         }
-        h1 { font-family: 'Fredoka One'; color: var(--s); margin-bottom: 10px; }
-        p { font-size: 0.9rem; opacity: 0.8; margin-bottom: 25px; }
-        input { 
-            width: 100%; padding: 15px; margin: 15px 0; border-radius: 12px; 
-            border: 1px solid var(--p); background: rgba(0,0,0,0.5); color: white; 
-            box-sizing: border-box; font-size: 1rem; outline: none;
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
         }
-        input:focus { box-shadow: 0 0 10px var(--p); }
-        .btn { 
-            background: var(--p); color: #000; border: none; padding: 15px; 
-            width: 100%; border-radius: 12px; font-family: 'Fredoka One'; 
-            cursor: pointer; font-size: 1.1rem; transition: 0.3s;
+
+        .command-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 40px;
+            border: 3px solid var(--primary);
+            padding: 40px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            text-align: center;
         }
-        .btn:hover { background: var(--s); transform: translateY(-2px); }
-        .btn:disabled { background: #555; cursor: not-allowed; }
-        #timer-info { margin-top: 15px; font-size: 0.8rem; color: var(--p); display: none; }
+
+        .panel-header h1 {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .panel-header p {
+            opacity: 0.7;
+            margin-bottom: 30px;
+        }
+
+        /* Formulario Estilo Moderno */
+        .input-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: var(--accent);
+            padding-left: 10px;
+        }
+
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 15px;
+            border-radius: 15px;
+            border: 2px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.2);
+            color: white;
+            font-family: 'Fredoka';
+            font-size: 1rem;
+            box-sizing: border-box;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: var(--secondary);
+            background: rgba(0,0,0,0.4);
+        }
+
+        /* Botones */
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn-create {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 50px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(108, 92, 231, 0.3);
+            transition: 0.3s;
+        }
+
+        .btn-create:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(108, 92, 231, 0.5);
+        }
+
+        .btn-home {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255,255,255,0.2);
+            padding: 12px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: 0.3s;
+            display: inline-block;
+        }
+
+        .btn-home:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: white;
+        }
+
+        .icon-box {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h1>NUEVO SECTOR</h1>
-        <p>Inicia una nueva aventura de aprendizaje.</p>
-        
-        <input type="text" id="groupName" placeholder="Nombre de la Clase (Ej: Astronomía 101)">
-        
-        <button class="btn" id="btnCreate">INICIALIZAR SECTOR</button>
-        
-        <div id="timer-info">Redirigiendo automáticamente en <span id="seconds">30</span>s...</div>
+    <div class="container">
+        <div class="command-panel">
+            <div class="icon-box">🛰️</div>
+            <div class="panel-header">
+                <h1>Nueva Misión</h1>
+                <p>Configura los parámetros de tu nueva clase educativa</p>
+            </div>
+
+            <div class="input-group">
+                <label>Nombre de la Clase</label>
+                <input type="text" id="className" placeholder="Ej: Exploradores de Marte">
+            </div>
+
+            <div class="input-group">
+                <label>Profesor a Cargo</label>
+                <input type="text" id="teacherName" placeholder="Tu nombre o alias">
+            </div>
+
+            <div class="input-group">
+                <label>Objetivo de la Misión</label>
+                <textarea id="description" rows="3" placeholder="¿Qué aprenderemos hoy?"></textarea>
+            </div>
+
+            <div class="actions">
+                <button class="btn-create" onclick="crearClase()">✨ INICIAR CLASE</button>
+                <a href="home.html" class="btn-home">⬅ Volver al Home</a>
+            </div>
+        </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, doc, setDoc, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    <script>
+        function crearClase() {
+            const nombre = document.getElementById('className').value;
+            const profe = document.getElementById('teacherName').value;
+            const desc = document.getElementById('description').value;
 
-        // CONFIGURACIÓN DE FIREBASE (Asegúrate de que sean tus credenciales)
-        const firebaseConfig = { 
-            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", 
-            authDomain: "thelearninguniverse-26.firebaseapp.com", 
-            projectId: "thelearninguniverse-26", 
-            storageBucket: "thelearninguniverse-26.firebasestorage.app", 
-            messagingSenderId: "85338996011", 
-            appId: "1:85338996011:web:1f3bb216900c07e735596e" 
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-
-        // Generar ID Aleatorio (6 caracteres)
-        const generarID = () => {
-            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-            let res = '';
-            for (let i = 0; i < 6; i++) res += chars.charAt(Math.floor(Math.random() * chars.length));
-            return res;
-        };
-
-        document.getElementById('btnCreate').onclick = async () => {
-            const name = document.getElementById('groupName').value.trim();
-            const btn = document.getElementById('btnCreate');
-            
-            if(!name) return alert("Por favor, ponle un nombre a tu clase.");
-            
-            btn.disabled = true;
-            btn.innerText = "CREANDO...";
-
-            const user = auth.currentUser;
-            if(!user) return alert("Debes estar logueado para crear un grupo.");
-
-            const randomID = generarID();
-            const masterCode = Math.floor(100000 + Math.random() * 900000).toString();
-
-            try {
-                // 1. Crear el grupo en Firestore
-                await setDoc(doc(db, "grupos", randomID), {
-                    nombreGrupo: name,
-                    docente: user.email,
-                    docenteUID: user.uid,
-                    idGrupo: randomID,
-                    masterCode: masterCode,
-                    creadoEn: Date.now()
-                });
-
-                // 2. Enviar Código Maestro al Inbox
-                await addDoc(collection(db, "invitaciones"), {
-                    para: user.email,
-                    titulo: "🔑 CÓDIGO MAESTRO: " + name,
-                    mensaje: `Sector creado con éxito. Tu ID de grupo es: ${randomID}. Tu Código para poner notas es: ${masterCode}`,
-                    esSistema: true,
-                    fecha: Date.now()
-                });
-
-                // Guardar en LocalStorage para las siguientes páginas
-                localStorage.setItem('currentGroup', randomID);
-
-                // Lógica de Redirección (30 segundos)
-                document.getElementById('timer-info').style.display = "block";
-                let timeLeft = 30;
-                const countdown = setInterval(() => {
-                    timeLeft--;
-                    document.getElementById('seconds').innerText = timeLeft;
-                    if(timeLeft <= 0) {
-                        clearInterval(countdown);
-                        window.location.href = "viewmembers.html";
-                    }
-                }, 1000);
-
-                // Opción 2: Redirección inmediata al aceptar el Alert
-                alert(`🚀 ¡SECTOR INICIALIZADO!\n\nID: ${randomID}\nCÓDIGO MAESTRO: ${masterCode}\n\nHemos enviado una copia de estos datos a tu Inbox.`);
-                
-                clearInterval(countdown);
-                window.location.href = "viewmembers.html";
-
-            } catch (e) {
-                console.error(e);
-                alert("Hubo un error al crear el grupo. Intenta de nuevo.");
-                btn.disabled = false;
-                btn.innerText = "INICIALIZAR SECTOR";
+            if (!nombre || !profe) {
+                alert("⚠️ ¡Capitán! Necesitamos el nombre de la clase y del profesor para despegar.");
+                return;
             }
-        };
+
+            // 1. Guardar para la vista activa
+            localStorage.setItem('userClass', nombre);
+            localStorage.setItem('userTeacher', profe);
+
+            // 2. Generar mensaje para el Inbox
+            const nuevoMensaje = {
+                id: Date.now(),
+                titulo: "🚀 ¡Misión Iniciada!",
+                cuerpo: `La clase "${nombre}" ha sido creada con éxito bajo el mando del profesor ${profe}. ¡A aprender!`,
+                hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                fecha: new Date().toLocaleDateString(),
+            };
+
+            let bandeja = JSON.parse(localStorage.getItem('inboxMessages')) || [];
+            bandeja.unshift(nuevoMensaje);
+            localStorage.setItem('inboxMessages', JSON.stringify(bandeja));
+
+            alert("✨ ¡Clase creada! Los datos han sido enviados a tu Bandeja de Entrada.");
+            window.location.href = "home.html";
+        }
     </script>
 </body>
 </html>
