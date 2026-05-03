@@ -2,91 +2,129 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>TLU | Juegos de Matemáticas</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Misiones Matemáticas | TLU</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&family=Fredoka+One&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #6c5ce7;
-            --secondary: #00cec9;
-            --accent: #fd79a8;
-            --dark-bg: #0f172a;
+            --fondo: #0c1445;
+            --celeste: #48dbfb;
+            --amarillo: #feca57;
+            --rosa: #fd79a8;
+            --morado: #6c5ce7;
         }
 
-        body, html {
-            margin: 0; padding: 0; height: 100%;
+        body {
+            margin: 0;
             font-family: 'Fredoka', sans-serif;
-            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
-            color: white; display: flex; flex-direction: column; align-items: center;
+            background: var(--fondo);
+            background-image: radial-gradient(circle at top, #1b277a 0%, #0c1445 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
         }
 
-        header { margin-top: 50px; text-align: center; }
-        header h1 { font-size: 3rem; color: var(--secondary); margin: 0; }
-        header p { font-size: 1.2rem; opacity: 0.8; }
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 3rem;
+            color: var(--amarillo);
+            text-shadow: 0 0 20px rgba(254, 202, 87, 0.5);
+            margin-bottom: 10px;
+        }
 
-        .games-grid {
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            margin-bottom: 50px;
+        }
+
+        .grid-juegos {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 30px;
-            width: 80%;
-            max-width: 1000px;
-            margin-top: 50px;
+            width: 100%;
+            max-width: 900px;
         }
 
-        .game-card {
+        .card-juego {
             background: rgba(255, 255, 255, 0.05);
-            border: 3px solid var(--primary);
-            border-radius: 25px;
-            padding: 20px;
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            padding: 30px;
             text-align: center;
-            transition: 0.3s;
             text-decoration: none;
             color: white;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .game-card:hover {
-            transform: translateY(-10px) scale(1.05);
-            background: rgba(108, 92, 231, 0.2);
-            border-color: var(--secondary);
+        .card-juego:hover {
+            transform: translateY(-15px);
+            border-color: var(--celeste);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         }
 
-        .game-icon { font-size: 4rem; margin-bottom: 15px; display: block; }
-        .game-card h2 { margin: 10px 0; color: var(--secondary); }
+        .icon { font-size: 4rem; margin-bottom: 15px; display: block; }
 
-        .btn-back {
+        .card-juego h2 {
+            margin: 10px 0;
+            color: var(--celeste);
+            font-family: 'Fredoka One';
+        }
+
+        .badge {
+            background: var(--morado);
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .btn-home {
             margin-top: 50px;
-            padding: 15px 30px;
-            background: var(--accent);
+            padding: 12px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid white;
             color: white;
             text-decoration: none;
             border-radius: 50px;
-            font-weight: bold;
+            font-weight: 700;
             transition: 0.3s;
         }
-        .btn-back:hover { filter: brightness(1.1); }
+
+        .btn-home:hover { background: white; color: var(--fondo); }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>🎮 Zona de Juegos</h1>
-        <p>¡Aprende matemáticas mientras te diviertes, Explorador!</p>
-    </header>
+    <h1>CENTRO DE MISIONES</h1>
+    <p class="subtitle">¡Selecciona tu entrenamiento matemático!</p>
 
-    <div class="games-grid">
-        <a href="juegos/sumas-espaciales.html" class="game-card">
-            <span class="game-icon">🚀</span>
+    <div class="grid-juegos">
+        
+        <a href="/matematicas/juegos/sumas-espaciales" class="card-juego">
+            <span class="badge" style="background: var(--morado);">Cálculo Mental</span>
+            <span class="icon">🚀</span>
             <h2>Sumas Espaciales</h2>
-            <p>¡Ayuda al cohete a llegar a la Luna sumando correctamente!</p>
+            <p>¡Velocidad máxima! Resuelve sumas rápidas para impulsar tu nave.</p>
         </a>
 
-        <div class="game-card" style="opacity: 0.5; cursor: not-allowed;">
-            <span class="game-icon">🧩</span>
-            <h2>Próximamente...</h2>
-            <p>Estamos preparando nuevas misiones para ti.</p>
-        </div>
+        <a href="/matematicas/juegos/tienda" class="card-juego">
+            <span class="badge" style="background: var(--rosa);">Vida Real</span>
+            <span class="icon">🛒</span>
+            <h2>Tienda Galáctica</h2>
+            <p>Aprende a manejar tu dinero espacial comprando y dando el vuelto.</p>
+        </a>
+
     </div>
 
-    <a href="/matematicas/home.html" class="btn-back">⬅️ Volver a Matemáticas</a>
+    <a href="home.html" class="btn-home">⬅ Volver al Centro de Comando</a>
 
 </body>
 </html>
