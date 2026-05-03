@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TLU | Sumas Espaciales 🚀</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #00cec9;
+            --accent: #fd79a8;
+            --bg: #0f172a;
+        }
+
+        body, html {
+            margin: 0; padding: 0; height: 100%;
+            font-family: 'Fredoka', sans-serif;
+            background: var(--bg);
+            background-image: 
+                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
+                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px),
+                radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 40px);
+            background-size: 550px 550px, 350px 350px, 250px 250px;
+            color: white; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Contenedor del Juego */
+        .game-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            padding: 40px;
+            border-radius: 40px;
+            border: 4px solid var(--secondary);
+            text-align: center;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 0 50px rgba(0, 206, 201, 0.2);
+            position: relative;
+            z-index: 2;
+        }
+
+        /* El Cohete Animado */
+        .rocket-zone {
+            height: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            margin-bottom: 20px;
+        }
+
+        #rocket {
+            font-size: 5rem;
+            filter: drop-shadow(0 0 15px var(--secondary));
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .problem-text {
+            font-size: 4rem;
+            font-weight: 700;
+            color: white;
+            margin: 20px 0;
+            text-shadow: 0 0 20px var(--primary);
+        }
+
+        /* Input Grande para Niños */
+        input {
+            width: 140px;
+            height: 80px;
+            background: white;
+            border: 5px solid var(--primary);
+            border-radius: 25px;
+            font-size: 3rem;
+            text-align: center;
+            font-family: 'Fredoka';
+            color: var(--bg);
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus { border-color: var(--secondary); transform: scale(1.05); }
+
+        .btn-launch {
+            display: block;
+            width: 100%;
+            margin-top: 30px;
+            padding: 20px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            transition: 0.3s;
+        }
+
+        .btn-launch:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(108, 92, 231, 0.5);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .points { color: var(--accent); }
+        .back-link { color: white; opacity: 0.5; text-decoration: none; margin-top: 20px; font-size: 0.9rem; }
+        .back-link:hover { opacity: 1; color: var(--secondary); }
+
+        /* ANIMACIONES */
+        @keyframes launchEffect {
+            0% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-100px) scale(1.2); opacity: 0.8; }
+            100% { transform: translateY(0) scale(1); opacity: 1; }
+        }
+
+        .launch-anim { animation: launchEffect 0.8s ease-in-out; }
+
+        /* Quitar flechitas del input number */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    </style>
+</head>
+<body>
+
+    <div class="game-card">
+        <div class="rocket-zone">
+            <div id="rocket">🚀</div>
+        </div>
+
+        <div class="problem-text" id="problem-display">5 + 3</div>
+
+        <input type="number" id="user-input" pattern="\d*" placeholder="?" autofocus>
+
+        <button class="btn-launch" onclick="checkResult()">¡LANZAR COHETE! ☄️</button>
+
+        <div class="stats">
+            <div class="points">PUNTOS: <span id="score">0</span></div>
+            <div style="color: var(--secondary);">NIVEL: <span id="level">1</span></div>
+        </div>
+    </div>
+
+    <a href="/matematicas/juegos.html" class="back-link">⬅ Volver a los juegos</a>
+
+    <script>
+        let currentResult = 0;
+        let score = 0;
+        let level = 1;
+
+        const rocket = document.getElementById('rocket');
+        const input = document.getElementById('user-input');
+        const problemDisplay = document.getElementById('problem-display');
+        const scoreDisplay = document.getElementById('score');
+        const levelDisplay = document.getElementById('level');
+
+        function generateSum() {
+            // Aumenta la dificultad según el nivel
+            const maxNum = 5 + (level * 2); 
+            const n1 = Math.floor(Math.random() * maxNum) + 1;
+            const n2 = Math.floor(Math.random() * maxNum) + 1;
+            
+            currentResult = n1 + n2;
+            problemDisplay.innerText = `${n1} + ${n2}`;
+            input.value = '';
+            input.focus();
+        }
+
+        function checkResult() {
+            const userVal = parseInt(input.value);
+
+            if (userVal === currentResult) {
+                // ¡CORRECTO!
+                score += 10;
+                if (score % 50 === 0) { // Sube de nivel cada 50 puntos
+                    level++;
+                    levelDisplay.innerText = level;
+                }
+                
+                scoreDisplay.innerText = score;
+                
+                // Efecto de lanzamiento
+                rocket.classList.add('launch-anim');
+                setTimeout(() => {
+                    rocket.classList.remove('launch-anim');
+                    generateSum();
+                }, 800);
+
+            } else {
+                // ERROR
+                input.style.borderColor = "#ff7675";
+                rocket.style.transform = "shake 0.5s"; // Opcional: efecto de vibración
+                setTimeout(() => {
+                    input.style.borderColor = "var(--primary)";
+                }, 500);
+                alert("¡Casi! Intenta sumar de nuevo 🌈");
+            }
+        }
+
+        // Permitir presionar "Enter" para enviar
+        input.addEventListener("keyup", function(event) {
+            if (event.key === "Enter") {
+                checkResult();
+            }
+        });
+
+        // Iniciar el primer reto
+        generateSum();
+    </script>
+</body>
+</html>
