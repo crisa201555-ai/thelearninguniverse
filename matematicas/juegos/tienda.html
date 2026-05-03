@@ -15,170 +15,159 @@
         }
 
         body {
-            margin: 0;
-            font-family: 'Fredoka', sans-serif;
+            margin: 0; font-family: 'Fredoka', sans-serif;
             background: var(--fondo);
             background-image: radial-gradient(circle, #1b277a 0%, #0c1445 100%);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            overflow: hidden;
+            height: 100vh; display: flex; justify-content: center; align-items: center;
+            color: white; overflow: hidden;
         }
 
         .game-card {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(15px);
-            padding: 30px;
-            border-radius: 40px;
+            padding: 30px; border-radius: 40px;
             border: 3px solid var(--celeste);
-            width: 90%;
-            max-width: 500px;
-            text-align: center;
+            width: 90%; max-width: 500px; text-align: center;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
 
-        .header h1 { color: var(--amarillo); margin: 0; font-size: 2rem; }
-        .header p { opacity: 0.8; margin-bottom: 20px; }
-
+        .header h1 { color: var(--amarillo); margin: 0; font-size: 2rem; text-transform: uppercase; }
+        
         .market-display {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 20px;
-            border-radius: 20px;
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-            line-height: 1.6;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 25px; border-radius: 25px;
+            margin: 20px 0; font-size: 1.3rem;
             border: 1px solid rgba(255,255,255,0.1);
+            min-height: 120px; display: flex; flex-direction: column; justify-content: center;
         }
 
-        .item { color: var(--celeste); font-weight: 700; }
-        .price { color: var(--amarillo); }
+        .item-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .price { color: var(--amarillo); font-weight: 700; }
 
-        .input-area { margin: 20px 0; }
         input {
-            width: 120px;
-            padding: 15px;
-            border-radius: 20px;
-            border: none;
-            font-size: 1.5rem;
-            text-align: center;
-            font-family: 'Fredoka';
-            outline: none;
+            width: 140px; padding: 15px; border-radius: 20px;
+            border: 3px solid var(--celeste); background: #fff;
+            font-size: 1.8rem; text-align: center; font-family: 'Fredoka';
+            outline: none; transition: 0.3s;
         }
 
         .btn-check {
-            background: var(--rosa);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 50px;
-            font-size: 1.2rem;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: 0.3s;
-            box-shadow: 0 5px 0 #d63031;
+            background: var(--rosa); color: white; border: none;
+            padding: 15px 40px; border-radius: 50px;
+            font-size: 1.3rem; font-weight: 700; cursor: pointer;
+            margin-top: 15px; transition: 0.3s;
+            box-shadow: 0 6px 0 #d63031;
         }
 
-        .btn-check:active { transform: translateY(5px); box-shadow: none; }
+        .btn-check:hover { transform: scale(1.05); }
+        .btn-check:active { transform: translateY(6px); box-shadow: none; }
 
-        .feedback { margin-top: 20px; font-weight: 700; min-height: 24px; }
+        .feedback { margin-top: 20px; font-size: 1.2rem; font-weight: 700; height: 30px; }
         
-        .btn-home {
-            display: inline-block;
-            margin-top: 20px;
-            color: white;
-            text-decoration: none;
-            font-size: 0.9rem;
-            opacity: 0.6;
-        }
+        .score-panel { position: absolute; top: 20px; right: 20px; font-size: 1.2rem; color: var(--amarillo); }
     </style>
 </head>
 <body>
 
+    <div class="score-panel">🌟 Misiones: <span id="score">0</span></div>
+
     <div class="game-card">
         <div class="header">
-            <h1>🛒 La Tienda Galáctica</h1>
-            <p id="mission-text">Misión: ¡Calcula el total de la compra!</p>
+            <h1>🛒 La Tienda</h1>
+            <p id="mission-text">Calculando próxima venta...</p>
         </div>
 
         <div class="market-display" id="problem-area">
-            Cargando productos...
-        </div>
+            </div>
 
         <div class="input-area">
-            <input type="number" id="userAnswer" placeholder="?">
+            <input type="number" id="userAnswer" placeholder="0" autofocus>
             <br>
-            <button class="btn-check" onclick="checkAnswer()">REVISAR 🚀</button>
+            <button class="btn-check" onclick="checkAnswer()">ENVIAR DATOS 🚀</button>
         </div>
 
         <div class="feedback" id="feedback"></div>
 
-        <a href="home.html" class="btn-home">⬅ Volver al menú espacial</a>
+        <a href="../../juegos.html" style="color: white; opacity: 0.5; text-decoration: none; display: block; margin-top: 20px; font-size: 0.9rem;">⬅ Salir de la tienda</a>
     </div>
 
     <script>
         let currentAnswer = 0;
-        let isVueltoMode = false;
+        let score = 0;
+
+        const productos = [
+            { n: "🍬 Chicle Galáctico", p: [50, 100, 150] },
+            { n: "🍦 Helado Lunar", p: [200, 250, 300] },
+            { n: "🍫 Barra de Asteroide", p: [80, 120, 160] },
+            { n: "🥤 Soda de Supernova", p: [150, 180, 220] },
+            { n: "🥪 Sándwich Cósmico", p: [300, 350, 400] }
+        ];
 
         function generateProblem() {
-            const feedback = document.getElementById('feedback');
             const problemArea = document.getElementById('problem-area');
             const missionText = document.getElementById('mission-text');
             const input = document.getElementById('userAnswer');
-            
-            feedback.innerText = "";
+            document.getElementById('feedback').innerText = "";
             input.value = "";
-            
-            // Decidir si es suma (compra) o resta (vuelto)
-            isVueltoMode = Math.random() > 0.5;
+            input.focus();
 
-            if (!isVueltoMode) {
-                // MODO SUMA
-                const chicle = 100;
-                const helado = 200;
-                currentAnswer = chicle + helado;
+            const modoVuelto = Math.random() > 0.5;
+
+            if (!modoVuelto) {
+                // MODO SUMA: 2 productos aleatorios
+                let p1 = productos[Math.floor(Math.random() * productos.length)];
+                let p2 = productos[Math.floor(Math.random() * productos.length)];
+                while(p1 === p2) p2 = productos[Math.floor(Math.random() * productos.length)];
+
+                let precio1 = p1.p[Math.floor(Math.random() * p1.p.length)];
+                let precio2 = p2.p[Math.floor(Math.random() * p2.p.length)];
                 
-                missionText.innerText = "Misión: ¡Calcula el total de la compra!";
+                currentAnswer = precio1 + precio2;
+                missionText.innerText = "¡Suma el total de la compra!";
                 problemArea.innerHTML = `
-                    Has elegido: <br>
-                    <span class="item">🍬 Chicle Espacial:</span> <span class="price">$${chicle}</span><br>
-                    <span class="item">🍦 Helado Lunar:</span> <span class="price">$${helado}</span><br>
-                    <hr style="opacity:0.2">
-                    <strong>¿Cuánto debes pagar en total?</strong>
+                    <div class="item-row"><span>${p1.n}</span> <span class="price">$${precio1}</span></div>
+                    <div class="item-row"><span>${p2.n}</span> <span class="price">$${precio2}</span></div>
+                    <hr style="opacity: 0.2">
+                    <strong>¿Total a pagar?</strong>
                 `;
             } else {
-                // MODO RESTA (Vuelto)
-                const totalCompra = 300;
-                const pagoCon = 500;
-                currentAnswer = pagoCon - totalCompra;
-
-                missionText.innerText = "Misión: ¡Calcula el vuelto!";
+                // MODO RESTA: Vuelto con 500
+                let p = productos[Math.floor(Math.random() * productos.length)];
+                let precio = p.p[Math.floor(Math.random() * p.p.length)];
+                let pagoCon = 500;
+                
+                currentAnswer = pagoCon - precio;
+                missionText.innerText = "¡Calcula el vuelto!";
                 problemArea.innerHTML = `
-                    El total es <span class="price">$${totalCompra}</span>.<br>
-                    Pagas con un billete de <span class="item">$${pagoCon}</span>.<br>
-                    <hr style="opacity:0.2">
-                    <strong>¿Cuánto vuelto recibirás?</strong>
+                    <div class="item-row"><span>Total Compra:</span> <span class="price">$${precio}</span></div>
+                    <div class="item-row"><span>Pagas con:</span> <span class="price" style="color:var(--celeste)">$${pagoCon}</span></div>
+                    <hr style="opacity: 0.2">
+                    <strong>¿Tu vuelto es?</strong>
                 `;
             }
         }
 
         function checkAnswer() {
-            const userAnswer = parseInt(document.getElementById('userAnswer').value);
+            const userVal = parseInt(document.getElementById('userAnswer').value);
             const feedback = document.getElementById('feedback');
 
-            if (userAnswer === currentAnswer) {
-                feedback.style.color = "#55efc4";
-                feedback.innerText = "¡EXCELENTE! ¡Eres un gran comerciante! 🌟";
-                setTimeout(generateProblem, 2000);
+            if (userVal === currentAnswer) {
+                score++;
+                document.getElementById('score').innerText = score;
+                feedback.innerHTML = "¡EXCELENTE! ✨";
+                feedback.style.color = var(--celeste);
+                setTimeout(generateProblem, 1500);
             } else {
-                feedback.style.color = "#ff7675";
-                feedback.innerText = "¡Ups! Inténtalo de nuevo, tú puedes. 🛰️";
+                feedback.innerHTML = "¡Casi! Revisa la cuenta 🛰️";
+                feedback.style.color = var(--rosa);
             }
         }
 
-        // Iniciar el primer problema
+        // Detectar tecla Enter
+        document.getElementById('userAnswer').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') checkAnswer();
+        });
+
         window.onload = generateProblem;
     </script>
 </body>
