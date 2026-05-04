@@ -2,98 +2,69 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Reclutamiento | TLU</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Fredoka+One&display=swap" rel="stylesheet">
+    <title>Invitar Miembros | TLU</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #48dbfb; --s: #feca57; --bg: #060918; --danger: #ff4757; }
-        body { background: var(--bg); color: white; font-family: 'Montserrat'; padding: 30px; background-image: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%); }
-        .container { max-width: 800px; margin: auto; }
-        .welcome-header { text-align: center; margin-bottom: 30px; }
-        .welcome-header h1 { font-family: 'Fredoka One'; color: var(--p); margin:0; }
-        .glass-panel { background: rgba(255, 255, 255, 0.05); padding: 25px; border-radius: 20px; border: 1px solid var(--p); backdrop-filter: blur(10px); }
-        .input-group { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; }
-        input { background: #000; border: 1px solid #444; color: white; padding: 12px; border-radius: 10px; outline: none; }
-        .btn-add { background: var(--p); color: #000; border: none; padding: 12px 20px; border-radius: 10px; font-family: 'Fredoka One'; cursor: pointer; }
-        .member-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-top: 10px; border-left: 4px solid var(--p); }
-        .btn-ready { background: var(--s); color: #000; border: none; padding: 20px; border-radius: 15px; font-family: 'Fredoka One'; width: 100%; font-size: 1.2rem; cursor: pointer; margin-top: 20px; }
+        body { font-family: 'Fredoka', sans-serif; background: #0f172a; color: white; padding: 40px; }
+        .container { max-width: 600px; margin: auto; }
+        .invite-box { display: flex; gap: 10px; margin-bottom: 30px; }
+        input { flex-grow: 1; padding: 15px; border-radius: 15px; border: none; }
+        .member-item { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-left: 5px solid #00cec9; }
+        .btn-del { background: #ff7675; border: none; color: white; padding: 8px 15px; border-radius: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="welcome-header">
-            <h1>BIENVENIDO, <span id="docenteName">DOCENTE</span></h1>
-            <p>INVITA A LOS ESTUDIANTES A ESTE SECTOR</p>
+        <h1>👥 Gestionar Alumnos</h1>
+        <div class="invite-box">
+            <input type="email" id="studentEmail" placeholder="Correo del estudiante...">
+            <button onclick="invite()" style="padding: 15px; border-radius: 15px; background: #6c5ce7; color: white; border: none; cursor: pointer;">Invitar</button>
         </div>
-
-        <div class="glass-panel">
-            <div class="input-group">
-                <input type="text" id="stdName" placeholder="Nombre Estudiante">
-                <input type="email" id="stdEmail" placeholder="Correo del Estudiante">
-                <button class="btn-add" id="btnAdd">INVITAR</button>
+        <div id="memberList">
             </div>
-        </div>
-
-        <div id="memberList" style="margin-top:20px;"></div>
-
-        <button class="btn-ready" onclick="location.href='generator-test.html'">🚀 ¡LISTO! CONFIGURAR PRUEBA</button>
+        <button onclick="window.location.href='generator-test.html'" style="margin-top:20px; background:none; border: 1px solid white; color:white; cursor:pointer;">Siguiente: Crear Prueba ➡</button>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <script>
-        const firebaseConfig = { 
-            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", 
-            authDomain: "thelearninguniverse-26.firebaseapp.com", 
-            projectId: "thelearninguniverse-26", 
-            storageBucket: "thelearninguniverse-26.firebasestorage.app", 
-            messagingSenderId: "85338996011", 
-            appId: "1:85338996011:web:1f3bb216900c07e735596e" 
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const gID = localStorage.getItem('currentGroup');
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, query, where, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-web-cloud-firestore.js";
 
-        // Cargar nombre del docente
-        db.collection("grupos").doc(gID).get().then(doc => {
-            if(doc.exists) document.getElementById('docenteName').innerText = doc.data().docente.split('@')[0].toUpperCase();
-        });
+        const db = getFirestore(initializeApp({ /* TU CONFIG */ }));
+        const groupId = localStorage.getItem('activeGroupId');
 
-        // Enviar Invitación
-        document.getElementById('btnAdd').onclick = async function() {
-            const name = document.getElementById('stdName').value.trim();
-            const email = document.getElementById('stdEmail').value.trim();
-            if(!name || !email) return alert("Faltan datos");
-
-            await db.collection("invitaciones").add({
-                para: email.toLowerCase(), // Normalizamos a minúsculas
-                nombreEstudiante: name,
-                grupoID: gID,
-                titulo: "NUEVA MISIÓN DISPONIBLE",
-                mensaje: `Hola ${name}, has sido convocado al sector ${gID}.`,
-                esSistema: false,
-                fecha: Date.now()
-            });
-            alert("Invitación enviada");
-            document.getElementById('stdName').value = "";
-            document.getElementById('stdEmail').value = "";
-        };
-
-        // Lista en tiempo real
-        db.collection("invitaciones").where("grupoID", "==", gID).onSnapshot(snap => {
+        // Escuchar cambios en la lista de invitados
+        const q = query(collection(db, "members"), where("groupId", "==", groupId));
+        onSnapshot(q, (snapshot) => {
             const list = document.getElementById('memberList');
             list.innerHTML = "";
-            snap.forEach(doc => {
-                const d = doc.data();
-                if(!d.esSistema) {
-                    list.innerHTML += `<div class="member-item">
-                        <div><b>${d.nombreEstudiante}</b><br><small>${d.para}</small></div>
-                        <button onclick="eliminar('${doc.id}')" style="background:none; border:none; color:red; cursor:pointer;">X</button>
-                    </div>`;
-                }
+            snapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                list.innerHTML += `
+                    <div class="member-item">
+                        <span>${data.email} <i>(${data.status})</i></span>
+                        <button class="btn-del" onclick="removeMember('${docSnap.id}')">Eliminar</button>
+                    </div>
+                `;
             });
         });
 
-        window.eliminar = (id) => { if(confirm("¿Eliminar?")) db.collection("invitaciones").doc(id).delete(); };
+        window.invite = async () => {
+            const email = document.getElementById('studentEmail').value;
+            if(email) {
+                await addDoc(collection(db, "members"), {
+                    email: email,
+                    groupId: groupId,
+                    status: 'pending',
+                    online: false
+                });
+                // AQUÍ LÓGICA PARA ENVIAR CORREO O NOTIFICACIÓN AL INBOX
+                document.getElementById('studentEmail').value = "";
+            }
+        };
+
+        window.removeMember = async (id) => {
+            if(confirm("¿Eliminar invitado?")) await deleteDoc(doc(db, "members", id));
+        };
     </script>
 </body>
 </html>
