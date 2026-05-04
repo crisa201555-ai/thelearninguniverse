@@ -6,48 +6,125 @@
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --p: #6c5ce7; --s: #00cec9; --bg: #0f172a; }
-        body { font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .card { background: rgba(255,255,255,0.05); padding: 40px; border-radius: 30px; border: 2px solid var(--s); width: 400px; text-align: center; }
-        input { width: 100%; padding: 15px; margin: 10px 0; border-radius: 15px; border: none; outline: none; box-sizing: border-box; font-family: 'Fredoka'; }
-        .btn { background: var(--p); color: white; border: none; padding: 15px; width: 100%; border-radius: 15px; cursor: pointer; font-weight: 700; font-size: 1.1rem; }
+        body { 
+            font-family: 'Fredoka', sans-serif; 
+            background: var(--bg); 
+            background-image: radial-gradient(circle at top, #1b277a 0%, #0f172a 100%);
+            color: white; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+        }
+        .card { 
+            background: rgba(255,255,255,0.05); 
+            backdrop-filter: blur(10px);
+            padding: 40px; 
+            border-radius: 30px; 
+            border: 2px solid var(--s); 
+            width: 400px; 
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        }
+        input { 
+            width: 100%; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-radius: 15px; 
+            border: none; 
+            outline: none; 
+            box-sizing: border-box; 
+            font-family: 'Fredoka'; 
+            font-size: 1rem;
+        }
+        .btn { 
+            background: var(--p); 
+            color: white; 
+            border: none; 
+            padding: 15px; 
+            width: 100%; 
+            border-radius: 15px; 
+            cursor: pointer; 
+            font-weight: 700; 
+            font-size: 1.1rem;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+        .btn:hover { background: #5b4bc4; transform: scale(1.02); }
     </style>
 </head>
 <body>
     <div class="card">
         <h1>✨ Nueva Clase</h1>
+        <p style="opacity: 0.7;">Define tu universo de aprendizaje</p>
         <input type="text" id="className" placeholder="Nombre de la Clase (ej: 4to Básico A)">
         <input type="text" id="teacherName" placeholder="Nombre del Docente">
         <button class="btn" onclick="createGroup()">CREAR UNIVERSO 🚀</button>
     </div>
 
     <script type="module">
+        // Importaciones necesarias
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-web-cloud-firestore.js";
-        import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        const firebaseConfig = { /* TU CONFIG */ };
+        // CONFIGURACIÓN DE FIREBASE (Asegúrate de que sea la tuya)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
+            authDomain: "thelearninguniverse-26.firebaseapp.com",
+            projectId: "thelearninguniverse-26",
+            storageBucket: "thelearninguniverse-26.firebasestorage.app",
+            messagingSenderId: "85338996011",
+            appId: "1:85338996011:web:1f3bb216900c07e735596e"
+        };
+
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
 
+        // LA SOLUCIÓN: Definir la función en el objeto window
         window.createGroup = async () => {
-            const name = document.getElementById('className').value;
-            const teacher = document.getElementById('teacherName').value;
+            const name = document.getElementById('className').value.trim();
+            const teacher = document.getElementById('teacherName').value.trim();
+            const user = auth.currentUser;
             
+            if (!user) {
+                alert("Debes estar iniciado sesión para crear un grupo.");
+                return;
+            }
+
             if(name && teacher) {
                 try {
                     const docRef = await addDoc(collection(db, "groups"), {
                         className: name,
                         teacherName: teacher,
-                        adminId: auth.currentUser.uid,
+                        adminId: user.uid,
+                        adminEmail: user.email,
                         createdAt: new Date(),
                         testStatus: 'blocked'
                     });
+                    
+                    // Guardamos el ID del grupo recién creado para usarlo en las siguientes páginas
                     localStorage.setItem('activeGroupId', docRef.id);
+                    
+                    alert("¡Universo creado con éxito!");
                     window.location.href = "viewmembers.html";
-                } catch (e) { alert("Error al crear: " + e); }
+                } catch (e) { 
+                    console.error("Error al crear grupo:", e);
+                    alert("Hubo un error al crear el grupo."); 
+                }
+            } else {
+                alert("Por favor, completa todos los campos.");
             }
         }
+
+        // Verificación de sesión opcional para evitar errores
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                console.warn("Docente no autenticado");
+            }
+        });
     </script>
 </body>
 </html>
