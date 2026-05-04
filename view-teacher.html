@@ -2,121 +2,199 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Radar Docente | The Learning Universe</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Fredoka+One&display=swap" rel="stylesheet">
+    <title>Panel de Control Docente | TLU</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #48dbfb; --s: #feca57; --bg: #060918; --danger: #ff6b6b; --success: #1dd1a1; }
-        body { background: var(--bg); color: white; font-family: 'Montserrat'; padding: 30px; margin: 0; }
-        .dashboard { max-width: 1100px; margin: auto; }
-        
-        .header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid var(--p); padding-bottom: 20px; }
-        .btn-danger { background: var(--danger); color: white; border: none; padding: 12px 25px; border-radius: 10px; font-family: 'Fredoka One'; cursor: pointer; }
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #00cec9;
+            --danger: #ff7675;
+            --success: #55efc4;
+            --bg: #0f172a;
+        }
 
-        .sos-container { background: rgba(255, 107, 107, 0.1); border: 1px solid var(--danger); border-radius: 15px; padding: 20px; margin-bottom: 30px; }
-        .sos-card { background: #000; padding: 12px; border-radius: 8px; margin-top: 10px; border-left: 4px solid var(--danger); }
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: var(--bg);
+            background-image: radial-gradient(circle at 0% 0%, #1e293b 0%, #0f172a 100%);
+            color: white; margin: 0; padding: 20px;
+        }
 
-        table { width: 100%; border-collapse: collapse; background: rgba(255,255,255,0.02); border-radius: 15px; overflow: hidden; }
-        th { background: var(--p); color: #000; font-family: 'Fredoka One'; padding: 15px; text-align: left; }
-        td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        
-        .badge { padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
-        .badge-sent { background: var(--success); color: #000; }
-        .badge-waiting { background: #555; color: white; }
+        .dashboard {
+            max-width: 1100px; margin: auto;
+            display: grid; grid-template-columns: 1fr 300px; gap: 20px;
+        }
 
-        .btn-rev { background: var(--s); border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .btn-rev:hover { background: white; transform: scale(1.05); }
+        /* --- SECCIÓN PRINCIPAL --- */
+        .main-panel {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 30px; padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .status-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 30px; background: rgba(0,0,0,0.2);
+            padding: 20px; border-radius: 20px; border: 1px solid var(--secondary);
+        }
+
+        /* --- BOTONES DE CONTROL --- */
+        .controls { display: flex; gap: 10px; }
+        .btn {
+            padding: 12px 20px; border-radius: 12px; border: none;
+            font-weight: 700; cursor: pointer; transition: 0.3s;
+            font-family: 'Fredoka';
+        }
+
+        .btn-lock { background: var(--danger); color: white; }
+        .btn-unlock { background: var(--success); color: var(--bg); }
+        .btn-review { background: var(--primary); color: white; width: 100%; margin-top: 10px; }
+
+        /* --- LISTA DE ALUMNOS --- */
+        .students-list {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 25px; padding: 20px;
+        }
+
+        .student-card {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px; background: rgba(0,0,0,0.2);
+            margin-bottom: 10px; border-radius: 15px;
+            border-left: 4px solid #444;
+        }
+
+        .student-card.online { border-left-color: var(--success); }
+
+        .indicator {
+            width: 12px; height: 12px; border-radius: 50%;
+            display: inline-block; margin-right: 8px;
+        }
+        .online-dot { background: var(--success); box-shadow: 0 0 10px var(--success); }
+        .offline-dot { background: #555; }
+
+        /* --- SIDEBAR --- */
+        .stats-sidebar {
+            display: flex; flex-direction: column; gap: 20px;
+        }
+
+        .stat-box {
+            background: rgba(108, 92, 231, 0.1);
+            border: 1px solid var(--primary);
+            padding: 20px; border-radius: 25px; text-align: center;
+        }
+
+        .stat-number { font-size: 2.5rem; font-weight: 700; color: var(--secondary); }
+
+        h2 { margin-top: 0; color: var(--secondary); font-size: 1.5rem; }
     </style>
 </head>
 <body>
 
-    <div class="dashboard">
-        <div class="header-flex">
+<div class="dashboard">
+    <div class="main-panel">
+        <div class="status-header">
             <div>
-                <h1 style="font-family:'Fredoka One'; color:var(--p); margin:0;">RADAR DOCENTE</h1>
-                <p id="groupDisplay" style="opacity:0.7;">Identificando Sector...</p>
+                <h1 id="classNameDisplay" style="margin:0">Cargando Clase...</h1>
+                <p id="teacherDisplay" style="margin:5px 0 0; opacity:0.7">Docente: ---</p>
             </div>
-            <button id="btnCloseTest" class="btn-danger">🔒 CERRAR PRUEBA</button>
+            <div class="controls" id="lockControls">
+                </div>
         </div>
 
-        <div id="sosSection" class="sos-container" style="display:none;">
-            <h3 style="margin:0; font-family:'Fredoka One'; font-size: 1rem;">⚠️ ALERTAS SOS</h3>
-            <div id="sosList"></div>
-        </div>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>CADETE</th>
-                    <th>ESTADO</th>
-                    <th>NOTA</th>
-                    <th>ACCIÓN</th>
-                </tr>
-            </thead>
-            <tbody id="studentTable"></tbody>
-        </table>
+        <h2>🧑‍🎓 Estado de los Estudiantes</h2>
+        <div class="students-list" id="studentsContainer">
+            </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, doc, onSnapshot, collection, query, orderBy, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    <div class="stats-sidebar">
+        <div class="stat-box">
+            <div class="stat-number" id="onlineCount">0</div>
+            <div>Conectados</div>
+        </div>
 
-        const firebaseConfig = { 
-            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", 
-            authDomain: "thelearninguniverse-26.firebaseapp.com", 
-            projectId: "thelearninguniverse-26", 
-            storageBucket: "thelearninguniverse-26.firebasestorage.app", 
-            messagingSenderId: "85338996011", 
-            appId: "1:85338996011:web:1f3bb216900c07e735596e" 
-        };
+        <div class="stat-box" style="border-color: var(--secondary)">
+            <p><strong>Evaluación Actual:</strong></p>
+            <p id="testTitle" style="font-size: 0.9rem">Buscando prueba...</p>
+            <button class="btn btn-review" onclick="window.location.href='reviewtest.html'">REVISAR PRUEBAS 📋</button>
+        </div>
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const gID = localStorage.getItem('currentGroup');
+        <button class="btn" onclick="window.location.href='generator-test.html'" style="background: rgba(255,255,255,0.1); color: white;">✏️ Editar Preguntas</button>
+    </div>
+</div>
 
-        if(!gID) { alert("No hay grupo seleccionado"); window.location.href="home.html"; }
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, doc, onSnapshot, updateDoc, collection, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-web-cloud-firestore.js";
 
-        onSnapshot(doc(db, "grupos", gID), (snap) => {
-            document.getElementById('groupDisplay').innerText = `Sector: ${snap.data().nombreGrupo} | ID: ${gID}`;
+    const firebaseConfig = {
+        apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
+        authDomain: "thelearninguniverse-26.firebaseapp.com",
+        projectId: "thelearninguniverse-26",
+        storageBucket: "thelearninguniverse-26.firebasestorage.app",
+        messagingSenderId: "85338996011",
+        appId: "1:85338996011:web:1f3bb216900c07e735596e"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const groupId = localStorage.getItem('activeGroupId');
+
+    // 1. ESCUCHAR DATOS DEL GRUPO (Nombre y Bloqueo)
+    onSnapshot(doc(db, "groups", groupId), (docSnap) => {
+        if (!docSnap.exists()) return;
+        const data = docSnap.data();
+        document.getElementById('classNameDisplay').innerText = data.className;
+        document.getElementById('teacherDisplay').innerText = `Docente: ${data.teacherName}`;
+        
+        const lockDiv = document.getElementById('lockControls');
+        if (data.testStatus === 'locked') {
+            lockDiv.innerHTML = `<button class="btn btn-unlock" onclick="toggleLock('unlocked')">🔓 DESBLOQUEAR PRUEBA</button>`;
+        } else {
+            lockDiv.innerHTML = `<button class="btn btn-lock" onclick="toggleLock('locked')">🔒 BLOQUEAR PRUEBA</button>`;
+        }
+    });
+
+    // 2. ESCUCHAR ESTUDIANTES (Online / Offline)
+    const qMembers = query(collection(db, "members"), where("groupId", "==", groupId));
+    onSnapshot(qMembers, (snapshot) => {
+        const container = document.getElementById('studentsContainer');
+        let onlineTotal = 0;
+        container.innerHTML = "";
+        
+        snapshot.forEach((docSnap) => {
+            const student = docSnap.data();
+            if (student.online) onlineTotal++;
+            
+            const card = document.createElement('div');
+            card.className = `student-card ${student.online ? 'online' : ''}`;
+            card.innerHTML = `
+                <div>
+                    <span class="indicator ${student.online ? 'online-dot' : 'offline-dot'}"></span>
+                    <strong>${student.email}</strong>
+                </div>
+                <div style="font-size: 0.8rem; opacity: 0.6;">
+                    ${student.online ? '🟢 Activo ahora' : '⚪ Desconectado'}
+                </div>
+            `;
+            container.appendChild(card);
         });
+        document.getElementById('onlineCount').innerText = onlineTotal;
+    });
 
-        // Monitor de Alumnos
-        onSnapshot(collection(db, "grupos", gID, "miembros"), (snap) => {
-            const table = document.getElementById('studentTable');
-            table.innerHTML = "";
-            snap.forEach(d => {
-                const s = d.data();
-                table.innerHTML += `
-                    <tr>
-                        <td><b>${s.nombre}</b></td>
-                        <td><span class="badge ${s.enviado ? 'badge-sent' : 'badge-waiting'}">${s.enviado ? 'ENVIADO' : 'PENDIENTE'}</span></td>
-                        <td><span style="color:var(--p)">${s.nota || '---'}</span></td>
-                        <td>
-                            ${s.enviado ? `<button class="btn-rev" onclick="location.href='review-test.html?uid=${d.id}'">REVISAR</button>` : '---'}
-                        </td>
-                    </tr>`;
-            });
-        });
+    // 3. BUSCAR TÍTULO DE LA PRUEBA
+    const qTest = query(collection(db, "tests"), where("groupId", "==", groupId));
+    onSnapshot(qTest, (snapshot) => {
+        if (!snapshot.empty) {
+            document.getElementById('testTitle').innerText = snapshot.docs[0].data().title;
+        }
+    });
 
-        // Monitor SOS
-        const qSOS = query(collection(db, "grupos", gID, "alertas"), orderBy("fecha", "desc"));
-        onSnapshot(qSOS, (snap) => {
-            const sosSection = document.getElementById('sosSection');
-            const sosList = document.getElementById('sosList');
-            if(snap.empty) return;
-            sosSection.style.display = "block";
-            sosList.innerHTML = "";
-            snap.forEach(d => {
-                const a = d.data();
-                sosList.innerHTML += `<div class="sos-card"><b>${a.estudiante}:</b> ${a.mensaje}</div>`;
-            });
-        });
+    // FUNCIONES GLOBALES
+    window.toggleLock = async (newStatus) => {
+        const groupRef = doc(db, "groups", groupId);
+        await updateDoc(groupRef, { testStatus: newStatus });
+    };
 
-        document.getElementById('btnCloseTest').onclick = async () => {
-            if(confirm("¿Bloquear acceso a la prueba?")) {
-                await updateDoc(doc(db, "pruebas", gID), { activa: false });
-                alert("Prueba cerrada.");
-            }
-        };
-    </script>
+</script>
 </body>
 </html>
