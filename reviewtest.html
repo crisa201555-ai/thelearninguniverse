@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Revisión de Misiones | TLU</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --p: #6c5ce7; --s: #00cec9; --bg: #0c1445; --danger: #fd79a8; }
+        body { font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; padding: 30px; margin: 0; }
+        .container { max-width: 900px; margin: auto; }
+        
+        /* Lista de Estudiantes */
+        .student-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin-top: 30px; }
+        .card-student { 
+            background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.1);
+            padding: 20px; border-radius: 20px; cursor: pointer; transition: 0.3s; text-align: center;
+        }
+        .card-student:hover { border-color: var(--s); transform: translateY(-5px); background: rgba(255,255,255,0.1); }
+        
+        /* Modal de Código */
+        .modal-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 100;
+        }
+        .modal { 
+            background: #1b277a; padding: 40px; border-radius: 30px; border: 3px solid var(--p);
+            text-align: center; width: 350px; box-shadow: 0 0 50px var(--p);
+        }
+        .modal input { 
+            width: 100%; padding: 15px; font-size: 2rem; text-align: center; 
+            letter-spacing: 10px; border-radius: 15px; border: none; margin: 20px 0; 
+        }
+
+        /* Vista de Prueba */
+        #testReviewArea { display: none; margin-top: 30px; background: white; color: #333; padding: 30px; border-radius: 20px; }
+        .answer-correct { color: #27ae60; font-weight: bold; }
+        .answer-wrong { color: #e74c3c; text-decoration: line-through; }
+    </style>
+</head>
+<body>
+
+<div class="container" id="mainView">
+    <h1>📋 Revisión de Pruebas</h1>
+    <p>Selecciona un estudiante para validar sus resultados.</p>
+    
+    <div class="student-grid" id="studentList">
+        </div>
+</div>
+
+<div class="modal-overlay" id="securityModal">
+    <div class="modal">
+        <h2 style="color:var(--s)">🔐 Verificación</h2>
+        <p id="modalInfo">Ingresa el código que enviamos a tu INBOX para revisar a este alumno.</p>
+        <input type="text" id="securityCode" maxlength="4" placeholder="0000">
+        <button onclick="verifyCode()" style="background:var(--p); color:white; border:none; padding:15px 30px; border-radius:50px; cursor:pointer; font-weight:700;">ACCEDER A PRUEBA</button>
+        <button onclick="closeModal()" style="background:none; border:none; color:white; margin-top:15px; cursor:pointer; opacity:0.6;">Cancelar</button>
+    </div>
+</div>
+
+<div class="container" id="testReviewArea">
+    <button onclick="backToList()" style="margin-bottom:20px;">⬅ Volver a la lista</button>
+    <h2 id="reviewingName">Revisando prueba de: ...</h2>
+    <div id="questionsResult">
+        </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, query, where, getDocs, addDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-web-cloud-firestore.js";
+
+    const db = getFirestore(initializeApp({
+        apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
+        authDomain: "thelearninguniverse-26.firebaseapp.com",
+        projectId: "thelearninguniverse-26"
+    }));
+
+    const groupId = localStorage.getItem('activeGroupId');
+    let selectedStudent = null;
+    let correctSecurityCode = "";
+
+    // 1. CARGAR ESTUDIANTES QUE YA ENTREGARON
+    async function loadStudents() {
+        const q = query(collection(db, "members"), where("groupId", "==", groupId), where("status", "==", "accepted"));
+        const snap = await getDocs(q);
+        const list = document.getElementById('studentList');
+        list.innerHTML = "";
+
+        snap.forEach(docSnap => {
+            const data = docSnap.data();
+            const card = document.createElement('div');
+            card.className = 'card-student';
+            card.innerHTML = `<h3>👤 ${data.email}</h3><p>Click para revisar</p>`;
+            card.onclick = () => openSecurity(data.email, docSnap.id);
+            list.appendChild(card);
+        });
+    }
+
+    // 2. ABRIR SEGURIDAD Y GENERAR CÓDIGO AL INBOX
+    window.openSecurity = async (studentEmail, studentId) => {
+        selectedStudent = { email: studentEmail, id: studentId };
+        
+        // Generar código aleatorio
+        const code = Math.floor(1000 + Math.random() * 9000).toString();
+        correctSecurityCode = code;
+
+        // Enviar al Inbox (Simulado enviando a la colección 'inbox')
+        await addDoc(collection(db, "inbox"), {
+            to: "DOCENTE_ACTUAL", // Aquí iría el ID del profe logueado
+            message: `¡Hola Docente! Para revisar la prueba de ${studentEmail} debes ingresar el código ${code}.`,
+            createdAt: new Date()
+        });
+
+        document.getElementById('securityModal').style.display = 'flex';
+        document.getElementById('modalInfo').innerText = `Enviamos un código a tu INBOX para revisar a ${studentEmail}`;
+    };
+
+    // 3. VERIFICAR CÓDIGO
+    window.verifyCode = () => {
+        const input = document.getElementById('securityCode').value;
+        if (input === correctSecurityCode) {
+            showTest();
+        } else {
+            alert("Código incorrecto. Revisa tu Inbox.");
+        }
+    };
+
+    // 4. MOSTRAR PRUEBA (SIMULACIÓN DE DATOS)
+    function showTest() {
+        document.getElementById('securityModal').style.display = 'none';
+        document.getElementById('mainView').style.display = 'none';
+        document.getElementById('testReviewArea').style.display = 'block';
+        document.getElementById('reviewingName').innerText = `Revisando prueba de: ${selectedStudent.email}`;
+        
+        // Aquí buscarías en la colección 'submissions' de Firestore
+        document.getElementById('questionsResult').innerHTML = `
+            <div class="question-box">
+                <p><strong>Pregunta 1:</strong> ¿Cuánto es 10 + 5?</p>
+                <p class="answer-correct">Respuesta del alumno: 15 (CORRECTO)</p>
+            </div>
+            <hr>
+            <div class="question-box">
+                <p><strong>Pregunta 2:</strong> ¿Cuál es el planeta rojo?</p>
+                <p class="answer-wrong">Respuesta del alumno: Júpiter (INCORRECTO)</p>
+                <p>Respuesta correcta: Marte</p>
+            </div>
+        `;
+    }
+
+    window.closeModal = () => document.getElementById('securityModal').style.display = 'none';
+    window.backToList = () => {
+        document.getElementById('mainView').style.display = 'block';
+        document.getElementById('testReviewArea').style.display = 'none';
+    };
+
+    loadStudents();
+</script>
+</body>
+</html>
