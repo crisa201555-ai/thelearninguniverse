@@ -2,61 +2,82 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>S.E.D.E. | Enviar Idea</title>
+    <title>Top Ideas | S.E.D.E.</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #6c5ce7; --s: #00cec9; --bg: #0f172a; }
-        body { font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; padding: 20px; display: flex; justify-content: center; }
-        .card { background: rgba(255,255,255,0.05); padding: 30px; border-radius: 25px; border: 2px solid var(--p); width: 100%; max-width: 500px; text-align: center; }
-        textarea { width: 100%; height: 150px; border-radius: 15px; padding: 15px; margin: 15px 0; border: none; font-family: 'Fredoka'; box-sizing: border-box; }
-        .btn { background: var(--s); color: var(--bg); border: none; padding: 15px 30px; border-radius: 50px; cursor: pointer; font-weight: 700; width: 100%; }
-        .btn:disabled { background: #444; color: #888; cursor: not-allowed; }
-        #status-msg { margin-top: 15px; font-size: 0.9rem; color: var(--danger); }
+        body { font-family: 'Fredoka', sans-serif; background: #0f172a; color: white; padding: 20px; }
+        .ranking-container { max-width: 800px; margin: auto; }
+        .idea-item { 
+            background: rgba(255,255,255,0.05); margin-bottom: 15px; padding: 20px; 
+            border-radius: 20px; display: flex; align-items: center; gap: 20px;
+            border-left: 5px solid #6c5ce7;
+        }
+        .rank-num { font-size: 2rem; font-weight: 700; color: #00cec9; min-width: 50px; }
+        .idea-content { flex-grow: 1; }
+        .votes { display: flex; flex-direction: column; gap: 5px; }
+        .vote-btn { border: none; padding: 5px 15px; border-radius: 10px; cursor: pointer; font-family: 'Fredoka'; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h1>💡 Propón una mejora</h1>
-        <p>Tu idea llegará al Ministerio de TLU.</p>
-        <textarea id="ideaText" placeholder="Escribe tu idea aquí..."></textarea>
-        <button id="sendBtn" class="btn" onclick="enviarIdea()">ENVIAR AL SISTEMA 🚀</button>
-        <div id="status-msg"></div>
+    <div class="ranking-container">
+        <h1>🏆 Clasificación de Ideas-New</h1>
+        <p>Las ideas con más dislikes desaparecen del sistema.</p>
+        <div id="topList"></div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-web-cloud-firestore.js";
+        import { getFirestore, collection, query, orderBy, limit, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-web-cloud-firestore.js";
 
         const db = getFirestore(initializeApp({ /* TU CONFIG */ }));
 
-        async function verificarCapacidad() {
-            const coll = collection(db, "ideas");
-            const snapshot = await getCountFromServer(coll);
-            const count = snapshot.data().count;
+        // Cargar Top 50 ordenado por Likes
+        const q = query(collection(db, "ideas"), orderBy("likes", "desc"), limit(50));
 
-            if (count >= 1000) {
-                document.getElementById('sendBtn').disabled = true;
-                document.getElementById('status-msg').innerText = "🛑 Capacidad máxima de ideas alcanzada (1000/1000). El sistema se ha apagado.";
-            }
-        }
+        onSnapshot(q, (snapshot) => {
+            const list = document.getElementById('topList');
+            list.innerHTML = "";
+            let rank = 1;
 
-        window.enviarIdea = async () => {
-            const text = document.getElementById('ideaText').value;
-            if(!text) return;
+            snapshot.forEach((docSnap) => {
+                const idea = docSnap.data();
+                const id = docSnap.id;
 
-            await addDoc(collection(db, "ideas"), {
-                content: text,
-                likes: 0,
-                dislikes: 0,
-                createdAt: Date.now(),
-                author: localStorage.getItem('userEmail') || 'Anónimo'
+                // Regla de las 24 horas: Si pasaron más de 86400 segundos, ignorar/borrar
+                const tiempoPasado = (Date.now() - idea.createdAt) / 1000;
+                if (tiempoPasado > 86400) {
+                    deleteDoc(doc(db, "ideas", id));
+                    return;
+                }
+
+                const div = document.createElement('div');
+                div.className = 'idea-item';
+                div.innerHTML = `
+                    <div class="rank-num">#${rank}</div>
+                    <div class="idea-content">
+                        <p>${idea.content}</p>
+                        <small>Enviado por: ${idea.author}</small>
+                    </div>
+                    <div class="votes">
+                        <button class="vote-btn" style="background:#55efc4" onclick="votar('${id}', 'likes')">👍 ${idea.likes}</button>
+                        <button class="vote-btn" style="background:#ff7675" onclick="votar('${id}', 'dislikes', ${idea.dislikes})">👎 ${idea.dislikes}</button>
+                    </div>
+                `;
+                list.appendChild(div);
+                rank++;
             });
+        });
 
-            alert("¡Idea enviada al corazón de S.E.D.E!");
-            window.location.href = "top-ideas.html";
+        window.votar = async (id, tipo, currentDislikes) => {
+            const ref = doc(db, "ideas", id);
+            if (tipo === 'dislikes' && currentDislikes >= 10) {
+                // Según tu documentación: Si tiene dislikes, desaparece
+                await deleteDoc(ref);
+                alert("Idea eliminada por la comunidad.");
+            } else {
+                await updateDoc(ref, { [tipo]: increment(1) });
+            }
         };
-
-        verificarCapacidad();
     </script>
 </body>
 </html>
