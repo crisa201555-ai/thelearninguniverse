@@ -2,197 +2,51 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TLU | Centro de Comando</title>
+    <title>Crear Clase | TLU Teacher</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #6c5ce7;
-            --secondary: #00cec9;
-            --accent: #fd79a8;
-            --dark-bg: #0f172a;
-        }
-
-        body, html {
-            margin: 0; padding: 0; min-height: 100vh;
-            font-family: 'Fredoka', sans-serif;
-            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
-            color: white; display: flex; justify-content: center; align-items: center;
-        }
-
-        .container {
-            width: 95%;
-            max-width: 600px;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        .command-panel {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border-radius: 30px;
-            border: 3px solid var(--primary);
-            padding: 30px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-            text-align: center;
-            animation: slideIn 0.6s ease-out;
-        }
-
-        @keyframes slideIn {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .icon-box { font-size: clamp(2rem, 10vw, 3.5rem); margin-bottom: 10px; }
-
-        .panel-header h1 {
-            font-size: clamp(1.5rem, 8vw, 2.5rem);
-            color: var(--secondary);
-            margin: 0;
-            letter-spacing: 1px;
-        }
-
-        .panel-header p {
-            font-size: clamp(0.9rem, 4vw, 1.1rem);
-            opacity: 0.7;
-            margin-bottom: 25px;
-        }
-
-        /* Formulario Responsivo */
-        .input-group {
-            text-align: left;
-            margin-bottom: 15px;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 700;
-            color: var(--accent);
-            font-size: 0.95rem;
-        }
-
-        .input-group input, .input-group textarea {
-            width: 100%;
-            padding: 12px 15px;
-            border-radius: 12px;
-            border: 2px solid rgba(255,255,255,0.1);
-            background: rgba(0,0,0,0.3);
-            color: white;
-            font-family: 'Fredoka';
-            font-size: 1rem;
-            box-sizing: border-box;
-            outline: none;
-            transition: 0.3s;
-        }
-
-        .input-group input:focus {
-            border-color: var(--secondary);
-            background: rgba(0,0,0,0.5);
-        }
-
-        /* Botones Adaptables */
-        .actions {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 25px;
-        }
-
-        .btn-create {
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            color: white;
-            border: none;
-            padding: 16px;
-            border-radius: 50px;
-            font-size: 1.2rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .btn-create:active { transform: scale(0.95); }
-
-        .btn-home {
-            background: transparent;
-            color: white;
-            border: 2px solid rgba(255,255,255,0.2);
-            padding: 10px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 0.9rem;
-            transition: 0.3s;
-        }
-
-        /* Media Query para pantallas muy pequeñas */
-        @media (max-width: 400px) {
-            .command-panel { padding: 20px; }
-            .btn-create { font-size: 1.1rem; }
-        }
+        :root { --p: #6c5ce7; --s: #00cec9; --bg: #0f172a; }
+        body { font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: rgba(255,255,255,0.05); padding: 40px; border-radius: 30px; border: 2px solid var(--s); width: 400px; text-align: center; }
+        input { width: 100%; padding: 15px; margin: 10px 0; border-radius: 15px; border: none; outline: none; box-sizing: border-box; font-family: 'Fredoka'; }
+        .btn { background: var(--p); color: white; border: none; padding: 15px; width: 100%; border-radius: 15px; cursor: pointer; font-weight: 700; font-size: 1.1rem; }
     </style>
 </head>
 <body>
-
-    <div class="container">
-        <div class="command-panel">
-            <div class="icon-box">🛰️</div>
-            <div class="panel-header">
-                <h1>Nueva Misión</h1>
-                <p>Configura tu clase estelar</p>
-            </div>
-
-            <div class="input-group">
-                <label>Nombre de la Clase</label>
-                <input type="text" id="className" placeholder="Ej: Viaje a Júpiter">
-            </div>
-
-            <div class="input-group">
-                <label>Profesor / Capitán</label>
-                <input type="text" id="teacherName" placeholder="Tu nombre">
-            </div>
-
-            <div class="input-group">
-                <label>Objetivo (Opcional)</label>
-                <textarea id="description" rows="2" placeholder="¿Qué vamos a descubrir?"></textarea>
-            </div>
-
-            <div class="actions">
-                <button class="btn-create" onclick="crearClase()">✨ INICIAR MISIÓN</button>
-                <a href="home.html" class="btn-home">⬅ Volver al Home</a>
-            </div>
-        </div>
+    <div class="card">
+        <h1>✨ Nueva Clase</h1>
+        <input type="text" id="className" placeholder="Nombre de la Clase (ej: 4to Básico A)">
+        <input type="text" id="teacherName" placeholder="Nombre del Docente">
+        <button class="btn" onclick="createGroup()">CREAR UNIVERSO 🚀</button>
     </div>
 
-    <script>
-        function crearClase() {
-            const nombre = document.getElementById('className').value;
-            const profe = document.getElementById('teacherName').value;
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-web-cloud-firestore.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-            if (!nombre || !profe) {
-                alert("⚠️ ¡Faltan datos para el despegue, Capitán!");
-                return;
+        const firebaseConfig = { /* TU CONFIG */ };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        window.createGroup = async () => {
+            const name = document.getElementById('className').value;
+            const teacher = document.getElementById('teacherName').value;
+            
+            if(name && teacher) {
+                try {
+                    const docRef = await addDoc(collection(db, "groups"), {
+                        className: name,
+                        teacherName: teacher,
+                        adminId: auth.currentUser.uid,
+                        createdAt: new Date(),
+                        testStatus: 'blocked'
+                    });
+                    localStorage.setItem('activeGroupId', docRef.id);
+                    window.location.href = "viewmembers.html";
+                } catch (e) { alert("Error al crear: " + e); }
             }
-
-            // Guardar Datos
-            localStorage.setItem('userClass', nombre);
-            localStorage.setItem('userTeacher', profe);
-
-            // Generar Mensaje Inbox
-            const nuevoMensaje = {
-                id: Date.now(),
-                titulo: "🚀 Misión: " + nombre,
-                cuerpo: `¡Despegue confirmado! Has iniciado la clase con el profesor ${profe}.`,
-                hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                fecha: new Date().toLocaleDateString()
-            };
-
-            let bandeja = JSON.parse(localStorage.getItem('inboxMessages')) || [];
-            bandeja.unshift(nuevoMensaje);
-            localStorage.setItem('inboxMessages', JSON.stringify(bandeja));
-
-            alert("✨ ¡Misión creada con éxito!");
-            window.location.href = "home.html";
         }
     </script>
 </body>
