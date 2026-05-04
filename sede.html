@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S.E.D.E. | Sistema Educacional Del Estudiante</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #00cec9;
+            --bg: #0f172a;
+            --accent: #fd79a8;
+        }
+
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: var(--bg);
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(108, 92, 231, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(0, 206, 201, 0.1) 0%, transparent 50%);
+            color: white;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            max-width: 800px;
+        }
+
+        .logo-ministerio {
+            font-size: 0.9rem;
+            letter-spacing: 3px;
+            color: var(--secondary);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin: 10px 0;
+            background: linear-gradient(to right, #fff, var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .mision-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            opacity: 0.9;
+            margin-bottom: 40px;
+        }
+
+        .grid-accesos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            width: 90%;
+            max-width: 1000px;
+            margin-bottom: 60px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 25px;
+            text-align: center;
+            transition: 0.3s;
+            text-decoration: none;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.07);
+            border-color: var(--secondary);
+            box-shadow: 0 10px 30px rgba(0, 206, 201, 0.2);
+        }
+
+        .card h2 { color: var(--secondary); margin-top: 0; }
+        .card p { font-size: 0.95rem; opacity: 0.8; line-height: 1.4; }
+
+        .btn-acceder {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: var(--primary);
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 40px;
+            text-align: center;
+            opacity: 0.6;
+            font-size: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            width: 100%;
+        }
+
+        .highlight { color: var(--accent); font-weight: 700; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-ministerio">🏛️ Ministerio de TLU</div>
+        <h1>S.E.D.E.</h1>
+        <p class="mision-text">
+            Bienvenido al <b>Sistema Educacional Del Estudiante</b>. Fundado en 2026, nuestra misión es preparar a los exploradores del mañana a través de la tecnología, la creatividad y la educación interactiva. 
+            <br><span class="highlight">Preparados para enseñar, listos para aprender.</span>
+        </p>
+    </header>
+
+    <div class="grid-accesos">
+        <a href="creategroup.html" class="card">
+            <div>
+                <h2>👩‍🏫 Para Docentes</h2>
+                <p>Crea clases dinámicas, invita a tus alumnos y gestiona evaluaciones en tiempo real. ¡El universo es tu aula!</p>
+            </div>
+            <div class="btn-acceder">CREAR CLASE</div>
+        </a>
+
+        <a href="viewclass.html" class="card">
+            <div>
+                <h2>🚀 Para Estudiantes</h2>
+                <p>Ingresa a tu portal S.E.D.E, mantente conectado con tu docente y supera misiones de conocimiento.</p>
+            </div>
+            <div class="btn-acceder">ENTRAR A CLASE</div>
+        </a>
+
+        <a href="sede/ideas.html" class="card" style="border-color: var(--accent);">
+            <div>
+                <h2 style="color: var(--accent);">💡 Ideas-New</h2>
+                <p>Tu voz importa. Envía tus propuestas para mejorar el sistema y vota por las mejores ideas de la comunidad.</p>
+            </div>
+            <div class="btn-acceder" style="background: var(--accent);">PROPONER MEJORA</div>
+        </a>
+    </div>
+
+    <div style="text-align: center; margin-bottom: 50px;">
+        <a href="sede/mejoracion.html" style="color: var(--secondary); text-decoration: none; font-weight: 700;">
+            📊 Ver historial de Mejoración del Sistema
+        </a>
+    </div>
+
+    <footer>
+        &copy; 2026 Ministerio de TLU - Sistema Educacional Del Estudiante<br>
+        "Educando a los ciudadanos de la galaxia"
+    </footer>
+
+</body>
+</html>
