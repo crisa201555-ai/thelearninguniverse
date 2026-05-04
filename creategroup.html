@@ -7,69 +7,43 @@
     <style>
         :root { --p: #6c5ce7; --s: #00cec9; --bg: #0f172a; }
         body { 
-            font-family: 'Fredoka', sans-serif; 
-            background: var(--bg); 
+            font-family: 'Fredoka', sans-serif; background: var(--bg);
             background-image: radial-gradient(circle at top, #1b277a 0%, #0f172a 100%);
-            color: white; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            margin: 0; 
+            color: white; display: flex; justify-content: center; align-items: center; 
+            height: 100vh; margin: 0; 
         }
         .card { 
-            background: rgba(255,255,255,0.05); 
-            backdrop-filter: blur(10px);
-            padding: 40px; 
-            border-radius: 30px; 
-            border: 2px solid var(--s); 
-            width: 400px; 
-            text-align: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            background: rgba(255,255,255,0.05); backdrop-filter: blur(10px);
+            padding: 40px; border-radius: 30px; border: 2px solid var(--s); 
+            width: 400px; text-align: center;
         }
         input { 
-            width: 100%; 
-            padding: 15px; 
-            margin: 10px 0; 
-            border-radius: 15px; 
-            border: none; 
-            outline: none; 
-            box-sizing: border-box; 
-            font-family: 'Fredoka'; 
-            font-size: 1rem;
+            width: 100%; padding: 15px; margin: 10px 0; border-radius: 15px; 
+            border: none; outline: none; box-sizing: border-box; font-family: 'Fredoka'; 
         }
         .btn { 
-            background: var(--p); 
-            color: white; 
-            border: none; 
-            padding: 15px; 
-            width: 100%; 
-            border-radius: 15px; 
-            cursor: pointer; 
-            font-weight: 700; 
-            font-size: 1.1rem;
-            margin-top: 10px;
-            transition: 0.3s;
+            background: var(--p); color: white; border: none; padding: 15px; 
+            width: 100%; border-radius: 15px; cursor: pointer; font-weight: 700; 
+            font-size: 1.1rem; margin-top: 10px;
         }
-        .btn:hover { background: #5b4bc4; transform: scale(1.02); }
+        .btn:disabled { background: #444; cursor: not-allowed; }
     </style>
 </head>
 <body>
     <div class="card">
         <h1>✨ Nueva Clase</h1>
-        <p style="opacity: 0.7;">Define tu universo de aprendizaje</p>
-        <input type="text" id="className" placeholder="Nombre de la Clase (ej: 4to Básico A)">
+        <input type="text" id="className" placeholder="Nombre de la Clase">
         <input type="text" id="teacherName" placeholder="Nombre del Docente">
-        <button class="btn" onclick="createGroup()">CREAR UNIVERSO 🚀</button>
+        <button class="btn" id="btnCrear">CREAR UNIVERSO 🚀</button>
     </div>
 
     <script type="module">
-        // Importaciones necesarias
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-web-cloud-firestore.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        // CONFIGURACIÓN DE FIREBASE (Asegúrate de que sea la tuya)
+        console.log("Iniciando Firebase...");
+
         const firebaseConfig = {
             apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
             authDomain: "thelearninguniverse-26.firebaseapp.com",
@@ -83,46 +57,48 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        // LA SOLUCIÓN: Definir la función en el objeto window
-        window.createGroup = async () => {
+        // Referencia al botón
+        const btnCrear = document.getElementById('btnCrear');
+
+        // Escuchador de eventos directamente en el JS (Elimina el error de "not defined")
+        btnCrear.addEventListener('click', async () => {
             const name = document.getElementById('className').value.trim();
             const teacher = document.getElementById('teacherName').value.trim();
             const user = auth.currentUser;
-            
+
+            console.log("Intentando crear grupo...", { name, teacher, user: user?.email });
+
             if (!user) {
-                alert("Debes estar iniciado sesión para crear un grupo.");
+                alert("⚠️ Error: No detectamos tu sesión de docente. Por favor, inicia sesión de nuevo.");
                 return;
             }
 
-            if(name && teacher) {
-                try {
-                    const docRef = await addDoc(collection(db, "groups"), {
-                        className: name,
-                        teacherName: teacher,
-                        adminId: user.uid,
-                        adminEmail: user.email,
-                        createdAt: new Date(),
-                        testStatus: 'blocked'
-                    });
-                    
-                    // Guardamos el ID del grupo recién creado para usarlo en las siguientes páginas
-                    localStorage.setItem('activeGroupId', docRef.id);
-                    
-                    alert("¡Universo creado con éxito!");
-                    window.location.href = "viewmembers.html";
-                } catch (e) { 
-                    console.error("Error al crear grupo:", e);
-                    alert("Hubo un error al crear el grupo."); 
-                }
-            } else {
-                alert("Por favor, completa todos los campos.");
+            if (!name || !teacher) {
+                alert("✍️ Por favor, completa ambos campos.");
+                return;
             }
-        }
 
-        // Verificación de sesión opcional para evitar errores
-        onAuthStateChanged(auth, (user) => {
-            if (!user) {
-                console.warn("Docente no autenticado");
+            btnCrear.disabled = true;
+            btnCrear.innerText = "Cargando...";
+
+            try {
+                const docRef = await addDoc(collection(db, "groups"), {
+                    className: name,
+                    teacherName: teacher,
+                    adminId: user.uid,
+                    adminEmail: user.email,
+                    createdAt: new Date(),
+                    testStatus: 'blocked'
+                });
+                
+                console.log("Grupo creado con ID:", docRef.id);
+                localStorage.setItem('activeGroupId', docRef.id);
+                window.location.href = "viewmembers.html";
+            } catch (error) {
+                console.error("Error al insertar en Firestore:", error);
+                alert("Hubo un error con la base de datos.");
+                btnCrear.disabled = false;
+                btnCrear.innerText = "CREAR UNIVERSO 🚀";
             }
         });
     </script>
