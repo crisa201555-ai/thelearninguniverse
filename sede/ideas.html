@@ -3,114 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S.E.D.E. | Ideas-New</title>
+    <title>S.E.D.E. | Enviar Idea</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --p: #6c5ce7;
-            --s: #00cec9;
-            --bg: #0f172a;
-            --danger: #ff7675;
-        }
-
-        body {
-            font-family: 'Fredoka', sans-serif;
-            background: var(--bg);
-            background-image: radial-gradient(circle at top, #1b277a 0%, #0f172a 100%);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-        }
-
-        .card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(15px);
-            padding: 40px;
-            border-radius: 30px;
-            border: 2px solid var(--p);
-            width: 100%;
-            max-width: 500px;
-            text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        }
-
-        h1 { color: var(--s); margin-bottom: 10px; }
-        p { opacity: 0.8; margin-bottom: 25px; }
-
-        textarea {
-            width: 100%;
-            height: 150px;
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: none;
-            outline: none;
-            font-family: 'Fredoka';
-            font-size: 1rem;
-            background: rgba(255,255,255,0.9);
-            color: #333;
-            box-sizing: border-box;
-            resize: none;
-        }
-
-        .btn {
-            background: var(--p);
-            color: white;
-            border: none;
-            padding: 18px 30px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 1.1rem;
-            width: 100%;
-            transition: 0.3s;
-        }
-
-        .btn:disabled {
-            background: #444;
-            color: #888;
-            cursor: not-allowed;
-        }
-
-        #status-msg {
-            margin-top: 20px;
-            font-size: 0.9rem;
-            color: var(--danger);
-            font-weight: 700;
-        }
-
-        .footer-link {
-            margin-top: 30px;
-            color: var(--s);
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
+        :root { --p: #6c5ce7; --s: #00cec9; --bg: #0f172a; --danger: #ff7675; }
+        body { font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+        .card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); padding: 40px; border-radius: 30px; border: 2px solid var(--p); width: 100%; max-width: 500px; text-align: center; }
+        textarea { width: 100%; height: 150px; border-radius: 20px; padding: 20px; margin-bottom: 20px; border: none; outline: none; font-family: 'Fredoka'; font-size: 1rem; box-sizing: border-box; resize: none; }
+        .btn { background: var(--p); color: white; border: none; padding: 18px 30px; border-radius: 50px; cursor: pointer; font-weight: 700; width: 100%; transition: 0.3s; }
+        .btn:disabled { background: #444; cursor: not-allowed; }
+        #status-msg { margin-top: 20px; font-size: 0.9rem; color: var(--danger); font-weight: 700; }
     </style>
 </head>
 <body>
 
     <div class="card">
         <h1>💡 Ideas-New</h1>
-        <p>Tu propuesta para mejorar S.E.D.E llegará al Ministerio de TLU.</p>
-        
-        <textarea id="ideaText" placeholder="Describe tu idea aquí..."></textarea>
-        
+        <p>Propón una mejora para el Ministerio de TLU.</p>
+        <textarea id="ideaText" placeholder="Tu idea pensada desde el corazón..."></textarea>
         <button id="sendBtn" class="btn">ENVIAR AL SISTEMA 🚀</button>
-        
         <div id="status-msg"></div>
     </div>
 
-    <a href="top-ideas.html" class="footer-link">Ver clasificación de ideas →</a>
-
     <script type="module">
-        // USAMOS LAS URLS DE GOOGLE (CDN) PARA QUE FUNCIONE EN EL NAVEGADOR
+        // RUTAS CORREGIDAS PARA EVITAR EL ERROR 404
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-web-cloud-firestore.js";
+        import { getFirestore, collection, addDoc, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
@@ -123,50 +41,39 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-
         const sendBtn = document.getElementById('sendBtn');
-        const ideaText = document.getElementById('ideaText');
 
-        // 1. Verificación de capacidad (Límite 1000 ideas)
+        // REGLA: Si hay más de 1000 ideas, se apaga 
         async function verificarCapacidad() {
             try {
                 const coll = collection(db, "ideas");
                 const snapshot = await getCountFromServer(coll);
-                const count = snapshot.data().count;
-
-                if (count >= 1000) {
+                if (snapshot.data().count >= 1000) {
                     sendBtn.disabled = true;
-                    ideaText.disabled = true;
-                    document.getElementById('status-msg').innerText = "🛑 EL SISTEMA SE HA APAGADO: Límite de 1000 ideas alcanzado.";
+                    document.getElementById('status-msg').innerText = "🛑 SISTEMA APAGADO: Límite de 1000 ideas alcanzado.";
                 }
             } catch (e) { console.error(e); }
         }
 
-        // 2. Escuchar el clic del botón (ESTO EVITA EL ERROR DE "NOT DEFINED")
         sendBtn.addEventListener('click', async () => {
-            const contenido = ideaText.value.trim();
-
-            if (!contenido) {
-                alert("Escribe algo antes de enviar.");
-                return;
-            }
+            const content = document.getElementById('ideaText').value.trim();
+            if (!content) return alert("Escribe tu idea primero.");
 
             sendBtn.disabled = true;
             sendBtn.innerText = "ENVIANDO...";
 
             try {
                 await addDoc(collection(db, "ideas"), {
-                    content: contenido,
+                    content: content,
                     likes: 0,
                     dislikes: 0,
                     createdAt: Date.now(),
-                    author: localStorage.getItem('userEmail') || 'Explorador S.E.D.E'
+                    author: "Explorador S.E.D.E"
                 });
-
                 alert("¡Idea enviada!");
                 window.location.href = "top-ideas.html";
             } catch (error) {
-                alert("Error al conectar con el Ministerio.");
+                alert("Error al conectar con S.E.D.E");
                 sendBtn.disabled = false;
                 sendBtn.innerText = "ENVIAR AL SISTEMA 🚀";
             }
