@@ -69,20 +69,12 @@
             font-size: 1.1rem;
             width: 100%;
             transition: 0.3s;
-            box-shadow: 0 10px 20px rgba(108, 92, 231, 0.3);
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 25px rgba(108, 92, 231, 0.5);
         }
 
         .btn:disabled {
             background: #444;
             color: #888;
             cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
         }
 
         #status-msg {
@@ -104,22 +96,22 @@
 
     <div class="card">
         <h1>💡 Ideas-New</h1>
-        <p>Tu propuesta para mejorar S.E.D.E será evaluada por la comunidad y el Ministerio de TLU.</p>
+        <p>Tu propuesta para mejorar S.E.D.E llegará al Ministerio de TLU.</p>
         
-        <textarea id="ideaText" placeholder="Describe tu idea detalladamente..."></textarea>
+        <textarea id="ideaText" placeholder="Describe tu idea aquí..."></textarea>
         
         <button id="sendBtn" class="btn">ENVIAR AL SISTEMA 🚀</button>
         
         <div id="status-msg"></div>
     </div>
 
-    <a href="top-ideas.html" class="footer-link">Ver el Top 50 de Ideas →</a>
+    <a href="top-ideas.html" class="footer-link">Ver clasificación de ideas →</a>
 
     <script type="module">
+        // USAMOS LAS URLS DE GOOGLE (CDN) PARA QUE FUNCIONE EN EL NAVEGADOR
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, addDoc, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-web-cloud-firestore.js";
 
-        // CONFIGURACIÓN DE FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
             authDomain: "thelearninguniverse-26.firebaseapp.com",
@@ -132,12 +124,10 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Referencias de elementos
         const sendBtn = document.getElementById('sendBtn');
         const ideaText = document.getElementById('ideaText');
-        const statusMsg = document.getElementById('status-msg');
 
-        // 1. Verificar si el sistema debe apagarse (Límite 1000 ideas)
+        // 1. Verificación de capacidad (Límite 1000 ideas)
         async function verificarCapacidad() {
             try {
                 const coll = collection(db, "ideas");
@@ -147,25 +137,22 @@
                 if (count >= 1000) {
                     sendBtn.disabled = true;
                     ideaText.disabled = true;
-                    statusMsg.innerText = "🛑 CAPACIDAD MÁXIMA ALCANZADA. El sistema de recepción se ha apagado automáticamente por orden del Ministerio.";
+                    document.getElementById('status-msg').innerText = "🛑 EL SISTEMA SE HA APAGADO: Límite de 1000 ideas alcanzado.";
                 }
-            } catch (error) {
-                console.error("Error al contar documentos:", error);
-            }
+            } catch (e) { console.error(e); }
         }
 
-        // 2. Función para enviar la idea (Escuchador de evento)
+        // 2. Escuchar el clic del botón (ESTO EVITA EL ERROR DE "NOT DEFINED")
         sendBtn.addEventListener('click', async () => {
             const contenido = ideaText.value.trim();
 
-            if (contenido === "") {
-                alert("Por favor, escribe tu idea antes de lanzarla al espacio.");
+            if (!contenido) {
+                alert("Escribe algo antes de enviar.");
                 return;
             }
 
-            // Bloquear botón para evitar duplicados
             sendBtn.disabled = true;
-            sendBtn.innerText = "PROPULSANDO IDEA...";
+            sendBtn.innerText = "ENVIANDO...";
 
             try {
                 await addDoc(collection(db, "ideas"), {
@@ -173,21 +160,18 @@
                     likes: 0,
                     dislikes: 0,
                     createdAt: Date.now(),
-                    author: localStorage.getItem('userEmail') || 'Explorador Anónimo'
+                    author: localStorage.getItem('userEmail') || 'Explorador S.E.D.E'
                 });
 
-                alert("¡Misión exitosa! Tu idea ha sido recibida.");
+                alert("¡Idea enviada!");
                 window.location.href = "top-ideas.html";
-
             } catch (error) {
-                console.error("Error al enviar:", error);
-                alert("Hubo un fallo en la comunicación con la base de datos.");
+                alert("Error al conectar con el Ministerio.");
                 sendBtn.disabled = false;
                 sendBtn.innerText = "ENVIAR AL SISTEMA 🚀";
             }
         });
 
-        // Ejecutar verificación al cargar
         verificarCapacidad();
     </script>
 </body>
