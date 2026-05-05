@@ -5,79 +5,105 @@
     <title>Top Ideas | S.E.D.E.</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Fredoka', sans-serif; background: #0f172a; color: white; padding: 20px; }
-        .ranking-container { max-width: 800px; margin: auto; }
-        .idea-item { 
-            background: rgba(255,255,255,0.05); margin-bottom: 15px; padding: 20px; 
-            border-radius: 20px; display: flex; align-items: center; gap: 20px;
-            border-left: 5px solid #6c5ce7;
+        :root { --p: #6c5ce7; --s: #00cec9; --bg: #0f172a; --danger: #ff7675; }
+        body { font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; padding: 20px; }
+        .container { max-width: 800px; margin: auto; }
+        h1 { text-align: center; color: var(--s); font-size: 2.5rem; }
+        .idea-card { 
+            background: rgba(255,255,255,0.05); border-radius: 20px; padding: 20px; 
+            margin-bottom: 15px; display: flex; align-items: center; gap: 20px;
+            border-left: 6px solid var(--p); transition: 0.3s;
         }
-        .rank-num { font-size: 2rem; font-weight: 700; color: #00cec9; min-width: 50px; }
-        .idea-content { flex-grow: 1; }
-        .votes { display: flex; flex-direction: column; gap: 5px; }
-        .vote-btn { border: none; padding: 5px 15px; border-radius: 10px; cursor: pointer; font-family: 'Fredoka'; }
+        .rank-num { font-size: 1.8rem; font-weight: 700; color: var(--s); min-width: 40px; }
+        .content { flex-grow: 1; }
+        .content p { margin: 0; font-size: 1.1rem; }
+        .content small { opacity: 0.5; font-size: 0.8rem; }
+        .actions { display: flex; flex-direction: column; gap: 10px; }
+        .btn-vote { 
+            border: none; padding: 8px 15px; border-radius: 10px; 
+            cursor: pointer; font-family: 'Fredoka'; font-weight: 700; 
+            transition: 0.2s; min-width: 80px;
+        }
+        .btn-up { background: #55efc4; color: #004d3b; }
+        .btn-down { background: var(--danger); color: #4d0000; }
     </style>
 </head>
 <body>
-    <div class="ranking-container">
-        <h1>🏆 Clasificación de Ideas-New</h1>
-        <p>Las ideas con más dislikes desaparecen del sistema.</p>
-        <div id="topList"></div>
-    </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, query, orderBy, limit, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-web-cloud-firestore.js";
+<div class="container">
+    <h1>🏆 Clasificación Ideas-New</h1>
+    <p style="text-align:center; opacity:0.7;">Las ideas con más dislikes desaparecen del sistema.</p>
+    <div id="ideasContainer"></div>
+</div>
 
-        const db = getFirestore(initializeApp({ /* TU CONFIG */ }));
+<script type="module">
+    // URLS CORREGIDAS (SIN EL "web-cloud-")
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, query, orderBy, limit, onSnapshot, doc, updateDoc, deleteDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // Cargar Top 50 ordenado por Likes
-        const q = query(collection(db, "ideas"), orderBy("likes", "desc"), limit(50));
+    const firebaseConfig = {
+        apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
+        authDomain: "thelearninguniverse-26.firebaseapp.com",
+        projectId: "thelearninguniverse-26",
+        storageBucket: "thelearninguniverse-26.firebasestorage.app",
+        messagingSenderId: "85338996011",
+        appId: "1:85338996011:web:1f3bb216900c07e735596e"
+    };
 
-        onSnapshot(q, (snapshot) => {
-            const list = document.getElementById('topList');
-            list.innerHTML = "";
-            let rank = 1;
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-            snapshot.forEach((docSnap) => {
-                const idea = docSnap.data();
-                const id = docSnap.id;
+    // 1. CARGAR IDEAS (TOP 50 SEGÚN DOCUMENTACIÓN)
+    const q = query(collection(db, "ideas"), orderBy("likes", "desc"), limit(50));
 
-                // Regla de las 24 horas: Si pasaron más de 86400 segundos, ignorar/borrar
-                const tiempoPasado = (Date.now() - idea.createdAt) / 1000;
-                if (tiempoPasado > 86400) {
-                    deleteDoc(doc(db, "ideas", id));
-                    return;
-                }
+    onSnapshot(q, (snapshot) => {
+        const container = document.getElementById('ideasContainer');
+        container.innerHTML = "";
+        let i = 1;
 
-                const div = document.createElement('div');
-                div.className = 'idea-item';
-                div.innerHTML = `
-                    <div class="rank-num">#${rank}</div>
-                    <div class="idea-content">
-                        <p>${idea.content}</p>
-                        <small>Enviado por: ${idea.author}</small>
-                    </div>
-                    <div class="votes">
-                        <button class="vote-btn" style="background:#55efc4" onclick="votar('${id}', 'likes')">👍 ${idea.likes}</button>
-                        <button class="vote-btn" style="background:#ff7675" onclick="votar('${id}', 'dislikes', ${idea.dislikes})">👎 ${idea.dislikes}</button>
-                    </div>
-                `;
-                list.appendChild(div);
-                rank++;
-            });
-        });
+        snapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+            const id = docSnap.id;
 
-        window.votar = async (id, tipo, currentDislikes) => {
-            const ref = doc(db, "ideas", id);
-            if (tipo === 'dislikes' && currentDislikes >= 10) {
-                // Según tu documentación: Si tiene dislikes, desaparece
-                await deleteDoc(ref);
-                alert("Idea eliminada por la comunidad.");
-            } else {
-                await updateDoc(ref, { [tipo]: increment(1) });
+            // REGLA: Borrar si pasaron 24 horas
+            const unDia = 24 * 60 * 60 * 1000;
+            if (Date.now() - data.createdAt > unDia) {
+                deleteDoc(doc(db, "ideas", id));
+                return;
             }
-        };
-    </script>
+
+            const card = document.createElement('div');
+            card.className = 'idea-card';
+            card.innerHTML = `
+                <div class="rank-num">#${i}</div>
+                <div class="content">
+                    <p>${data.content}</p>
+                    <small>Por: ${data.author || 'Explorador'}</small>
+                </div>
+                <div class="actions">
+                    <button class="btn-vote btn-up" id="up-${id}">👍 ${data.likes}</button>
+                    <button class="btn-vote btn-down" id="down-${id}">👎 ${data.dislikes}</button>
+                </div>
+            `;
+            container.appendChild(card);
+
+            // EVENTOS DE VOTO
+            document.getElementById(`up-${id}`).onclick = () => votar(id, 'likes');
+            document.getElementById(`down-${id}`).onclick = () => votar(id, 'dislikes', data.dislikes);
+
+            i++;
+        });
+    });
+
+    async function votar(id, campo, currentDislikes = 0) {
+        const ref = doc(db, "ideas", id);
+        if (campo === 'dislikes' && currentDislikes >= 9) {
+            await deleteDoc(ref);
+            alert("Idea eliminada por exceso de dislikes.");
+        } else {
+            await updateDoc(ref, { [campo]: increment(1) });
+        }
+    }
+</script>
 </body>
 </html>
