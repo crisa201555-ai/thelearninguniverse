@@ -2,60 +2,192 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>S.E.D.E. | Enviar Idea</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S.E.D.E. | Ideas-New</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #6c5ce7; --s: #00cec9; --bg: #0f172a; }
-        body { font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; padding: 20px; display: flex; justify-content: center; }
-        .card { background: rgba(255,255,255,0.05); padding: 30px; border-radius: 25px; border: 2px solid var(--p); width: 100%; max-width: 500px; text-align: center; }
-        textarea { width: 100%; height: 150px; border-radius: 15px; padding: 15px; margin: 15px 0; border: none; font-family: 'Fredoka'; box-sizing: border-box; }
-        .btn { background: var(--s); color: var(--bg); border: none; padding: 15px 30px; border-radius: 50px; cursor: pointer; font-weight: 700; width: 100%; }
-        .btn:disabled { background: #444; color: #888; cursor: not-allowed; }
-        #status-msg { margin-top: 15px; font-size: 0.9rem; color: var(--danger); }
+        :root {
+            --p: #6c5ce7;
+            --s: #00cec9;
+            --bg: #0f172a;
+            --danger: #ff7675;
+        }
+
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: var(--bg);
+            background-image: radial-gradient(circle at top, #1b277a 0%, #0f172a 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            padding: 40px;
+            border-radius: 30px;
+            border: 2px solid var(--p);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        h1 { color: var(--s); margin-bottom: 10px; }
+        p { opacity: 0.8; margin-bottom: 25px; }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: none;
+            outline: none;
+            font-family: 'Fredoka';
+            font-size: 1rem;
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            box-sizing: border-box;
+            resize: none;
+        }
+
+        .btn {
+            background: var(--p);
+            color: white;
+            border: none;
+            padding: 18px 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1.1rem;
+            width: 100%;
+            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(108, 92, 231, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px rgba(108, 92, 231, 0.5);
+        }
+
+        .btn:disabled {
+            background: #444;
+            color: #888;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        #status-msg {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: var(--danger);
+            font-weight: 700;
+        }
+
+        .footer-link {
+            margin-top: 30px;
+            color: var(--s);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
+
     <div class="card">
-        <h1>💡 Propón una mejora</h1>
-        <p>Tu idea llegará al Ministerio de TLU.</p>
-        <textarea id="ideaText" placeholder="Escribe tu idea aquí..."></textarea>
-        <button id="sendBtn" class="btn" onclick="enviarIdea()">ENVIAR AL SISTEMA 🚀</button>
+        <h1>💡 Ideas-New</h1>
+        <p>Tu propuesta para mejorar S.E.D.E será evaluada por la comunidad y el Ministerio de TLU.</p>
+        
+        <textarea id="ideaText" placeholder="Describe tu idea detalladamente..."></textarea>
+        
+        <button id="sendBtn" class="btn">ENVIAR AL SISTEMA 🚀</button>
+        
         <div id="status-msg"></div>
     </div>
+
+    <a href="top-ideas.html" class="footer-link">Ver el Top 50 de Ideas →</a>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, addDoc, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-web-cloud-firestore.js";
 
-        const db = getFirestore(initializeApp({ /* TU CONFIG */ }));
+        // CONFIGURACIÓN DE FIREBASE
+        const firebaseConfig = {
+            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
+            authDomain: "thelearninguniverse-26.firebaseapp.com",
+            projectId: "thelearninguniverse-26",
+            storageBucket: "thelearninguniverse-26.firebasestorage.app",
+            messagingSenderId: "85338996011",
+            appId: "1:85338996011:web:1f3bb216900c07e735596e"
+        };
 
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Referencias de elementos
+        const sendBtn = document.getElementById('sendBtn');
+        const ideaText = document.getElementById('ideaText');
+        const statusMsg = document.getElementById('status-msg');
+
+        // 1. Verificar si el sistema debe apagarse (Límite 1000 ideas)
         async function verificarCapacidad() {
-            const coll = collection(db, "ideas");
-            const snapshot = await getCountFromServer(coll);
-            const count = snapshot.data().count;
+            try {
+                const coll = collection(db, "ideas");
+                const snapshot = await getCountFromServer(coll);
+                const count = snapshot.data().count;
 
-            if (count >= 1000) {
-                document.getElementById('sendBtn').disabled = true;
-                document.getElementById('status-msg').innerText = "🛑 Capacidad máxima de ideas alcanzada (1000/1000). El sistema se ha apagado.";
+                if (count >= 1000) {
+                    sendBtn.disabled = true;
+                    ideaText.disabled = true;
+                    statusMsg.innerText = "🛑 CAPACIDAD MÁXIMA ALCANZADA. El sistema de recepción se ha apagado automáticamente por orden del Ministerio.";
+                }
+            } catch (error) {
+                console.error("Error al contar documentos:", error);
             }
         }
 
-        window.enviarIdea = async () => {
-            const text = document.getElementById('ideaText').value;
-            if(!text) return;
+        // 2. Función para enviar la idea (Escuchador de evento)
+        sendBtn.addEventListener('click', async () => {
+            const contenido = ideaText.value.trim();
 
-            await addDoc(collection(db, "ideas"), {
-                content: text,
-                likes: 0,
-                dislikes: 0,
-                createdAt: Date.now(),
-                author: localStorage.getItem('userEmail') || 'Anónimo'
-            });
+            if (contenido === "") {
+                alert("Por favor, escribe tu idea antes de lanzarla al espacio.");
+                return;
+            }
 
-            alert("¡Idea enviada al corazón de S.E.D.E!");
-            window.location.href = "top-ideas.html";
-        };
+            // Bloquear botón para evitar duplicados
+            sendBtn.disabled = true;
+            sendBtn.innerText = "PROPULSANDO IDEA...";
 
+            try {
+                await addDoc(collection(db, "ideas"), {
+                    content: contenido,
+                    likes: 0,
+                    dislikes: 0,
+                    createdAt: Date.now(),
+                    author: localStorage.getItem('userEmail') || 'Explorador Anónimo'
+                });
+
+                alert("¡Misión exitosa! Tu idea ha sido recibida.");
+                window.location.href = "top-ideas.html";
+
+            } catch (error) {
+                console.error("Error al enviar:", error);
+                alert("Hubo un fallo en la comunicación con la base de datos.");
+                sendBtn.disabled = false;
+                sendBtn.innerText = "ENVIAR AL SISTEMA 🚀";
+            }
+        });
+
+        // Ejecutar verificación al cargar
         verificarCapacidad();
     </script>
 </body>
