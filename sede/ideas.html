@@ -1,85 +1,47 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S.E.D.E. | Enviar Idea</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        :root { --p: #6c5ce7; --s: #00cec9; --bg: #0f172a; --danger: #ff7675; }
-        body { font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
-        .card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); padding: 40px; border-radius: 30px; border: 2px solid var(--p); width: 100%; max-width: 500px; text-align: center; }
-        textarea { width: 100%; height: 150px; border-radius: 20px; padding: 20px; margin-bottom: 20px; border: none; outline: none; font-family: 'Fredoka'; font-size: 1rem; box-sizing: border-box; resize: none; }
-        .btn { background: var(--p); color: white; border: none; padding: 18px 30px; border-radius: 50px; cursor: pointer; font-weight: 700; width: 100%; transition: 0.3s; }
-        .btn:disabled { background: #444; cursor: not-allowed; }
-        #status-msg { margin-top: 20px; font-size: 0.9rem; color: var(--danger); font-weight: 700; }
-    </style>
-</head>
-<body>
+<div class="card">
+    <h1>💡 Ideas-New</h1>
+    <p>Tu propuesta para mejorar S.E.D.E llegará al Ministerio de TLU.</p>
+    
+    <input type="text" id="authorName" placeholder="Tu nombre o apodo (opcional)" 
+           style="width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 15px; border: none; font-family: 'Fredoka'; box-sizing: border-box;">
+    
+    <textarea id="ideaText" placeholder="Describe tu idea aquí..."></textarea>
+    
+    <button id="sendBtn" class="btn">ENVIAR AL SISTEMA 🚀</button>
+    <div id="status-msg"></div>
+</div>
 
-    <div class="card">
-        <h1>💡 Ideas-New</h1>
-        <p>Propón una mejora para el Ministerio de TLU.</p>
-        <textarea id="ideaText" placeholder="Tu idea pensada desde el corazón..."></textarea>
-        <button id="sendBtn" class="btn">ENVIAR AL SISTEMA 🚀</button>
-        <div id="status-msg"></div>
-    </div>
+<script type="module">
+    // ... (Importaciones y config igual que antes) ...
 
-    <script type="module">
-        // RUTAS CORREGIDAS PARA EVITAR EL ERROR 404
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    const sendBtn = document.getElementById('sendBtn');
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
-            authDomain: "thelearninguniverse-26.firebaseapp.com",
-            projectId: "thelearninguniverse-26",
-            storageBucket: "thelearninguniverse-26.firebasestorage.app",
-            messagingSenderId: "85338996011",
-            appId: "1:85338996011:web:1f3bb216900c07e735596e"
-        };
+    sendBtn.addEventListener('click', async () => {
+        const contenido = document.getElementById('ideaText').value.trim();
+        const autor = document.getElementById('authorName').value.trim() || "Explorador Anónimo";
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const sendBtn = document.getElementById('sendBtn');
-
-        // REGLA: Si hay más de 1000 ideas, se apaga 
-        async function verificarCapacidad() {
-            try {
-                const coll = collection(db, "ideas");
-                const snapshot = await getCountFromServer(coll);
-                if (snapshot.data().count >= 1000) {
-                    sendBtn.disabled = true;
-                    document.getElementById('status-msg').innerText = "🛑 SISTEMA APAGADO: Límite de 1000 ideas alcanzado.";
-                }
-            } catch (e) { console.error(e); }
+        if (!contenido) {
+            alert("Escribe una idea antes de enviar.");
+            return;
         }
 
-        sendBtn.addEventListener('click', async () => {
-            const content = document.getElementById('ideaText').value.trim();
-            if (!content) return alert("Escribe tu idea primero.");
+        sendBtn.disabled = true;
+        sendBtn.innerText = "ENVIANDO...";
 
-            sendBtn.disabled = true;
-            sendBtn.innerText = "ENVIANDO...";
+        try {
+            await addDoc(collection(db, "ideas"), {
+                content: contenido,
+                author: autor, // CONECTADO: Aquí se guarda el nombre
+                likes: 0,
+                dislikes: 0,
+                createdAt: Date.now()
+            });
 
-            try {
-                await addDoc(collection(db, "ideas"), {
-                    content: content,
-                    likes: 0,
-                    dislikes: 0,
-                    createdAt: Date.now(),
-                    author: "Explorador S.E.D.E"
-                });
-                alert("¡Idea enviada!");
-                window.location.href = "top-ideas.html";
-            } catch (error) {
-                alert("Error al conectar con S.E.D.E");
-                sendBtn.disabled = false;
-                sendBtn.innerText = "ENVIAR AL SISTEMA 🚀";
-            }
-        });
-
-        verificarCapacidad();
-    </script>
-</body>
-</html>
+            alert("¡Idea enviada exitosamente!");
+            window.location.href = "top-ideas.html";
+        } catch (error) {
+            alert("Error al conectar.");
+            sendBtn.disabled = false;
+        }
+    });
+</script>
