@@ -8,36 +8,28 @@
         :root { --p: #6c5ce7; --s: #00cec9; --bg: #0f172a; --danger: #ff7675; }
         body { font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; padding: 20px; }
         .container { max-width: 800px; margin: auto; }
-        h1 { text-align: center; color: var(--s); font-size: 2.5rem; }
-        .idea-card { 
-            background: rgba(255,255,255,0.05); border-radius: 20px; padding: 20px; 
-            margin-bottom: 15px; display: flex; align-items: center; gap: 20px;
-            border-left: 6px solid var(--p); transition: 0.3s;
-        }
-        .rank-num { font-size: 1.8rem; font-weight: 700; color: var(--s); min-width: 40px; }
+        h1 { text-align: center; color: var(--s); font-size: 2.5rem; margin-bottom: 5px; }
+        .idea-card { background: rgba(255,255,255,0.05); border-radius: 20px; padding: 20px; margin-bottom: 15px; display: flex; align-items: center; gap: 20px; border-left: 6px solid var(--p); }
+        .rank-num { font-size: 1.8rem; font-weight: 700; color: var(--s); min-width: 45px; }
         .content { flex-grow: 1; }
         .content p { margin: 0; font-size: 1.1rem; }
-        .content small { opacity: 0.5; font-size: 0.8rem; }
-        .actions { display: flex; flex-direction: column; gap: 10px; }
-        .btn-vote { 
-            border: none; padding: 8px 15px; border-radius: 10px; 
-            cursor: pointer; font-family: 'Fredoka'; font-weight: 700; 
-            transition: 0.2s; min-width: 80px;
-        }
+        .author-tag { color: var(--s); font-size: 0.85rem; font-weight: 700; margin-top: 5px; display: block; }
+        .actions { display: flex; flex-direction: column; gap: 8px; }
+        .btn-vote { border: none; padding: 8px 12px; border-radius: 12px; cursor: pointer; font-family: 'Fredoka'; font-weight: 700; transition: 0.2s; }
         .btn-up { background: #55efc4; color: #004d3b; }
         .btn-down { background: var(--danger); color: #4d0000; }
+        .btn-vote:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>🏆 Clasificación Ideas-New</h1>
-    <p style="text-align:center; opacity:0.7;">Las ideas con más dislikes desaparecen del sistema.</p>
+    <h1>🏆 Top Ideas S.E.D.E.</h1>
+    <p style="text-align:center; opacity:0.6; margin-bottom:40px;">Ranking del 1 al 50. Borrado automático tras 24h o 50,000 dislikes.</p>
     <div id="ideasContainer"></div>
 </div>
 
 <script type="module">
-    // URLS CORREGIDAS (SIN EL "web-cloud-")
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, query, orderBy, limit, onSnapshot, doc, updateDoc, deleteDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
@@ -53,7 +45,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // 1. CARGAR IDEAS (TOP 50 SEGÚN DOCUMENTACIÓN)
     const q = query(collection(db, "ideas"), orderBy("likes", "desc"), limit(50));
 
     onSnapshot(q, (snapshot) => {
@@ -64,10 +55,10 @@
         snapshot.forEach((docSnap) => {
             const data = docSnap.data();
             const id = docSnap.id;
+            const yaVoto = localStorage.getItem(`voto_${id}`);
 
-            // REGLA: Borrar si pasaron 24 horas
-            const unDia = 24 * 60 * 60 * 1000;
-            if (Date.now() - data.createdAt > unDia) {
+            // Borrado 24h
+            if (Date.now() - data.createdAt > 86400000) {
                 deleteDoc(doc(db, "ideas", id));
                 return;
             }
@@ -78,30 +69,31 @@
                 <div class="rank-num">#${i}</div>
                 <div class="content">
                     <p>${data.content}</p>
-                    <small>Por: ${data.author || 'Explorador'}</small>
+                    <span class="author-tag">🖋️ Autor: ${data.author || 'Anónimo'}</span>
                 </div>
                 <div class="actions">
-                    <button class="btn-vote btn-up" id="up-${id}">👍 ${data.likes}</button>
-                    <button class="btn-vote btn-down" id="down-${id}">👎 ${data.dislikes}</button>
+                    <button class="btn-vote btn-up" id="up-${id}" ${yaVoto ? 'disabled' : ''}>👍 ${data.likes}</button>
+                    <button class="btn-vote btn-down" id="down-${id}" ${yaVoto ? 'disabled' : ''}>👎 ${data.dislikes}</button>
                 </div>
             `;
             container.appendChild(card);
 
-            // EVENTOS DE VOTO
             document.getElementById(`up-${id}`).onclick = () => votar(id, 'likes');
             document.getElementById(`down-${id}`).onclick = () => votar(id, 'dislikes', data.dislikes);
-
             i++;
         });
     });
 
     async function votar(id, campo, currentDislikes = 0) {
+        if (localStorage.getItem(`voto_${id}`)) return;
         const ref = doc(db, "ideas", id);
-        if (campo === 'dislikes' && currentDislikes >= 9) {
+
+        if (campo === 'dislikes' && currentDislikes >= 49999) {
             await deleteDoc(ref);
-            alert("Idea eliminada por exceso de dislikes.");
+            alert("Eliminado por 50,000 dislikes.");
         } else {
             await updateDoc(ref, { [campo]: increment(1) });
+            localStorage.setItem(`voto_${id}`, 'true');
         }
     }
 </script>
