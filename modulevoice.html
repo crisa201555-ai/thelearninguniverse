@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>S.E.D.E. | ModuleVoice 🎙️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --p: #6c5ce7; --s: #00cec9; --bg: #0f172a; }
+        body { 
+            font-family: 'Fredoka', sans-serif; background: var(--bg); 
+            margin: 0; overflow: hidden; color: white; text-align: center;
+        }
+        
+        #ui { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 10; background: rgba(15, 23, 42, 0.8); padding: 20px; border-radius: 20px; border: 2px solid var(--s); backdrop-filter: blur(5px); }
+        input { padding: 10px; border-radius: 10px; border: none; width: 60px; text-align: center; font-size: 1.1rem; }
+        
+        .btn { background: var(--p); color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: 700; margin-left: 10px; }
+        
+        canvas { display: block; background: radial-gradient(circle, #1e293b 0%, #0f172a 100%); }
+        
+        #micStatus { margin-top: 10px; font-size: 0.8rem; color: var(--s); }
+    </style>
+</head>
+<body>
+
+<div id="ui">
+    <h2>🎙️ ModuleVoice: ¡Silencio en la Galaxia!</h2>
+    <label>Cantidad de Pelotas: </label>
+    <input type="number" id="ballCount" value="20" min="1" max="100">
+    <button class="btn" id="startBtn">ACTIVAR MISIÓN 🚀</button>
+    <div id="micStatus">Esperando permiso del micrófono...</div>
+</div>
+
+<canvas id="world"></canvas>
+
+<script>
+    const canvas = document.getElementById('world');
+    const ctx = canvas.getContext('2d');
+    const startBtn = document.getElementById('startBtn');
+    const ballCountInput = document.getElementById('ballCount');
+    const micStatus = document.getElementById('micStatus');
+
+    let balls = [];
+    let audioContext;
+    let analyser;
+    let microphone;
+    let dataArray;
+    let animationId;
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    class Ball {
+        constructor() {
+            this.radius = Math.random() * 20 + 10;
+            this.x = Math.random() * (canvas.width - this.radius * 2) + this.radius;
+            this.y = Math.random() * (canvas.height - this.radius * 2) + this.radius;
+            this.vx = (Math.random() - 0.5) * 2;
+            this.vy = (Math.random() - 0.5) * 2;
+            this.color = `hsl(${Math.random() * 360}, 70%, 60%)`;
+        }
+
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fillStyle = this.color;
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        update(noise) {
+            // Si hay ruido, aplicamos una fuerza aleatoria fuerte
+            if (noise > 30) { 
+                this.vx += (Math.random() - 0.5) * (noise * 0.5);
+                this.vy += (Math.random() - 0.5) * (noise * 0.5);
+            }
+
+            // Fricción natural para que se detengan
+            this.vx *= 0.95;
+            this.vy *= 0.95;
+
+            this.x += this.vx;
+            this.y += this.vy;
+
+            // Rebotar en paredes
+            if (this.x + this.radius > canvas.width || this.x - this.radius < 0) this.vx *= -1;
+            if (this.y + this.radius > canvas.height || this.y - this.radius < 0) this.vy *= -1;
+
+            this.draw();
+        }
+    }
+
+    async function initAudio() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioContext.createAnalyser();
+            microphone = audioContext.createMediaStreamSource(stream);
+            
+            analyser.fftSize = 256;
+            microphone.connect(analyser);
+            
+            const bufferLength = analyser.frequencyBinCount;
+            dataArray = new Uint8Array(bufferLength);
+            
+            micStatus.innerText = "🎙️ Micrófono Conectado. ¡Habla para mover las pelotas!";
+            return true;
+        } catch (err) {
+            micStatus.innerText = "❌ Error: Acceso al micrófono denegado.";
+            return false;
+        }
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        let volume = 0;
+        if (analyser) {
+            analyser.getByteFrequencyData(dataArray);
+            let sum = 0;
+            for(let i = 0; i < dataArray.length; i++) {
+                sum += dataArray[i];
+            }
+            volume = sum / dataArray.length; // Nivel promedio de ruido
+        }
+
+        balls.forEach(ball => ball.update(volume));
+        animationId = requestAnimationFrame(animate);
+    }
+
+    startBtn.onclick = async () => {
+        if (!audioContext) {
+            const success = await initAudio();
+            if (!success) return;
+        }
+        
+        // Crear pelotas
+        balls = [];
+        const count = parseInt(ballCountInput.value);
+        for (let i = 0; i < count; i++) {
+            balls.push(new Ball());
+        }
+        
+        if (!animationId) animate();
+    };
+
+    window.onresize = () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    };
+</script>
+</body>
+</html>
