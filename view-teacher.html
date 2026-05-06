@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <title>Panel de Control Docente | TLU</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
     <style>
         :root {
             --primary: #6c5ce7;
@@ -25,7 +29,6 @@
             display: grid; grid-template-columns: 1fr 300px; gap: 20px;
         }
 
-        /* --- SECCIÓN PRINCIPAL --- */
         .main-panel {
             background: rgba(255, 255, 255, 0.03);
             border-radius: 30px; padding: 30px;
@@ -38,7 +41,6 @@
             padding: 20px; border-radius: 20px; border: 1px solid var(--secondary);
         }
 
-        /* --- BOTONES DE CONTROL --- */
         .controls { display: flex; gap: 10px; }
         .btn {
             padding: 12px 20px; border-radius: 12px; border: none;
@@ -48,9 +50,8 @@
 
         .btn-lock { background: var(--danger); color: white; }
         .btn-unlock { background: var(--success); color: var(--bg); }
-        .btn-review { background: var(--primary); color: white; width: 100%; margin-top: 10px; }
+        .btn-pdf { background: #fff; color: var(--bg); margin-top: 10px; width: 100%; }
 
-        /* --- LISTA DE ALUMNOS --- */
         .students-list {
             background: rgba(255, 255, 255, 0.05);
             border-radius: 25px; padding: 20px;
@@ -72,10 +73,7 @@
         .online-dot { background: var(--success); box-shadow: 0 0 10px var(--success); }
         .offline-dot { background: #555; }
 
-        /* --- SIDEBAR --- */
-        .stats-sidebar {
-            display: flex; flex-direction: column; gap: 20px;
-        }
+        .stats-sidebar { display: flex; flex-direction: column; gap: 20px; }
 
         .stat-box {
             background: rgba(108, 92, 231, 0.1);
@@ -97,13 +95,11 @@
                 <h1 id="classNameDisplay" style="margin:0">Cargando Clase...</h1>
                 <p id="teacherDisplay" style="margin:5px 0 0; opacity:0.7">Docente: ---</p>
             </div>
-            <div class="controls" id="lockControls">
-                </div>
+            <div class="controls" id="lockControls"></div>
         </div>
 
         <h2>🧑‍🎓 Estado de los Estudiantes</h2>
-        <div class="students-list" id="studentsContainer">
-            </div>
+        <div class="students-list" id="studentsContainer"></div>
     </div>
 
     <div class="stats-sidebar">
@@ -115,7 +111,7 @@
         <div class="stat-box" style="border-color: var(--secondary)">
             <p><strong>Evaluación Actual:</strong></p>
             <p id="testTitle" style="font-size: 0.9rem">Buscando prueba...</p>
-            <button class="btn btn-review" onclick="window.location.href='reviewtest.html'">REVISAR PRUEBAS 📋</button>
+            <button class="btn btn-pdf" id="btnGenerarReporte">📥 DESCARGAR PDF TLU</button>
         </div>
 
         <button class="btn" onclick="window.location.href='generator-test.html'" style="background: rgba(255,255,255,0.1); color: white;">✏️ Editar Preguntas</button>
@@ -124,7 +120,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, doc, onSnapshot, updateDoc, collection, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-web-cloud-firestore.js";
+    import { getFirestore, doc, onSnapshot, updateDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
@@ -139,61 +135,100 @@
     const db = getFirestore(app);
     const groupId = localStorage.getItem('activeGroupId');
 
-    // 1. ESCUCHAR DATOS DEL GRUPO (Nombre y Bloqueo)
+    let currentClassName = "";
+    let currentTeacherName = "";
+    let currentTestTitle = "Sin prueba";
+
+    // 1. ESCUCHAR DATOS DEL GRUPO
     onSnapshot(doc(db, "groups", groupId), (docSnap) => {
         if (!docSnap.exists()) return;
         const data = docSnap.data();
+        currentClassName = data.className;
+        currentTeacherName = data.teacherName;
         document.getElementById('classNameDisplay').innerText = data.className;
         document.getElementById('teacherDisplay').innerText = `Docente: ${data.teacherName}`;
         
         const lockDiv = document.getElementById('lockControls');
-        if (data.testStatus === 'locked') {
-            lockDiv.innerHTML = `<button class="btn btn-unlock" onclick="toggleLock('unlocked')">🔓 DESBLOQUEAR PRUEBA</button>`;
-        } else {
-            lockDiv.innerHTML = `<button class="btn btn-lock" onclick="toggleLock('locked')">🔒 BLOQUEAR PRUEBA</button>`;
-        }
+        lockDiv.innerHTML = data.testStatus === 'locked' 
+            ? `<button class="btn btn-unlock" onclick="toggleLock('unlocked')">🔓 DESBLOQUEAR</button>`
+            : `<button class="btn btn-lock" onclick="toggleLock('locked')">🔒 BLOQUEAR</button>`;
     });
 
-    // 2. ESCUCHAR ESTUDIANTES (Online / Offline)
-    const qMembers = query(collection(db, "members"), where("groupId", "==", groupId));
-    onSnapshot(qMembers, (snapshot) => {
+    // 2. ESCUCHAR ESTUDIANTES
+    onSnapshot(query(collection(db, "members"), where("groupId", "==", groupId)), (snapshot) => {
         const container = document.getElementById('studentsContainer');
         let onlineTotal = 0;
         container.innerHTML = "";
-        
         snapshot.forEach((docSnap) => {
             const student = docSnap.data();
             if (student.online) onlineTotal++;
-            
             const card = document.createElement('div');
             card.className = `student-card ${student.online ? 'online' : ''}`;
-            card.innerHTML = `
-                <div>
-                    <span class="indicator ${student.online ? 'online-dot' : 'offline-dot'}"></span>
-                    <strong>${student.email}</strong>
-                </div>
-                <div style="font-size: 0.8rem; opacity: 0.6;">
-                    ${student.online ? '🟢 Activo ahora' : '⚪ Desconectado'}
-                </div>
-            `;
+            card.innerHTML = `<div><span class="indicator ${student.online ? 'online-dot' : 'offline-dot'}"></span><strong>${student.email}</strong></div><div style="font-size: 0.8rem; opacity: 0.6;">${student.online ? '🟢 Activo' : '⚪ Offline'}</div>`;
             container.appendChild(card);
         });
         document.getElementById('onlineCount').innerText = onlineTotal;
     });
 
-    // 3. BUSCAR TÍTULO DE LA PRUEBA
-    const qTest = query(collection(db, "tests"), where("groupId", "==", groupId));
-    onSnapshot(qTest, (snapshot) => {
+    // 3. TÍTULO DE PRUEBA
+    onSnapshot(query(collection(db, "tests"), where("groupId", "==", groupId)), (snapshot) => {
         if (!snapshot.empty) {
-            document.getElementById('testTitle').innerText = snapshot.docs[0].data().title;
+            currentTestTitle = snapshot.docs[0].data().title;
+            document.getElementById('testTitle').innerText = currentTestTitle;
         }
     });
 
-    // FUNCIONES GLOBALES
-    window.toggleLock = async (newStatus) => {
-        const groupRef = doc(db, "groups", groupId);
-        await updateDoc(groupRef, { testStatus: newStatus });
-    };
+    // --- FUNCIÓN PARA GENERAR EL PDF ---
+    async function generarReportePDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const logoURL = "https://i.ibb.co/pLpMByF/unnamed-removebg-preview.png";
+
+        // Estética TLU
+        doc.setFillColor(108, 92, 231);
+        doc.rect(0, 0, 210, 40, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(22);
+        doc.text("REPORTE ACADÉMICO TLU", 20, 25);
+        doc.setFontSize(10);
+        doc.text("Sistema Oficial de Gestión Educativa", 20, 32);
+
+        // Cuerpo
+        doc.setTextColor(40, 40, 40);
+        doc.setFontSize(16);
+        doc.text(`Hola, ${currentTeacherName}`, 20, 55);
+        doc.setFontSize(12);
+        doc.text(`Curso: ${currentClassName}`, 20, 65);
+        doc.text(`Prueba Evaluada: ${currentTestTitle}`, 20, 72);
+
+        // Obtener Notas Reales de la colección "results" o "members"
+        // Para este ejemplo, usaremos los miembros actuales
+        const membersSnap = await getDocs(query(collection(db, "members"), where("groupId", "==", groupId)));
+        const tableData = [];
+        membersSnap.forEach(m => {
+            const d = m.data();
+            tableData.push([d.email, currentTestTitle, d.lastScore || 'N/A', d.lastGrade || '1.0']);
+        });
+
+        doc.autoTable({
+            startY: 80,
+            head: [['Estudiante', 'Evaluación', 'Puntaje', 'Nota']],
+            body: tableData,
+            headStyles: { fillColor: [108, 92, 231] },
+        });
+
+        const finalY = doc.lastAutoTable.finalY + 20;
+        doc.setFontSize(14);
+        doc.text("Datos del Ministerio de TLU", 20, finalY);
+        doc.setFontSize(10);
+        doc.text("• Fundadores: Ministerio de TLU (2026)", 20, finalY + 10);
+        doc.text("• Misión: Que los niños y niñas salgan educados de aquí.", 20, finalY + 17);
+
+        doc.save(`Reporte_${currentClassName}.pdf`);
+    }
+
+    document.getElementById('btnGenerarReporte').onclick = generarReportePDF;
+    window.toggleLock = async (s) => await updateDoc(doc(db, "groups", groupId), { testStatus: s });
 
 </script>
 </body>
