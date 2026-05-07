@@ -2,129 +2,22 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crear Nuevo Grupo | TLU</title>
+    <title>TLU | Crear Grupo</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #6c5ce7;
-            --secondary: #00cec9;
-            --bg: #0f172a;
-            --surface: rgba(255, 255, 255, 0.05);
-        }
-
-        body {
-            font-family: 'Fredoka', sans-serif;
-            background: var(--bg);
-            background-image: radial-gradient(circle at top right, #1e293b, #0f172a);
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .create-card {
-            background: var(--surface);
-            backdrop-filter: blur(15px);
-            padding: 40px;
-            border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-        }
-
-        h1 {
-            color: var(--secondary);
-            margin-bottom: 30px;
-            font-size: 2rem;
-        }
-
-        .input-group {
-            text-align: left;
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
-            opacity: 0.8;
-            padding-left: 10px;
-        }
-
-        input {
-            width: 100%;
-            padding: 15px;
-            border-radius: 15px;
-            border: 2px solid transparent;
-            background: rgba(0, 0, 0, 0.2);
-            color: white;
-            font-family: 'Fredoka';
-            font-size: 1rem;
-            box-sizing: border-box;
-            transition: 0.3s;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: rgba(0, 0, 0, 0.4);
-        }
-
-        .btn-create {
-            width: 100%;
-            padding: 18px;
-            border-radius: 50px;
-            border: none;
-            background: var(--primary);
-            color: white;
-            font-weight: 700;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 10px;
-            box-shadow: 0 10px 20px rgba(108, 92, 231, 0.3);
-        }
-
-        .btn-create:hover {
-            transform: translateY(-3px);
-            background: #5b4bc4;
-            box-shadow: 0 15px 25px rgba(108, 92, 231, 0.4);
-        }
-
-        .btn-create:active {
-            transform: translateY(-1px);
-        }
-
-        .loader {
-            display: none;
-            margin-top: 15px;
-            font-size: 0.9rem;
-            color: var(--secondary);
-        }
+        :root { --p: #6c5ce7; --s: #00cec9; --bg: #0f172a; }
+        body { font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: rgba(255,255,255,0.05); padding: 40px; border-radius: 30px; border: 1px solid var(--p); width: 350px; text-align: center; }
+        input { width: 100%; padding: 15px; margin: 10px 0; border-radius: 15px; border: none; font-family: 'Fredoka'; box-sizing: border-box; }
+        .btn { background: var(--p); color: white; border: none; padding: 15px; border-radius: 50px; cursor: pointer; width: 100%; font-weight: 700; transition: 0.3s; margin-top: 10px; }
     </style>
 </head>
 <body>
-
-    <div class="create-card">
+    <div class="card">
         <h1>🆕 Nueva Clase</h1>
-        
-        <div class="input-group">
-            <label>Nombre de la Asignatura / Clase</label>
-            <input type="text" id="className" placeholder="Ej: Matemáticas 2do Medio">
-        </div>
-
-        <div class="input-group">
-            <label>Nombre del Docente</label>
-            <input type="text" id="teacherName" placeholder="Tu nombre completo">
-        </div>
-
-        <button class="btn-create" id="btnAction">CREAR GRUPO AHORA</button>
-        <div id="loader" class="loader">Configurando entorno de clase...</div>
+        <input type="text" id="className" placeholder="Nombre de la Clase">
+        <input type="text" id="teacherName" placeholder="Nombre del Docente">
+        <button class="btn" id="createBtn">CREAR GRUPO</button>
     </div>
 
     <script type="module">
@@ -143,45 +36,20 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        const btn = document.getElementById('btnAction');
-        const loader = document.getElementById('loader');
+        document.getElementById('createBtn').onclick = async () => {
+            const name = document.getElementById('className').value;
+            const teacher = document.getElementById('teacherName').value;
+            if(!name || !teacher) return alert("Completa los campos");
 
-        btn.addEventListener('click', async () => {
-            const className = document.getElementById('className').value.trim();
-            const teacherName = document.getElementById('teacherName').value.trim();
-
-            if (!className || !teacherName) {
-                alert("Completa todos los campos para continuar.");
-                return;
-            }
-
-            btn.disabled = true;
-            btn.style.opacity = "0.7";
-            loader.style.display = "block";
-
-            try {
-                // Crear el grupo en Firestore
-                const docRef = await addDoc(collection(db, "groups"), {
-                    className: className,
-                    teacherName: teacherName,
-                    testStatus: 'unlocked',
-                    createdAt: Date.now()
-                });
-
-                // Guardar el ID para que view-teacher sepa qué clase cargar
-                localStorage.setItem('activeGroupId', docRef.id);
-
-                // Redirigir al panel del profesor
-                window.location.href = "view-teacher.html";
-
-            } catch (error) {
-                console.error("Error al crear:", error);
-                alert("Error al conectar con la base de datos.");
-                btn.disabled = false;
-                btn.style.opacity = "1";
-                loader.style.display = "none";
-            }
-        });
+            const docRef = await addDoc(collection(db, "groups"), {
+                className: name,
+                teacherName: teacher,
+                testStatus: 'unlocked',
+                createdAt: Date.now()
+            });
+            localStorage.setItem('activeGroupId', docRef.id);
+            window.location.href = "view-teacher.html";
+        };
     </script>
 </body>
 </html>
