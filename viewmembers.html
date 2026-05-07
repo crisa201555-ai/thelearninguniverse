@@ -2,260 +2,70 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestionar Miembros | TLU</title>
+    <title>TLU | Miembros</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #6c5ce7;
-            --secondary: #00cec9;
-            --danger: #ff7675;
-            --bg: #0f172a;
-            --card-bg: rgba(255, 255, 255, 0.05);
-        }
-
-        body {
-            font-family: 'Fredoka', sans-serif;
-            background: var(--bg);
-            background-image: radial-gradient(circle at top, #1b277a 0%, #0f172a 100%);
-            color: white;
-            margin: 0;
-            padding: 20px;
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 700px;
-            margin: 40px auto;
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            padding: 30px;
-            border-radius: 30px;
-            border: 2px solid var(--secondary);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-        }
-
-        h1 { color: var(--secondary); text-align: center; font-size: 2rem; }
-
-        .invite-section {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-        }
-
-        input {
-            flex-grow: 1;
-            padding: 15px;
-            border-radius: 15px;
-            border: none;
-            outline: none;
-            font-family: 'Fredoka';
-            font-size: 1rem;
-        }
-
-        .btn-invite {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0 25px;
-            border-radius: 15px;
-            cursor: pointer;
-            font-weight: 700;
-            transition: 0.3s;
-        }
-
-        .btn-invite:hover { background: #5b4bc4; transform: scale(1.05); }
-
-        .member-list {
-            margin-top: 20px;
-            max-height: 400px;
-            overflow-y: auto;
-            padding-right: 10px;
-        }
-
-        .member-item {
-            background: rgba(255, 255, 255, 0.08);
-            margin-bottom: 12px;
-            padding: 15px;
-            border-radius: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-left: 5px solid var(--secondary);
-            animation: fadeIn 0.4s ease;
-        }
-
-        .member-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .order-select {
-            background: var(--bg);
-            color: var(--secondary);
-            border: 1px solid var(--secondary);
-            padding: 5px 8px;
-            border-radius: 8px;
-            font-family: 'Fredoka';
-            cursor: pointer;
-        }
-
-        .status-badge {
-            font-size: 0.8rem;
-            padding: 3px 8px;
-            border-radius: 20px;
-            background: rgba(255,255,255,0.1);
-            margin-left: 10px;
-        }
-
-        .btn-del {
-            background: var(--danger);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 700;
-            transition: 0.3s;
-        }
-
-        .btn-del:hover { opacity: 0.8; }
-
-        .nav-footer {
-            margin-top: 30px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .btn-next {
-            background: transparent;
-            color: white;
-            border: 2px solid white;
-            padding: 12px 25px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 700;
-            transition: 0.3s;
-        }
-
-        .btn-next:hover { background: white; color: var(--bg); }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        :root { --p: #6c5ce7; --s: #00cec9; --bg: #0f172a; --danger: #ff7675; }
+        body { font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; padding: 20px; }
+        .container { max-width: 600px; margin: auto; }
+        .member-card { background: rgba(255,255,255,0.1); padding: 15px; margin-bottom: 10px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .controls button { margin-left: 5px; cursor: pointer; border: none; padding: 5px 10px; border-radius: 5px; }
+        .btn-del { background: var(--danger); color: white; }
+        .btn-move { background: var(--s); }
+        .invite-box { margin-bottom: 30px; }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <h1>👥 Miembros de la Clase</h1>
-    
-    <div class="invite-section">
-        <input type="email" id="studentEmail" placeholder="Correo del estudiante (ej: alumno@gmail.com)">
-        <button class="btn-invite" onclick="invite()">INVITAR 🚀</button>
-    </div>
-
-    <div class="member-list" id="memberList">
+    <div class="container">
+        <h1>👥 Gestionar Miembros</h1>
+        <div class="invite-box">
+            <input type="email" id="emailInvite" placeholder="Email del estudiante" style="padding: 10px; border-radius: 10px;">
+            <button onclick="invitar()" style="padding: 10px;">Invitar</button>
         </div>
-
-    <div class="nav-footer">
-        <a href="creategroup.html" style="color: white; opacity: 0.6; text-decoration: none;">⬅ Volver</a>
-        <a href="generator-test.html" class="btn-next">Siguiente: Crear Prueba ➡</a>
+        <div id="membersList"></div>
     </div>
-</div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, query, where, onSnapshot, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-web-cloud-firestore.js";
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, query, where, onSnapshot, doc, deleteDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // Tu configuración de Firebase
-    const firebaseConfig = {
-        apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
-        authDomain: "thelearninguniverse-26.firebaseapp.com",
-        projectId: "thelearninguniverse-26",
-        storageBucket: "thelearninguniverse-26.firebasestorage.app",
-        messagingSenderId: "85338996011",
-        appId: "1:85338996011:web:1f3bb216900c07e735596e"
-    };
+        const firebaseConfig = { apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", authDomain: "thelearninguniverse-26.firebaseapp.com", projectId: "thelearninguniverse-26", storageBucket: "thelearninguniverse-26.firebasestorage.app", messagingSenderId: "85338996011", appId: "1:85338996011:web:1f3bb216900c07e735596e" };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const gid = localStorage.getItem('activeGroupId');
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const groupId = localStorage.getItem('activeGroupId');
-
-    if (!groupId) {
-        alert("No hay una clase activa. Redirigiendo...");
-        window.location.href = "creategroup.html";
-    }
-
-    // 1. ESCUCHAR MIEMBROS EN TIEMPO REAL
-    const q = query(collection(db, "members"), where("groupId", "==", groupId));
-    
-    onSnapshot(q, (snapshot) => {
-        const listContainer = document.getElementById('memberList');
-        listContainer.innerHTML = "";
-        
-        // Convertimos a array para ordenar por el campo 'order'
-        const docs = [];
-        snapshot.forEach(d => docs.push({id: d.id, ...d.data()}));
-        docs.sort((a, b) => (a.order || 99) - (b.order || 99));
-
-        docs.forEach((data) => {
-            const div = document.createElement('div');
-            div.className = 'member-item';
-            div.innerHTML = `
-                <div class="member-info">
-                    <select class="order-select" onchange="window.updateOrder('${data.id}', this.value)">
-                        ${[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15].map(num => 
-                            `<option value="${num}" ${data.order == num ? 'selected' : ''}>${num}</option>`
-                        ).join('')}
-                    </select>
-                    <div>
-                        <strong>${data.email}</strong>
-                        <span class="status-badge">${data.status === 'pending' ? '⏳ Pendiente' : '✅ Aceptado'}</span>
-                    </div>
-                </div>
-                <button class="btn-del" onclick="window.removeMember('${data.id}')">Eliminar</button>
-            `;
-            listContainer.appendChild(div);
-        });
-    });
-
-    // 2. FUNCIÓN PARA INVITAR
-    window.invite = async () => {
-        const emailInput = document.getElementById('studentEmail');
-        const email = emailInput.value.trim();
-        
-        if (email === "") return alert("Escribe un correo válido");
-
-        try {
+        window.invitar = async () => {
+            const email = document.getElementById('emailInvite').value;
             await addDoc(collection(db, "members"), {
+                groupId: gid,
                 email: email,
-                groupId: groupId,
-                status: 'pending',
-                order: 1, // Por defecto posición 1
-                online: false,
-                invitedAt: new Date()
+                status: 'invited',
+                position: 0,
+                online: false
             });
-            emailInput.value = "";
-        } catch (e) {
-            console.error("Error al invitar:", e);
-        }
-    };
+        };
 
-    // 3. FUNCIÓN PARA CAMBIAR ORDEN
-    window.updateOrder = async (id, newOrder) => {
-        const memberRef = doc(db, "members", id);
-        await updateDoc(memberRef, {
-            order: parseInt(newOrder)
+        onSnapshot(query(collection(db, "members"), where("groupId", "==", gid)), (snap) => {
+            const list = document.getElementById('membersList');
+            list.innerHTML = "";
+            snap.forEach(d => {
+                const m = d.data();
+                const div = document.createElement('div');
+                div.className = 'member-card';
+                div.innerHTML = `
+                    <span>[Pos: ${m.position}] ${m.email}</span>
+                    <div class="controls">
+                        <button class="btn-move" onclick="mover('${d.id}', 1)">⬇️</button>
+                        <button class="btn-move" onclick="mover('${d.id}', -1)">⬆️</button>
+                        <button class="btn-del" onclick="eliminar('${d.id}')">Eliminar</button>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
         });
-    };
 
-    // 4. FUNCIÓN PARA ELIMINAR
-    window.removeMember = async (id) => {
-        if (confirm("¿Estás seguro de eliminar a este miembro de la lista de invitados?")) {
-            await deleteDoc(doc(db, "members", id));
-        }
-    };
-
-</script>
+        window.eliminar = async (id) => await deleteDoc(doc(db, "members", id));
+        window.mover = async (id, val) => await updateDoc(doc(db, "members", id), { position: increment(val) });
+    </script>
 </body>
 </html>
