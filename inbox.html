@@ -2,239 +2,140 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>TLU | Centro de Comunicaciones</title>
+    <title>TLU | Mi Universo Privado</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #6c5ce7;
-            --secondary: #00cec9;
-            --accent: #fd79a8;
-            --dark-bg: #0f172a;
-            --glass: rgba(255, 255, 255, 0.05);
-        }
+        :root { --p: #6c5ce7; --s: #00cec9; --bg: #0f172a; --danger: #ff7675; --success: #2ecc71; }
+        body { font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; padding: 40px; margin: 0; min-height: 100vh; }
+        .container { max-width: 800px; margin: auto; }
+        
+        /* Pantalla de Bloqueo / Login */
+        #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; }
+        .login-card { background: rgba(255,255,255,0.05); padding: 40px; border-radius: 30px; border: 1px solid var(--p); text-align: center; }
 
-        body, html {
-            margin: 0; padding: 0; height: 100%;
-            font-family: 'Fredoka', sans-serif;
-            background: radial-gradient(circle at top right, #1e293b 0%, #0f172a 100%);
-            color: white; display: flex; flex-direction: column;
-        }
-
-        /* --- HEADER --- */
-        .inbox-header {
-            padding: 40px 20px;
-            text-align: center;
-        }
-
-        .inbox-header h1 {
-            font-size: 2.5rem;
-            color: var(--secondary);
-            margin: 0;
-            text-shadow: 0 0 15px rgba(0, 206, 201, 0.3);
-        }
-
-        /* --- FILTROS --- */
-        .filter-bar {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .filter-link {
-            text-decoration: none;
-            color: white;
-            padding: 10px 25px;
-            border-radius: 50px;
-            background: var(--glass);
-            border: 2px solid transparent;
-            font-weight: 700;
-            transition: 0.3s;
-        }
-
-        .filter-link:hover, .filter-link.active {
-            background: var(--primary);
-            border-color: white;
-            transform: translateY(-2px);
-        }
-
-        /* --- CONTENEDOR DE MENSAJES --- */
-        .inbox-container {
-            max-width: 800px;
-            width: 90%;
-            margin: 0 auto 50px auto;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .message-card {
-            background: var(--glass);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 20px;
-            border-left: 6px solid var(--secondary);
-            display: flex;
-            flex-direction: column;
-            animation: fadeIn 0.5s ease forwards;
-            transition: 0.3s;
-        }
-
-        .message-card:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: scale(1.01);
-        }
-
-        .message-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .message-title {
-            font-size: 1.2rem;
-            color: var(--secondary);
-            font-weight: 700;
-        }
-
-        .message-date {
-            font-size: 0.8rem;
-            opacity: 0.6;
-        }
-
-        .message-body {
-            font-size: 1rem;
-            line-height: 1.5;
-            margin-bottom: 15px;
-        }
-
-        .message-actions {
-            display: flex;
-            justify-content: flex-end;
-        }
-
-        .btn-delete {
-            background: none;
-            border: none;
-            color: var(--accent);
-            cursor: pointer;
-            font-family: 'Fredoka';
-            font-weight: 700;
-            font-size: 0.9rem;
-            transition: 0.3s;
-        }
-
-        .btn-delete:hover { color: #ff7675; text-decoration: underline; }
-
-        /* --- BOTÓN VOLVER --- */
-        .btn-back-home {
-            position: fixed;
-            bottom: 30px;
-            left: 30px;
-            background: var(--secondary);
-            color: var(--dark-bg);
-            text-decoration: none;
-            padding: 12px 25px;
-            border-radius: 50px;
-            font-weight: 700;
-            box-shadow: 0 5px 15px rgba(0, 206, 201, 0.3);
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 50px;
-            opacity: 0.5;
-        }
+        .section-title { margin-top: 40px; opacity: 0.7; letter-spacing: 1px; text-transform: uppercase; font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; display: flex; justify-content: space-between; }
+        .card { background: rgba(255,255,255,0.05); padding: 25px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; margin-top: 15px; }
+        
+        .btn { padding: 12px 20px; border-radius: 50px; border: none; font-weight: 700; cursor: pointer; transition: 0.3s; font-family: 'Fredoka'; }
+        .btn-google { background: white; color: #333; display: flex; align-items: center; gap: 10px; margin-top: 20px; }
+        .btn-accept { background: var(--success); color: white; }
+        .btn-enter { background: var(--p); color: white; }
+        .btn-logout { background: transparent; color: var(--danger); font-size: 0.7rem; border: 1px solid var(--danger); padding: 5px 10px; }
     </style>
 </head>
 <body>
 
-    <header class="inbox-header">
-        <h1>📧 Bandeja de Entrada</h1>
-        <p>Tus comunicaciones del universo educativo</p>
-    </header>
+<div id="auth-overlay">
+    <div class="login-card">
+        <img src="https://thelearninguniverses.pages.dev/unnamed-removebg-preview.png" style="width: 80px; margin-bottom: 20px;">
+        <h2>Acceso Estudiantil</h2>
+        <p>Para ver tus invitaciones privadas, por favor inicia sesión.</p>
+        <button class="btn btn-google" id="loginBtn">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20"> Continuar con Google
+        </button>
+    </div>
+</div>
 
-    <div class="filter-bar">
-        <a href="inbox.html" class="filter-link" id="filter-all">Todos</a>
-        <a href="inbox.html?filtro=clases" class="filter-link" id="filter-clases">Clases</a>
-        <a href="inbox.html?filtro=sistema" class="filter-link" id="filter-sistema">Sistema</a>
+<div class="container" id="main-content" style="display:none;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <img src="https://thelearninguniverses.pages.dev/unnamed-removebg-preview.png" style="width: 50px;">
+            <h1>Mi Universo</h1>
+        </div>
+        <div id="user-info" style="text-align: right;">
+            <span id="user-email" style="font-size: 0.8rem; opacity: 0.7;"></span><br>
+            <button class="btn btn-logout" id="logoutBtn">Cerrar Sesión</button>
+        </div>
     </div>
 
-    <main class="inbox-container" id="inbox-list">
-        </main>
+    <div class="section-title">Invitaciones Pendientes 📩</div>
+    <div id="invitesList"></div>
 
-    <a href="home.html" class="btn-back-home">⬅ Volver al Home</a>
+    <div class="section-title">Mis Clases Activas 🚀</div>
+    <div id="classesList"></div>
+</div>
 
-    <script>
-        // 1. Obtener el filtro de la URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const currentFilter = urlParams.get('filtro');
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, query, where, onSnapshot, doc, updateDoc, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        window.onload = function() {
-            highlightFilter();
-            renderMessages();
-        };
+    const firebaseConfig = {
+        apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
+        authDomain: "thelearninguniverse-26.firebaseapp.com",
+        projectId: "thelearninguniverse-26",
+        storageBucket: "thelearninguniverse-26.firebasestorage.app",
+        messagingSenderId: "85338996011",
+        appId: "1:85338996011:web:1f3bb216900c07e735596e"
+    };
 
-        // Resaltar el botón del filtro activo
-        function highlightFilter() {
-            if (!currentFilter) {
-                document.getElementById('filter-all').classList.add('active');
-            } else {
-                const activeBtn = document.getElementById('filter-' + currentFilter);
-                if (activeBtn) activeBtn.classList.add('active');
-            }
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    const authOverlay = document.getElementById('auth-overlay');
+    const mainContent = document.getElementById('main-content');
+
+    // 1. Manejo de Autenticación
+    document.getElementById('loginBtn').onclick = () => signInWithPopup(auth, provider);
+    document.getElementById('logoutBtn').onclick = () => signOut(auth);
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            authOverlay.style.display = "none";
+            mainContent.style.display = "block";
+            document.getElementById('user-email').innerText = user.email;
+            cargarInbox(user.email);
+        } else {
+            authOverlay.style.display = "flex";
+            mainContent.style.display = "none";
         }
+    });
 
-        function renderMessages() {
-            const container = document.getElementById('inbox-list');
-            const mensajes = JSON.parse(localStorage.getItem('inboxMessages')) || [];
-            
-            // 2. Lógica de Filtrado
-            let mensajesFiltrados = mensajes;
-            if (currentFilter === 'clases') {
-                mensajesFiltrados = mensajes.filter(m => m.titulo.toLowerCase().includes('clase') || m.titulo.toLowerCase().includes('misión'));
-            } else if (currentFilter === 'sistema') {
-                mensajesFiltrados = mensajes.filter(m => !m.titulo.toLowerCase().includes('clase'));
-            }
+    // 2. Cargar Datos Sincronizados
+    function cargarInbox(email) {
+        onSnapshot(query(collection(db, "members"), where("email", "==", email)), (snap) => {
+            const invitesCont = document.getElementById('invitesList');
+            const classesCont = document.getElementById('classesList');
+            invitesCont.innerHTML = ""; classesCont.innerHTML = "";
 
-            if (mensajesFiltrados.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <p style="font-size: 4rem;">🛸</p>
-                        <p>No hay mensajes en esta categoría.</p>
-                    </div>`;
-                return;
-            }
+            snap.forEach(async (memberDoc) => {
+                const memberData = memberDoc.data();
+                const groupRef = doc(db, "groups", memberData.groupId);
+                const groupSnap = await getDoc(groupRef);
+                const g = groupSnap.data() || { className: "Cargando...", teacherName: "Docente" };
 
-            container.innerHTML = "";
-            mensajesFiltrados.forEach((msg, index) => {
-                container.innerHTML += `
-                    <div class="message-card">
-                        <div class="message-header">
-                            <span class="message-title">${msg.titulo}</span>
-                            <span class="message-date">${msg.fecha} | ${msg.hora}</span>
-                        </div>
-                        <div class="message-body">${msg.cuerpo}</div>
-                        <div class="message-actions">
-                            <button class="btn-delete" onclick="borrarMensaje(${index})">Eliminar Registro</button>
-                        </div>
-                    </div>
-                `;
+                const card = document.createElement('div');
+                card.className = 'card';
+                
+                if(memberData.status === "invited") {
+                    card.innerHTML = `
+                        <div><h3>${g.className}</h3><p>Prof. ${g.teacherName}</p></div>
+                        <div class="actions">
+                            <button class="btn btn-accept" onclick="responder('${memberDoc.id}', 'aceptar')">Aceptar</button>
+                        </div>`;
+                    invitesCont.appendChild(card);
+                } else {
+                    card.innerHTML = `
+                        <div><h3>${g.className}</h3><p>Estado: Activo</p></div>
+                        <button class="btn btn-enter" onclick="entrar('${memberData.groupId}')">Entrar</button>`;
+                    classesCont.appendChild(card);
+                }
             });
-        }
+        });
+    }
 
-        function borrarMensaje(index) {
-            let mensajes = JSON.parse(localStorage.getItem('inboxMessages')) || [];
-            mensajes.splice(index, 1);
-            localStorage.setItem('inboxMessages', JSON.stringify(mensajes));
-            renderMessages();
-        }
-    </script>
+    // Funciones globales para botones
+    window.responder = async (id, accion) => {
+        await updateDoc(doc(db, "members", id), { status: "active" });
+    };
+
+    window.entrar = (gid) => {
+        localStorage.setItem('activeGroupId', gid);
+        window.location.href = "viewclass.html";
+    };
+
+</script>
 </body>
 </html>
