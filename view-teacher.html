@@ -6,63 +6,189 @@
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    
     <style>
-        :root { --p: #6c5ce7; --s: #00cec9; --bg: #0f172a; }
-        body { font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; display: grid; grid-template-columns: 1fr 400px; height: 100vh; margin: 0; }
-        .main { padding: 30px; }
-        .spy-chat { background: rgba(0,0,0,0.5); padding: 20px; border-left: 1px solid var(--p); overflow-y: auto; }
-        .btn-pdf { background: #ff7675; color: white; border: none; padding: 15px; border-radius: 50px; font-weight: 700; width: 100%; cursor: pointer; margin-top: 20px; }
+        :root { --p: #6c5ce7; --s: #00cec9; --bg: #0f172a; --card: rgba(255,255,255,0.05); }
+        body { font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; display: grid; grid-template-columns: 1fr 350px; height: 100vh; margin: 0; overflow: hidden; }
+        
+        /* Panel Principal */
+        .main-content { padding: 30px; overflow-y: auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .stat-card { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); }
+        
+        /* Lista de Miembros */
+        .member-row { display: flex; justify-content: space-between; padding: 12px; background: rgba(0,0,0,0.2); margin-bottom: 8px; border-radius: 12px; align-items: center; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; }
+        .online { background: var(--s); box-shadow: 0 0 10px var(--s); }
+        .offline { background: #555; }
+
+        /* Panel Lateral - Chat Espía */
+        .spy-panel { background: rgba(0,0,0,0.3); border-left: 1px solid var(--p); display: flex; flex-direction: column; }
+        .spy-header { padding: 20px; background: var(--p); font-weight: 700; text-align: center; }
+        #spyMessages { flex-grow: 1; overflow-y: auto; padding: 15px; font-size: 0.9rem; }
+        .msg { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; margin-bottom: 10px; border-left: 3px solid var(--s); }
+
+        /* Botones */
+        .btn { padding: 12px 20px; border-radius: 50px; border: none; font-weight: 700; cursor: pointer; transition: 0.3s; font-family: 'Fredoka'; }
+        .btn-pdf { background: #ff7675; color: white; margin-top: 10px; }
+        .btn-nav { background: var(--p); color: white; margin-right: 10px; }
+        .btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
     </style>
 </head>
 <body>
-    <div class="main">
-        <h1>👨‍🏫 Panel de Control</h1>
-        <div id="membersStatus"></div>
-        <button class="btn-pdf" onclick="generarPDF()">📥 GENERAR PDF OFICIAL TLU</button>
-        <button onclick="window.location.href='viewmembers.html'">Gestionar Miembros</button>
-        <button onclick="window.location.href='generator-test.html'">Crear Prueba</button>
+
+    <div class="main-content">
+        <div class="header">
+            <div>
+                <h1 id="displayClassName" style="margin:0">Cargando Clase...</h1>
+                <p id="displayTeacherName" style="opacity:0.7; margin:5px 0;">Docente: ---</p>
+            </div>
+            <div class="nav-btns">
+                <button class="btn btn-nav" onclick="window.location.href='viewmembers.html'">👥 Miembros</button>
+                <button class="btn btn-nav" onclick="window.location.href='generator-test.html'">✏️ Nueva Prueba</button>
+                <button class="btn btn-pdf" onclick="generarPDF()">📥 PDF OFICIAL TLU</button>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Estudiantes</h3>
+                <div id="membersList">Cargando lista...</div>
+            </div>
+            <div class="stat-card">
+                <h3>Resumen de Curso</h3>
+                <p>Promedio General: <span id="avgGrade">---</span></p>
+                <p>Pruebas Activas: <span id="activeTestsCount">0</span></p>
+            </div>
+        </div>
     </div>
-    <div class="spy-chat">
-        <h3>👁️ Espionaje de Chat</h3>
+
+    <div class="spy-panel">
+        <div class="spy-header">👁️ MONITOREO DE CHAT (VIVO)</div>
         <div id="spyMessages"></div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, doc, onSnapshot, query, where, collection, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        const firebaseConfig = { apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", authDomain: "thelearninguniverse-26.firebaseapp.com", projectId: "thelearninguniverse-26", storageBucket: "thelearninguniverse-26.firebasestorage.app", messagingSenderId: "85338996011", appId: "1:85338996011:web:1f3bb216900c07e735596e" };
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
+            authDomain: "thelearninguniverse-26.firebaseapp.com",
+            projectId: "thelearninguniverse-26",
+            storageBucket: "thelearninguniverse-26.firebasestorage.app",
+            messagingSenderId: "85338996011",
+            appId: "1:85338996011:web:1f3bb216900c07e735596e"
+        };
+
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const gid = localStorage.getItem('activeGroupId');
 
-        // Monitoreo de presencia
-        onSnapshot(query(collection(db, "members"), where("groupId", "==", gid)), (snap) => {
-            const div = document.getElementById('membersStatus');
-            div.innerHTML = snap.docs.map(d => `<p>${d.data().online ? '🟢' : '⚪'} ${d.data().email}</p>`).join('');
+        if(!gid) window.location.href = "creategroup.html";
+
+        // 1. Datos del Grupo
+        onSnapshot(doc(db, "groups", gid), (snap) => {
+            if(snap.exists()){
+                document.getElementById('displayClassName').innerText = snap.data().className;
+                document.getElementById('displayTeacherName').innerText = `Docente: ${snap.data().teacherName}`;
+            }
         });
 
-        // Espionaje de Chat
+        // 2. Lista de Miembros y Estado Online
+        onSnapshot(query(collection(db, "members"), where("groupId", "==", gid)), (snap) => {
+            const list = document.getElementById('membersList');
+            list.innerHTML = "";
+            snap.forEach(d => {
+                const m = d.data();
+                list.innerHTML += `
+                    <div class="member-row">
+                        <span><span class="dot ${m.online ? 'online' : 'offline'}"></span>${m.email}</span>
+                        <small style="opacity:0.5">${m.online ? 'En línea' : 'Desconectado'}</small>
+                    </div>
+                `;
+            });
+        });
+
+        // 3. Espionaje de Chat en Tiempo Real
         onSnapshot(query(collection(db, "messages"), where("groupId", "==", gid), orderBy("time", "desc")), (snap) => {
             const spy = document.getElementById('spyMessages');
-            spy.innerHTML = snap.docs.map(d => `<p style="font-size:0.8rem"><b>${d.data().sender}:</b> ${d.data().text}</p>`).join('');
+            spy.innerHTML = "";
+            snap.forEach(d => {
+                const msg = d.data();
+                spy.innerHTML += `
+                    <div class="msg">
+                        <b style="color:var(--s)">${msg.sender}:</b><br>
+                        <span>${msg.text}</span>
+                    </div>
+                `;
+            });
         });
 
+        // 4. GENERADOR DE PDF PROFESIONAL
         window.generarPDF = async () => {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
+            const now = new Date();
+            const timestamp = now.toLocaleString();
+
+            // Obtener datos actuales para el PDF
             const groupSnap = await getDocs(query(collection(db, "groups"), where("__name__", "==", gid)));
-            const groupData = groupSnap.docs[0].data();
-
-            doc.setFillColor(108, 92, 231); doc.rect(0, 0, 210, 40, 'F');
-            doc.setTextColor(255); doc.setFontSize(20); doc.text("REPORTE TLU 2026", 20, 25);
-            doc.setFontSize(12); doc.text(`Docente: ${groupData.teacherName} | Curso: ${groupData.className}`, 20, 35);
-
+            const g = groupSnap.docs[0].data();
             const membersSnap = await getDocs(query(collection(db, "members"), where("groupId", "==", gid)));
-            const rows = membersSnap.docs.map(d => [d.data().email, 'Nota Pendiente', 'Puntaje Pendiente']);
+            
+            // Estética del PDF
+            doc.setFillColor(108, 92, 231); doc.rect(0, 0, 210, 40, 'F'); // Header Morado
+            
+            // Logo TLU (URL directa proporcionada)
+            const logoUrl = "https://thelearninguniverses.pages.dev/unnamed-removebg-preview.png";
+            try {
+                doc.addImage(logoUrl, 'PNG', 170, 5, 30, 30);
+            } catch(e) { console.log("Error cargando logo en PDF"); }
 
-            doc.autoTable({ startY: 50, head: [['Estudiante', 'Nota', 'Puntaje']], body: rows });
-            doc.save("Reporte_Oficial_TLU.pdf");
+            doc.setTextColor(255);
+            doc.setFontSize(22);
+            doc.text("REPORTE ACADÉMICO TLU", 20, 20);
+            doc.setFontSize(10);
+            doc.text(`Fecha de generación: ${timestamp}`, 20, 30);
+
+            doc.setTextColor(40);
+            doc.setFontSize(14);
+            doc.text(`Curso: ${g.className}`, 20, 50);
+            doc.text(`Docente: ${g.teacherName}`, 20, 58);
+
+            // Tabla de datos
+            const tableRows = [];
+            membersSnap.forEach(d => {
+                const m = d.data();
+                tableRows.push([
+                    m.email,
+                    m.lastTestName || "Sin Pruebas",
+                    m.lastScore || "0",
+                    m.lastGrade || "1.0"
+                ]);
+            });
+
+            doc.autoTable({
+                startY: 65,
+                head: [['Estudiante', 'Última Prueba', 'Puntaje', 'Nota']],
+                body: tableRows,
+                headStyles: { fillColor: [108, 92, 231] },
+                styles: { font: 'helvetica' }
+            });
+
+            // Nota General al final
+            const finalY = doc.lastAutoTable.finalY + 20;
+            doc.setFontSize(12);
+            doc.text("Nota General del Curso: 6.2 (Ejemplo)", 20, finalY);
+            doc.setFontSize(9);
+            doc.setTextColor(150);
+            doc.text("Documento oficial generado por TLU Learning Systems 2026.", 105, 285, {align: 'center'});
+
+            doc.save(`Reporte_TLU_${g.className}.pdf`);
         };
+
     </script>
 </body>
 </html>
