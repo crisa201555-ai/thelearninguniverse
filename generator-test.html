@@ -5,25 +5,35 @@
     <title>TLU | Generador de Prueba</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #6c5ce7; --bg: #0f172a; }
+        :root { --p: #6c5ce7; --bg: #0f172a; --s: #00cec9; }
         body { font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; padding: 20px; }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 800px; margin: auto; }
-        input, select { padding: 12px; border-radius: 10px; border: none; width: 100%; box-sizing: border-box; }
-        .btn-save { grid-column: span 2; background: var(--p); color: white; padding: 15px; border: none; border-radius: 50px; font-weight: 700; cursor: pointer; }
+        .container { max-width: 800px; margin: auto; background: rgba(255,255,255,0.05); padding: 30px; border-radius: 20px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        input, select, textarea { padding: 12px; border-radius: 10px; border: none; width: 100%; box-sizing: border-box; font-family: 'Fredoka'; }
+        .q-card { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; margin-top: 10px; border-left: 5px solid var(--s); }
+        .btn { padding: 12px; border-radius: 50px; border: none; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .btn-add { background: var(--s); color: #004d3b; margin-top: 10px; }
+        .btn-save { background: var(--p); color: white; width: 100%; margin-top: 20px; font-size: 1.1rem; }
     </style>
 </head>
 <body>
-    <div class="form-grid">
-        <h1 style="grid-column: span 2; text-align: center;">✏️ Configurar Prueba</h1>
-        <input type="text" id="tTitle" placeholder="Nombre de la prueba">
-        <input type="number" id="tMaxGrade" placeholder="Nota Máxima (Ej: 7.0)">
-        <input type="number" id="tMaxScore" placeholder="Puntaje Máximo">
-        <input type="number" id="tDemand" placeholder="Exigencia % (Ej: 60)">
-        <input type="number" id="tPointsPer" placeholder="Punto por pregunta">
-        <p style="grid-column: span 2; margin: 0;">Programación (Opcional):</p>
-        <input type="datetime-local" id="tStart">
-        <input type="datetime-local" id="tEnd">
-        <button class="btn-save" id="saveTest">GUARDAR PRUEBA</button>
+    <div class="container">
+        <h1>✏️ Configurar Prueba y Preguntas</h1>
+        <div class="form-grid">
+            <input type="text" id="tTitle" placeholder="Nombre de la prueba">
+            <input type="number" id="tMaxGrade" placeholder="Nota Máxima">
+            <input type="number" id="tMaxScore" placeholder="Puntaje Máximo">
+            <input type="number" id="tDemand" placeholder="Exigencia %">
+            <input type="datetime-local" id="tStart">
+            <input type="datetime-local" id="tEnd">
+        </div>
+
+        <hr style="opacity: 0.2;">
+        <h3>Preguntas</h3>
+        <div id="questionsContainer"></div>
+        <button class="btn btn-add" onclick="addQuestionField()">+ Añadir Pregunta</button>
+
+        <button class="btn btn-save" id="saveTest">GUARDAR PRUEBA COMPLETA</button>
     </div>
 
     <script type="module">
@@ -34,19 +44,38 @@
         const db = getFirestore(app);
         const gid = localStorage.getItem('activeGroupId');
 
+        window.addQuestionField = () => {
+            const container = document.getElementById('questionsContainer');
+            const qDiv = document.createElement('div');
+            qDiv.className = 'q-card';
+            qDiv.innerHTML = `
+                <textarea class="q-text" placeholder="Escribe la pregunta aquí..." style="margin-bottom:10px;"></textarea>
+                <input type="number" class="q-points" placeholder="Puntos para esta pregunta" style="width: 200px;">
+            `;
+            container.appendChild(qDiv);
+        };
+
         document.getElementById('saveTest').onclick = async () => {
+            const questions = [];
+            document.querySelectorAll('.q-card').forEach(card => {
+                questions.push({
+                    text: card.querySelector('.q-text').value,
+                    points: card.querySelector('.q-points').value
+                });
+            });
+
             await addDoc(collection(db, "tests"), {
                 groupId: gid,
                 title: document.getElementById('tTitle').value,
                 maxGrade: document.getElementById('tMaxGrade').value,
                 maxScore: document.getElementById('tMaxScore').value,
                 demand: document.getElementById('tDemand').value,
-                pointsPer: document.getElementById('tPointsPer').value,
                 start: document.getElementById('tStart').value,
                 end: document.getElementById('tEnd').value,
+                questions: questions,
                 createdAt: Date.now()
             });
-            alert("Prueba Creada!");
+            alert("¡Prueba y preguntas guardadas!");
         };
     </script>
 </body>
