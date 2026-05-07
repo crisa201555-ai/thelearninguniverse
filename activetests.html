@@ -2,73 +2,43 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Misiones Disponibles | TLU</title>
+    <title>Mis Pruebas | TLU</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #6c5ce7; --s: #00cec9; --bg: #0f172a; }
-        body { font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; padding: 30px; text-align: center; }
-        .test-card { 
-            background: rgba(255,255,255,0.05); border: 2px solid var(--s); 
-            padding: 30px; border-radius: 25px; max-width: 500px; margin: 40px auto;
-        }
-        .btn-start { background: var(--p); color: white; padding: 15px 30px; border-radius: 50px; border: none; font-size: 1.2rem; cursor: pointer; text-decoration: none; display: inline-block; }
-        .status-msg { margin-top: 20px; padding: 15px; border-radius: 15px; background: rgba(0,0,0,0.3); color: var(--s); }
+        :root { --p: #6c5ce7; --bg: #0f172a; }
+        body { font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; padding: 20px; }
+        .test-card { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 20px; margin-bottom: 15px; border: 1px solid var(--p); display: flex; justify-content: space-between; align-items: center; }
+        .btn-status { padding: 10px 20px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; }
     </style>
 </head>
 <body>
-    <h1>🛰️ Centro de Misiones</h1>
-    <div id="loading">Escaneando galaxia en busca de pruebas...</div>
-    <div id="testContainer" style="display:none">
-        <div class="test-card">
-            <h2 id="testTitle">---</h2>
-            <p id="testInfo">Cargando detalles...</p>
-            <div id="actionArea">
-                </div>
-        </div>
-    </div>
+    <h1>📋 Mis Pruebas Activas</h1>
+    <div id="activeList"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-web-cloud-firestore.js";
+        import { getFirestore, collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        const firebaseConfig = { apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", authDomain: "thelearninguniverse-26.firebaseapp.com", projectId: "thelearninguniverse-26", storageBucket: "thelearninguniverse-26.firebasestorage.app", messagingSenderId: "85338996011", appId: "1:85338996011:web:1f3bb216900c07e735596e" };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const gid = localStorage.getItem('activeGroupId');
+        const userEmail = "estudiante@ejemplo.com"; 
 
-        const db = getFirestore(initializeApp({ /* TU CONFIG */ }));
-        const groupId = localStorage.getItem('activeGroupId');
-        const userEmail = localStorage.getItem('userEmail');
-
-        async function checkStatus() {
-            // 1. Buscar si hay una prueba para este grupo
-            const qTest = query(collection(db, "tests"), where("groupId", "==", groupId), where("active", "==", true));
-            const testSnap = await getDocs(qTest);
-
-            if (testSnap.empty) {
-                document.getElementById('loading').innerText = "No hay misiones activas por ahora. ¡Descansa, explorador!";
-                return;
-            }
-
-            const testData = testSnap.docs[0].data();
-            const testId = testSnap.docs[0].id;
-            document.getElementById('testTitle').innerText = testData.title;
-            document.getElementById('testContainer').style.display = 'block';
-            document.getElementById('loading').style.display = 'none';
-
-            // 2. Revisar si el alumno ya respondió
-            const qAns = query(collection(db, "submissions"), where("testId", "==", testId), where("studentEmail", "==", userEmail));
-            const ansSnap = await getDocs(qAns);
-
-            const actionArea = document.getElementById('actionArea');
-            if (!ansSnap.empty) {
-                actionArea.innerHTML = `<div class="status-msg">🚀 Misión enviada. <br> <b>Nota y puntaje pendiente...</b></div>`;
-            } else {
-                actionArea.innerHTML = `<button class="btn-start" onclick="startMission('${testId}')">INICIAR MISIÓN 🚀</button>`;
-            }
-        }
-
-        window.startMission = (id) => {
-            localStorage.setItem('currentTestId', id);
-            window.location.href = "taketest.html";
-        };
-
-        checkStatus();
+        onSnapshot(query(collection(db, "tests"), where("groupId", "==", gid)), (snap) => {
+            const list = document.getElementById('activeList');
+            list.innerHTML = "";
+            snap.forEach(async (d) => {
+                const t = d.data();
+                // Aquí buscaríamos si ya existe un resultado para este alumno
+                const div = document.createElement('div');
+                div.className = 'test-card';
+                div.innerHTML = `
+                    <div><h3>${t.title}</h3><p>Puntaje Máximo: ${t.maxScore}</p></div>
+                    <button class="btn-status" id="btn-${d.id}">Acceder</button>
+                `;
+                list.appendChild(div);
+            });
+        });
     </script>
 </body>
 </html>
