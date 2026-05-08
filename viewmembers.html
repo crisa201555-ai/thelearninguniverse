@@ -2,32 +2,36 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>TLU | Miembros</title>
+    <title>TLU | Gestionar Miembros</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --p: #6c5ce7; --s: #00cec9; --bg: #0f172a; --danger: #ff7675; }
-        body { font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; padding: 20px; }
-        .container { max-width: 600px; margin: auto; }
-        .member-card { background: rgba(255,255,255,0.1); padding: 15px; margin-bottom: 10px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .controls button { margin-left: 5px; cursor: pointer; border: none; padding: 5px 10px; border-radius: 5px; }
-        .btn-del { background: var(--danger); color: white; }
-        .btn-move { background: var(--s); }
-        .invite-box { margin-bottom: 30px; }
+        body { font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; padding: 40px; }
+        .container { max-width: 700px; margin: auto; }
+        .invite-box { display: flex; gap: 10px; margin-bottom: 30px; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 20px; }
+        input { flex-grow: 1; padding: 12px; border-radius: 12px; border: none; background: rgba(0,0,0,0.3); color: white; }
+        .member-item { background: rgba(255,255,255,0.08); padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; cursor: grab; }
+        .member-item.dragging { opacity: 0.4; border: 2px dashed var(--s); }
+        .name-input { width: 200px; }
+        .btn { padding: 12px 20px; border-radius: 50px; border: none; font-weight: 700; cursor: pointer; }
+        .btn-p { background: var(--p); color: white; }
+        .btn-s { background: var(--s); color: #004d3b; width: 100%; margin-top: 20px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>👥 Gestionar Miembros</h1>
+        <h1>👥 Estudiantes e Invitaciones</h1>
         <div class="invite-box">
-            <input type="email" id="emailInvite" placeholder="Email del estudiante" style="padding: 10px; border-radius: 10px;">
-            <button onclick="invitar()" style="padding: 10px;">Invitar</button>
+            <input type="email" id="emailIn" placeholder="Correo del alumno...">
+            <button class="btn btn-p" onclick="invitar()">INVITAR</button>
         </div>
         <div id="membersList"></div>
+        <button class="btn btn-s" onclick="guardarTodo()">GUARDAR Y CREAR PRUEBA</button>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, query, where, onSnapshot, doc, deleteDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, where, onSnapshot, doc, writeBatch, orderBy, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", authDomain: "thelearninguniverse-26.firebaseapp.com", projectId: "thelearninguniverse-26", storageBucket: "thelearninguniverse-26.firebasestorage.app", messagingSenderId: "85338996011", appId: "1:85338996011:web:1f3bb216900c07e735596e" };
         const app = initializeApp(firebaseConfig);
@@ -35,37 +39,48 @@
         const gid = localStorage.getItem('activeGroupId');
 
         window.invitar = async () => {
-            const email = document.getElementById('emailInvite').value;
-            await addDoc(collection(db, "members"), {
-                groupId: gid,
-                email: email,
-                status: 'invited',
-                position: 0,
-                online: false
-            });
+            const email = document.getElementById('emailIn').value;
+            if(!email) return;
+            await addDoc(collection(db, "members"), { groupId: gid, email: email, studentName: "", status: "invited", order: 99 });
+            document.getElementById('emailIn').value = "";
         };
 
-        onSnapshot(query(collection(db, "members"), where("groupId", "==", gid)), (snap) => {
-            const list = document.getElementById('membersList');
-            list.innerHTML = "";
+        onSnapshot(query(collection(db, "members"), where("groupId", "==", gid), orderBy("order", "asc")), (snap) => {
+            const cont = document.getElementById('membersList');
+            cont.innerHTML = "";
             snap.forEach(d => {
                 const m = d.data();
                 const div = document.createElement('div');
-                div.className = 'member-card';
-                div.innerHTML = `
-                    <span>[Pos: ${m.position}] ${m.email}</span>
-                    <div class="controls">
-                        <button class="btn-move" onclick="mover('${d.id}', 1)">⬇️</button>
-                        <button class="btn-move" onclick="mover('${d.id}', -1)">⬆️</button>
-                        <button class="btn-del" onclick="eliminar('${d.id}')">Eliminar</button>
-                    </div>
-                `;
-                list.appendChild(div);
+                div.className = 'member-item'; div.draggable = true; div.dataset.id = d.id;
+                div.innerHTML = `<span>☰</span> <input type="text" class="name-input" value="${m.studentName}" placeholder="Nombre Alumno"> <i>(${m.email})</i>`;
+                
+                div.addEventListener('dragstart', () => div.classList.add('dragging'));
+                div.addEventListener('dragend', () => div.classList.remove('dragging'));
+                cont.appendChild(div);
             });
         });
 
-        window.eliminar = async (id) => await deleteDoc(doc(db, "members", id));
-        window.mover = async (id, val) => await updateDoc(doc(db, "members", id), { position: increment(val) });
+        // Lógica de Reordenamiento
+        document.getElementById('membersList').addEventListener('dragover', e => {
+            e.preventDefault();
+            const dragging = document.querySelector('.dragging');
+            const afterElement = [...document.querySelectorAll('.member-item:not(.dragging)')].reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = e.clientY - box.top - box.height / 2;
+                return offset < 0 && offset > closest.offset ? { offset: offset, element: child } : closest;
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+            if (!afterElement) document.getElementById('membersList').appendChild(dragging);
+            else document.getElementById('membersList').insertBefore(dragging, afterElement);
+        });
+
+        window.guardarTodo = async () => {
+            const batch = writeBatch(db);
+            document.querySelectorAll('.member-item').forEach((el, i) => {
+                batch.update(doc(db, "members", el.dataset.id), { order: i, studentName: el.querySelector('.name-input').value });
+            });
+            await batch.commit();
+            window.location.href = "generator-test.html";
+        };
     </script>
 </body>
 </html>
