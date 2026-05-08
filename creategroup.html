@@ -8,31 +8,24 @@
         :root { --p: #6c5ce7; --s: #00cec9; --bg: #0f172a; }
         body { font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
         .card { background: rgba(255,255,255,0.05); padding: 40px; border-radius: 30px; border: 1px solid var(--p); width: 350px; text-align: center; }
-        input { width: 100%; padding: 15px; margin: 10px 0; border-radius: 15px; border: none; font-family: 'Fredoka'; box-sizing: border-box; }
+        input { width: 100%; padding: 15px; margin: 10px 0; border-radius: 15px; border: none; font-family: 'Fredoka'; box-sizing: border-box; background: rgba(255,255,255,0.1); color: white; }
         .btn { background: var(--p); color: white; border: none; padding: 15px; border-radius: 50px; cursor: pointer; width: 100%; font-weight: 700; transition: 0.3s; margin-top: 10px; }
     </style>
 </head>
 <body>
     <div class="card">
-        <h1>🆕 Nueva Clase</h1>
+        <img src="https://thelearninguniverses.pages.dev/unnamed-removebg-preview.png" width="80">
+        <h1>Nueva Clase</h1>
         <input type="text" id="className" placeholder="Nombre de la Clase">
         <input type="text" id="teacherName" placeholder="Nombre del Docente">
-        <button class="btn" id="createBtn">CREAR GRUPO</button>
+        <button class="btn" id="createBtn">CREAR Y CONTINUAR</button>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
-            authDomain: "thelearninguniverse-26.firebaseapp.com",
-            projectId: "thelearninguniverse-26",
-            storageBucket: "thelearninguniverse-26.firebasestorage.app",
-            messagingSenderId: "85338996011",
-            appId: "1:85338996011:web:1f3bb216900c07e735596e"
-        };
-
+        const firebaseConfig = { apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", authDomain: "thelearninguniverse-26.firebaseapp.com", projectId: "thelearninguniverse-26", storageBucket: "thelearninguniverse-26.firebasestorage.app", messagingSenderId: "85338996011", appId: "1:85338996011:web:1f3bb216900c07e735596e" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
@@ -44,11 +37,10 @@
             const docRef = await addDoc(collection(db, "groups"), {
                 className: name,
                 teacherName: teacher,
-                testStatus: 'unlocked',
                 createdAt: Date.now()
             });
             localStorage.setItem('activeGroupId', docRef.id);
-            window.location.href = "view-teacher.html";
+            window.location.href = "viewmembers.html";
         };
     </script>
 </body>
