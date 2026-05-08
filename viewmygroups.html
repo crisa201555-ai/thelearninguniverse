@@ -10,7 +10,283 @@
         .card { background: white; padding: 40px; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); width: 350px; text-align: center; }
         input { width: 100%; padding: 15px; margin: 10px 0; border-radius: 15px; border: 1px solid #eee; font-family: 'Fredoka'; box-sizing: border-box; }
         .btn { background: var(--p); color: white; border: none; padding: 15px; border-radius: 50px; cursor: pointer; width: 100%; font-weight: 700; transition: 0.3s; margin-top: 10px; }
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3); }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3); }A<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>TLU | Mis Cursos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --p: #6c5ce7; --s: #00cec9; --text: #1e293b; --danger: #ff7675; }
+        body { font-family: 'Fredoka', sans-serif; background: #ffffff; color: var(--text); margin: 0; }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background: white; border-bottom: 1px solid #f1f5f9; position: sticky; top: 0; z-index: 100; }
+        .profile-zone { position: relative; cursor: pointer; }
+        .avatar { width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--p); }
+        .dropdown { position: absolute; top: 55px; right: 0; width: 220px; background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 15px; padding: 20px; display: none; border: 1px solid #eee; }
+        .dropdown.show { display: block; }
+        .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .card { border: 1px solid #f1f5f9; border-radius: 20px; padding: 20px; background: white; transition: 0.3s; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .btn { width: 100%; padding: 12px; border-radius: 12px; border: none; font-family: 'Fredoka'; font-weight: 600; cursor: pointer; margin-top: 10px; }
+        .btn-p { background: var(--p); color: white; }
+        .btn-s { background: #f8fafc; color: var(--text); }
+        /* Modal */
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: none; justify-content: center; align-items: center; z-index: 200; }
+        .modal-content { background: white; width: 450px; padding: 30px; border-radius: 25px; max-height: 80vh; overflow-y: auto; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div style="display:flex; align-items:center; gap:10px; font-weight:700; color:var(--p)">
+            <img src="https://thelearninguniverses.pages.dev/unnamed-removebg-preview.png" width="35"> TLU
+        </div>
+        <div class="profile-zone" onclick="document.getElementById('drop').classList.toggle('show')">
+            <img id="uImg" class="avatar" src="https://ui-avatars.com/api/?name=User">
+            <div id="drop" class="dropdown">
+                <b id="uName">Cargando...</b>
+                <p id="uEmail" style="font-size:0.8rem; opacity:0.6; margin:5px 0;"></p>
+                <hr style="opacity:0.1">
+                <button class="btn" style="background:#fff1f1; color:var(--danger)" onclick="globalLogout()">Cerrar Sesión</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+            <h1>Mis Grupos Activos</h1>
+            <button class="btn" style="width:auto; background:var(--s); color:#004d3b" onclick="location.href='creategroup.html'">+ Nueva Clase</button>
+        </div>
+        <div id="grid" class="grid"></div>
+    </div>
+
+    <div id="mModal" class="modal">
+        <div class="modal-content">
+            <div style="display:flex; justify-content:space-between; align-items:center">
+                <h2>Alumnos</h2>
+                <button onclick="document.getElementById('mModal').style.display='none'" style="border:none; background:none; font-size:1.5rem; cursor:pointer">&times;</button>
+            </div>
+            <div id="mList"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, query, where, onSnapshot, doc, deleteDoc, updateDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", authDomain: "thelearninguniverse-26.firebaseapp.com", projectId: "thelearninguniverse-26", storageBucket: "thelearninguniverse-26.firebasestorage.app", messagingSenderId: "85338996011", appId: "1:85338996011:web:1f3bb216900c07e735596e" };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('uName').innerText = user.displayName || "Docente";
+                document.getElementById('uEmail').innerText = user.email;
+                if(user.photoURL) document.getElementById('uImg').src = user.photoURL;
+                syncGrupos(user.email);
+            } else { window.location.href = "/login"; }
+        });
+
+        window.globalLogout = () => { signOut(auth).then(() => { localStorage.clear(); window.location.href = "/login"; }); };
+
+        function syncGrupos(email) {
+            onSnapshot(query(collection(db, "groups"), where("teacherEmail", "==", email)), (snap) => {
+                const grid = document.getElementById('grid');
+                grid.innerHTML = "";
+                const ahora = Date.now();
+
+                snap.forEach(d => {
+                    const data = d.data();
+                    const horasRestantes = Math.round((24 * 60 * 60 * 1000 - (ahora - data.createdAt)) / (1000 * 60 * 60));
+                    
+                    if(horasRestantes <= 0) { deleteDoc(doc(db, "groups", d.id)); return; }
+
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.innerHTML = `
+                        <small style="color:var(--danger)">⏳ Expira en ${horasRestantes}h</small>
+                        <h3 style="margin:10px 0">${data.className}</h3>
+                        <button class="btn btn-s" onclick="abrirM('${d.id}')">👥 Miembros</button>
+                        <button class="btn btn-p" onclick="location.href='generator-test.html?uidclass=${d.id}'">✏️ Crear Prueba</button>
+                    `;
+                    grid.appendChild(card);
+                });
+            });
+        }
+
+        window.abrirM = async (gid) => {
+            document.getElementById('mModal').style.display = "flex";
+            const snap = await getDocs(query(collection(db, "members"), where("groupId", "==", gid)));
+            const list = document.getElementById('mList');
+            list.innerHTML = "";
+            snap.forEach(d => {
+                const m = d.data();
+                list.innerHTML += `
+                    <div style="display:flex; align-items:center; gap:10px; padding:10px; border-bottom:1px solid #eee">
+                        <img src="https://ui-avatars.com/api/?name=${m.studentName}&background=random" width="35" style="border-radius:50%">
+                        <div style="flex-grow:1">
+                            <b>${m.studentName || 'Invitado'}</b><br>
+                            <small>${m.email}</small><br>
+                            <small style="color:var(--p)">🍰 ${m.birthDate || 'Sin fecha'}</small>
+                        </div>
+                        <button onclick="editarM('${d.id}')">✏️</button>
+                        <button onclick="eliminarM('${d.id}')" style="color:var(--danger)">🗑️</button>
+                    </div>`;
+            });
+        };A<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>TLU | Mis Cursos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --p: #6c5ce7; --s: #00cec9; --text: #1e293b; --danger: #ff7675; }
+        body { font-family: 'Fredoka', sans-serif; background: #ffffff; color: var(--text); margin: 0; }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background: white; border-bottom: 1px solid #f1f5f9; position: sticky; top: 0; z-index: 100; }
+        .profile-zone { position: relative; cursor: pointer; }
+        .avatar { width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--p); }
+        .dropdown { position: absolute; top: 55px; right: 0; width: 220px; background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 15px; padding: 20px; display: none; border: 1px solid #eee; }
+        .dropdown.show { display: block; }
+        .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .card { border: 1px solid #f1f5f9; border-radius: 20px; padding: 20px; background: white; transition: 0.3s; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .btn { width: 100%; padding: 12px; border-radius: 12px; border: none; font-family: 'Fredoka'; font-weight: 600; cursor: pointer; margin-top: 10px; }
+        .btn-p { background: var(--p); color: white; }
+        .btn-s { background: #f8fafc; color: var(--text); }
+        /* Modal */
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: none; justify-content: center; align-items: center; z-index: 200; }
+        .modal-content { background: white; width: 450px; padding: 30px; border-radius: 25px; max-height: 80vh; overflow-y: auto; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div style="display:flex; align-items:center; gap:10px; font-weight:700; color:var(--p)">
+            <img src="https://thelearninguniverses.pages.dev/unnamed-removebg-preview.png" width="35"> TLU
+        </div>
+        <div class="profile-zone" onclick="document.getElementById('drop').classList.toggle('show')">
+            <img id="uImg" class="avatar" src="https://ui-avatars.com/api/?name=User">
+            <div id="drop" class="dropdown">
+                <b id="uName">Cargando...</b>
+                <p id="uEmail" style="font-size:0.8rem; opacity:0.6; margin:5px 0;"></p>
+                <hr style="opacity:0.1">
+                <button class="btn" style="background:#fff1f1; color:var(--danger)" onclick="globalLogout()">Cerrar Sesión</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+            <h1>Mis Grupos Activos</h1>
+            <button class="btn" style="width:auto; background:var(--s); color:#004d3b" onclick="location.href='creategroup.html'">+ Nueva Clase</button>
+        </div>
+        <div id="grid" class="grid"></div>
+    </div>
+
+    <div id="mModal" class="modal">
+        <div class="modal-content">
+            <div style="display:flex; justify-content:space-between; align-items:center">
+                <h2>Alumnos</h2>
+                <button onclick="document.getElementById('mModal').style.display='none'" style="border:none; background:none; font-size:1.5rem; cursor:pointer">&times;</button>
+            </div>
+            <div id="mList"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, query, where, onSnapshot, doc, deleteDoc, updateDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", authDomain: "thelearninguniverse-26.firebaseapp.com", projectId: "thelearninguniverse-26", storageBucket: "thelearninguniverse-26.firebasestorage.app", messagingSenderId: "85338996011", appId: "1:85338996011:web:1f3bb216900c07e735596e" };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('uName').innerText = user.displayName || "Docente";
+                document.getElementById('uEmail').innerText = user.email;
+                if(user.photoURL) document.getElementById('uImg').src = user.photoURL;
+                syncGrupos(user.email);
+            } else { window.location.href = "/login"; }
+        });
+
+        window.globalLogout = () => { signOut(auth).then(() => { localStorage.clear(); window.location.href = "/login"; }); };
+
+        function syncGrupos(email) {
+            onSnapshot(query(collection(db, "groups"), where("teacherEmail", "==", email)), (snap) => {
+                const grid = document.getElementById('grid');
+                grid.innerHTML = "";
+                const ahora = Date.now();
+
+                snap.forEach(d => {
+                    const data = d.data();
+                    const horasRestantes = Math.round((24 * 60 * 60 * 1000 - (ahora - data.createdAt)) / (1000 * 60 * 60));
+                    
+                    if(horasRestantes <= 0) { deleteDoc(doc(db, "groups", d.id)); return; }
+
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.innerHTML = `
+                        <small style="color:var(--danger)">⏳ Expira en ${horasRestantes}h</small>
+                        <h3 style="margin:10px 0">${data.className}</h3>
+                        <button class="btn btn-s" onclick="abrirM('${d.id}')">👥 Miembros</button>
+                        <button class="btn btn-p" onclick="location.href='generator-test.html?uidclass=${d.id}'">✏️ Crear Prueba</button>
+                    `;
+                    grid.appendChild(card);
+                });
+            });
+        }
+
+        window.abrirM = async (gid) => {
+            document.getElementById('mModal').style.display = "flex";
+            const snap = await getDocs(query(collection(db, "members"), where("groupId", "==", gid)));
+            const list = document.getElementById('mList');
+            list.innerHTML = "";
+            snap.forEach(d => {
+                const m = d.data();
+                list.innerHTML += `
+                    <div style="display:flex; align-items:center; gap:10px; padding:10px; border-bottom:1px solid #eee">
+                        <img src="https://ui-avatars.com/api/?name=${m.studentName}&background=random" width="35" style="border-radius:50%">
+                        <div style="flex-grow:1">
+                            <b>${m.studentName || 'Invitado'}</b><br>
+                            <small>${m.email}</small><br>
+                            <small style="color:var(--p)">🍰 ${m.birthDate || 'Sin fecha'}</small>
+                        </div>
+                        <button onclick="editarM('${d.id}')">✏️</button>
+                        <button onclick="eliminarM('${d.id}')" style="color:var(--danger)">🗑️</button>
+                    </div>`;
+            });
+        };
+
+        window.editarM = async (id) => {
+            const f = prompt("Fecha de nacimiento:");
+            if(f) await updateDoc(doc(db, "members", id), { birthDate: f });
+        };
+
+        window.eliminarM = async (id) => {
+            if(confirm("¿Eliminar?")) await deleteDoc(doc(db, "members", id));
+        };
+    </script>
+</body>
+</html>
+
+        window.editarM = async (id) => {
+            const f = prompt("Fecha de nacimiento:");
+            if(f) await updateDoc(doc(db, "members", id), { birthDate: f });
+        };
+
+        window.eliminarM = async (id) => {
+            if(confirm("¿Eliminar?")) await deleteDoc(doc(db, "members", id));
+        };
+    </script>
+</body>
+</html>
     </style>
 </head>
 <body>
