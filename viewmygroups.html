@@ -2,205 +2,49 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>TLU | Mis Cursos</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>TLU | Nueva Clase</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #6c5ce7; --s: #00cec9; --bg: #f8fafc; --text: #1e293b; --danger: #ff7675; }
-        body { font-family: 'Fredoka', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; }
-        
-        /* Navbar Profesional */
-        nav { background: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
-        .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.2rem; color: var(--p); }
-        
-        /* Perfil y Dropdown */
-        .user-menu { position: relative; cursor: pointer; }
-        .avatar { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--p); object-fit: cover; }
-        .profile-card { 
-            position: absolute; top: 55px; right: 0; width: 250px; background: white; 
-            border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); padding: 20px; 
-            display: none; border: 1px solid #eee; 
-        }
-        .profile-card.active { display: block; }
-        .profile-card h4 { margin: 0; color: var(--text); }
-        .profile-card p { font-size: 0.8rem; color: #64748b; margin: 5px 0 15px; }
-        
-        /* Layout */
-        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
-
-        /* Card de Curso */
-        .course-card { 
-            background: white; border-radius: 20px; padding: 25px; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid #e2e8f0;
-            transition: 0.3s; position: relative; overflow: hidden;
-        }
-        .course-card:hover { transform: translateY(-5px); box-shadow: 0 12px 20px rgba(0,0,0,0.05); }
-        .course-card h2 { margin: 0 0 10px; font-size: 1.4rem; color: var(--p); }
-        .expiry-tag { font-size: 0.7rem; background: #fee2e2; color: #ef4444; padding: 4px 10px; border-radius: 20px; display: inline-block; margin-bottom: 15px; }
-
-        /* Tabs de Gestión dentro de la Card */
-        .actions { display: flex; gap: 10px; margin-top: 20px; border-top: 1px solid #f1f5f9; padding-top: 15px; }
-        .btn { 
-            padding: 10px 15px; border-radius: 10px; border: none; font-weight: 600; 
-            cursor: pointer; font-family: 'Fredoka'; font-size: 0.8rem; transition: 0.3s;
-        }
-        .btn-manage { background: #f1f5f9; color: var(--text); flex: 1; }
-        .btn-test { background: var(--p); color: white; flex: 1; }
-        .btn-logout { background: var(--danger); color: white; width: 100%; }
-
-        /* Modales / Overlays */
-        .modal { 
-            position: fixed; inset: 0; background: rgba(0,0,0,0.5); 
-            display: none; justify-content: center; align-items: center; z-index: 200; 
-        }
-        .modal-content { background: white; width: 90%; max-width: 500px; padding: 30px; border-radius: 25px; position: relative; }
-        .close-modal { position: absolute; top: 20px; right: 20px; cursor: pointer; font-size: 1.5rem; }
-        
-        .member-row { display: flex; align-items: center; gap: 15px; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
-        .member-row img { width: 40px; height: 40px; border-radius: 50%; background: #eee; }
-        .member-info { flex-grow: 1; }
-        .member-info b { display: block; font-size: 0.9rem; }
-        .member-info span { font-size: 0.75rem; color: #64748b; }
+        :root { --p: #6c5ce7; --bg: #ffffff; }
+        body { font-family: 'Fredoka', sans-serif; background: #f8fafc; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 40px; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); width: 350px; text-align: center; }
+        input { width: 100%; padding: 15px; margin: 10px 0; border-radius: 15px; border: 1px solid #eee; font-family: 'Fredoka'; box-sizing: border-box; }
+        .btn { background: var(--p); color: white; border: none; padding: 15px; border-radius: 50px; cursor: pointer; width: 100%; font-weight: 700; transition: 0.3s; margin-top: 10px; }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3); }
     </style>
 </head>
 <body>
-
-    <nav>
-        <div class="logo">
-            <img src="https://thelearninguniverses.pages.dev/unnamed-removebg-preview.png" width="40">
-            TLU Dashboard
-        </div>
-        <div class="user-menu" onclick="toggleProfile()">
-            <img id="navAvatar" src="https://ui-avatars.com/api/?name=User&background=6c5ce7&color=fff" class="avatar">
-            <div id="profileCard" class="profile-card">
-                <h4 id="profName">Nombre del Usuario</h4>
-                <p id="profEmail">correo@ejemplo.com</p>
-                <button class="btn btn-logout" onclick="cerrarSesion()">Cerrar Sesión</button>
-            </div>
-        </div>
-    </nav>
-
-    <div class="container">
-        <h1>Mis Cursos Activos</h1>
-        <p style="opacity: 0.6; margin-top: -10px;">Los cursos se eliminan automáticamente tras 24 horas de creación.</p>
-        
-        <div id="groupsGrid" class="grid">
-            </div>
-    </div>
-
-    <div id="memberModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal()">×</span>
-            <h2>Gestión de Miembros</h2>
-            <div id="modalList"></div>
-        </div>
+    <div class="card">
+        <img src="https://thelearninguniverses.pages.dev/unnamed-removebg-preview.png" width="70">
+        <h2 style="color: var(--p)">Configura tu Clase</h2>
+        <input type="text" id="className" placeholder="Nombre de la materia (ej: Física)">
+        <input type="text" id="teacherName" placeholder="Tu nombre">
+        <button class="btn" id="createBtn">CREAR GRUPO</button>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, query, where, getDocs, deleteDoc, doc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         const firebaseConfig = { apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", authDomain: "thelearninguniverse-26.firebaseapp.com", projectId: "thelearninguniverse-26", storageBucket: "thelearninguniverse-26.firebasestorage.app", messagingSenderId: "85338996011", appId: "1:85338996011:web:1f3bb216900c07e735596e" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        // 1. Manejo de Perfil y Auth
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                document.getElementById('profName').innerText = user.displayName || "Docente TLU";
-                document.getElementById('profEmail').innerText = user.email;
-                if(user.photoURL) document.getElementById('navAvatar').src = user.photoURL;
-                cargarCursos(user.email);
-            } else {
-                window.location.href = "inbox.html"; 
-            }
-        });
+        document.getElementById('createBtn').onclick = async () => {
+            const user = auth.currentUser;
+            if(!user) return alert("Inicia sesión primero");
 
-        window.toggleProfile = () => document.getElementById('profileCard').classList.toggle('active');
-        window.cerrarSesion = () => signOut(auth);
-
-        // 2. Cargar Cursos con lógica de 24h
-        async function cargarCursos(email) {
-            const now = Date.now();
-            const unDia = 24 * 60 * 60 * 1000;
-
-            onSnapshot(query(collection(db, "groups"), where("teacherEmail", "==", email)), (snap) => {
-                const grid = document.getElementById('groupsGrid');
-                grid.innerHTML = "";
-                
-                snap.forEach(async (d) => {
-                    const data = d.data();
-                    const tiempoTranscurrido = now - data.createdAt;
-
-                    // Lógica de borrado automático si pasó > 24h
-                    if (tiempoTranscurrido > unDia) {
-                        await deleteDoc(doc(db, "groups", d.id));
-                        return;
-                    }
-
-                    const horasRestantes = Math.round((unDia - tiempoTranscurrido) / (1000 * 60 * 60));
-
-                    const card = document.createElement('div');
-                    card.className = 'course-card';
-                    card.innerHTML = `
-                        <span class="expiry-tag">Expira en ${horasRestantes} horas</span>
-                        <h2>${data.className}</h2>
-                        <p style="font-size:0.8rem; opacity:0.6;">Creado el: ${new Date(data.createdAt).toLocaleDateString()}</p>
-                        <div class="actions">
-                            <button class="btn btn-manage" onclick="abrirGestion('${d.id}')">👥 Miembros</button>
-                            <button class="btn btn-test" onclick="location.href='/generator-test.html?uidclass=${d.id}'">📝 Crear Prueba</button>
-                        </div>
-                    `;
-                    grid.appendChild(card);
-                });
+            const docRef = await addDoc(collection(db, "groups"), {
+                className: document.getElementById('className').value,
+                teacherName: document.getElementById('teacherName').value,
+                teacherEmail: user.email,
+                createdAt: Date.now()
             });
-        }
-
-        // 3. Gestión de Miembros (Modal)
-        window.abrirGestion = async (gid) => {
-            document.getElementById('memberModal').style.display = "flex";
-            const q = query(collection(db, "members"), where("groupId", "==", gid));
-            const snap = await getDocs(q);
-            const list = document.getElementById('modalList');
-            list.innerHTML = "";
-
-            snap.forEach(d => {
-                const m = d.data();
-                const row = document.createElement('div');
-                row.className = 'member-row';
-                row.innerHTML = `
-                    <img src="https://ui-avatars.com/api/?name=${m.studentName || 'S'}&background=random">
-                    <div class="member-info">
-                        <b>${m.studentName || 'Invitado'}</b>
-                        <span>${m.email}</span>
-                        <small style="display:block; color:var(--p)">F. Nac: ${m.birthDate || 'No definida'}</small>
-                    </div>
-                    <button onclick="editarMiembro('${d.id}', '${m.birthDate || ''}')" style="background:none; border:none; cursor:pointer;">✏️</button>
-                    <button onclick="eliminarMiembro('${d.id}')" style="background:none; border:none; cursor:pointer; color:var(--danger)">🗑️</button>
-                `;
-                list.appendChild(row);
-            });
+            localStorage.setItem('activeGroupId', docRef.id);
+            window.location.href = "viewmembers.html";
         };
-
-        window.editarMiembro = async (id, actual) => {
-            const fecha = prompt("Ingresa la Fecha de Nacimiento (DD/MM/AAAA):", actual);
-            if(fecha) {
-                await updateDoc(doc(db, "members", id), { birthDate: fecha });
-                alert("Actualizado");
-                closeModal();
-            }
-        };
-
-        window.eliminarMiembro = async (id) => {
-            if(confirm("¿Eliminar miembro definitivamente?")) {
-                await deleteDoc(doc(db, "members", id));
-                closeModal();
-            }
-        };
-
-        window.closeModal = () => document.getElementById('memberModal').style.display = "none";
     </script>
 </body>
 </html>
