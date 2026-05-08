@@ -3,99 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TLU | Mis Cursos</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>TLU | Panel del Docente</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #6c5ce7; --p-light: #f3f0ff; --s: #00cec9; --bg: #ffffff; --text: #1e293b; --danger: #ff7675; }
+        :root { --p: #6c5ce7; --s: #00cec9; --bg: #f8fafc; --text: #1e293b; --danger: #ff7675; }
         
-        body { font-family: 'Fredoka', sans-serif; background: #fbfcfe; color: var(--text); margin: 0; padding: 0; }
+        body { font-family: 'Fredoka', sans-serif; background: var(--bg); color: var(--text); margin: 0; overflow-x: hidden; }
 
-        /* HEADER & NAVBAR */
-        nav { background: white; padding: 0 5%; height: 75px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #edf2f7; position: sticky; top: 0; z-index: 1000; }
-        .logo { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 1.4rem; color: var(--p); cursor: pointer; }
+        /* --- NAVBAR --- */
+        nav { background: white; padding: 0 5%; height: 70px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #edf2f7; position: sticky; top: 0; z-index: 100; }
+        .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--p); font-size: 1.3rem; }
         
-        /* PERFIL DE USUARIO */
-        .user-section { position: relative; }
-        .avatar-frame { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--p); padding: 2px; cursor: pointer; transition: 0.2s; }
-        .avatar-frame:hover { transform: scale(1.05); }
-        .avatar-frame img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        .profile-zone { position: relative; cursor: pointer; }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--p); }
+        .dropdown { position: absolute; top: 55px; right: 0; width: 220px; background: white; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: none; padding: 20px; border: 1px solid #eee; }
+        .dropdown.active { display: block; }
 
-        .profile-dropdown { 
-            position: absolute; top: 60px; right: 0; width: 260px; background: white; 
-            border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.1); 
-            border: 1px solid #edf2f7; display: none; padding: 20px; text-align: center;
+        /* --- CONTENIDO --- */
+        .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+        .card { background: white; border-radius: 20px; padding: 20px; border: 1px solid #edf2f7; transition: 0.3s; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+
+        /* --- BOTONES --- */
+        .btn { padding: 12px 20px; border-radius: 12px; border: none; font-weight: 600; cursor: pointer; font-family: 'Fredoka'; transition: 0.3s; }
+        .btn-p { background: var(--p); color: white; width: 100%; margin-top: 10px; }
+        .btn-logout { background: #fff1f1; color: var(--danger); width: 100%; margin-top: 10px; }
+        .fab { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: var(--p); color: white; border-radius: 50%; border: none; font-size: 30px; cursor: pointer; box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4); z-index: 998; }
+
+        /* --- PANEL FLOTANTE (DRAG & DROP) --- */
+        #invitePanel { 
+            position: fixed; top: 100px; left: 50px; width: 300px; 
+            background: white; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.15); 
+            border: 2px solid var(--p); z-index: 999; display: none; touch-action: none;
         }
-        .profile-dropdown.active { display: block; animation: slideDown 0.3s ease; }
-        .profile-dropdown h4 { margin: 10px 0 5px; font-size: 1.1rem; }
-        .profile-dropdown p { margin: 0 0 20px; font-size: 0.85rem; color: #64748b; word-break: break-all; }
-
-        /* CONTENIDO PRINCIPAL */
-        .main-container { max-width: 1100px; margin: 50px auto; padding: 0 25px; }
-        .header-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
-        .header-actions h1 { font-size: 2rem; font-weight: 700; margin: 0; }
-
-        /* GRID DE CURSOS */
-        .courses-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
-        .course-card { 
-            background: white; border-radius: 24px; padding: 25px; border: 1px solid #edf2f7; 
-            transition: all 0.3s ease; display: flex; flex-direction: column; gap: 15px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+        #inviteHeader { 
+            background: var(--p); color: white; padding: 15px; 
+            border-radius: 15px 15px 0 0; cursor: move; 
+            display: flex; justify-content: space-between; align-items: center; 
         }
-        .course-card:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.05), 0 10px 10px -5px rgba(0,0,0,0.02); border-color: var(--p); }
-        
-        .tag-expiry { font-size: 0.75rem; font-weight: 600; color: var(--danger); background: #fff5f5; padding: 6px 12px; border-radius: 12px; width: fit-content; }
-        .course-name { font-size: 1.5rem; font-weight: 700; margin: 0; color: var(--text); }
-        .course-teacher { font-size: 0.9rem; color: #64748b; margin: 0; }
-
-        /* BOTONES */
-        .btn { padding: 12px 20px; border-radius: 15px; border: none; font-weight: 600; cursor: pointer; transition: 0.3s; font-family: 'Fredoka'; font-size: 0.9rem; }
-        .btn-new { background: var(--p); color: white; display: flex; align-items: center; gap: 8px; }
-        .btn-test { background: var(--p); color: white; }
-        .btn-members { background: var(--p-light); color: var(--p); }
-        .btn-logout { background: #fee2e2; color: #ef4444; width: 100%; margin-top: 10px; }
-        .card-footer { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
-
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .panel-body { padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+        .panel-input { padding: 12px; border-radius: 10px; border: 1px solid #ddd; outline: none; font-family: 'Fredoka'; }
     </style>
 </head>
 <body>
 
     <nav>
-        <div class="logo" onclick="location.href='/viewmygroups'">
-            <img src="https://thelearninguniverses.pages.dev/unnamed-removebg-preview.png" width="45">
-            <span>TLU</span>
+        <div class="logo">
+            <img src="https://thelearninguniverses.pages.dev/unnamed-removebg-preview.png" width="35"> TLU
         </div>
-        <div class="user-section">
-            <div class="avatar-frame" onclick="toggleDropdown()">
-                <img id="navPhoto" src="https://ui-avatars.com/api/?name=Docente&background=6c5ce7&color=fff" alt="Perfil">
-            </div>
-            <div id="drop" class="profile-dropdown">
-                <h4 id="dropName">Usuario</h4>
-                <p id="dropEmail">email@tlu.com</p>
-                <hr style="opacity: 0.1; margin: 15px 0;">
-                <button class="btn btn-logout" onclick="globalLogout()">Cerrar Sesión</button>
+        <div class="profile-zone" onclick="toggleDrop()">
+            <img id="userImg" class="avatar" src="https://ui-avatars.com/api/?name=Docente">
+            <div id="drop" class="dropdown">
+                <b id="userName">Docente</b>
+                <p id="userEmail" style="font-size: 0.8rem; opacity: 0.6; margin: 5px 0;"></p>
+                <button class="btn btn-logout" onclick="logout()">Cerrar Sesión</button>
             </div>
         </div>
     </nav>
 
-    <main class="main-container">
-        <div class="header-actions">
-            <div>
-                <h1>Mis Cursos</h1>
-                <p style="opacity: 0.6; margin: 5px 0 0;">Gestión de aulas activas en las últimas 24 horas.</p>
-            </div>
-            <button class="btn btn-new" onclick="location.href='/creategroup.html'">
-                <span>+</span> Crear Nueva Clase
-            </button>
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <h1>Mis Cursos</h1>
+            <button class="btn" style="background: var(--s); color: #004d3b;" onclick="location.href='creategroup.html'">+ Nuevo Grupo</button>
         </div>
-
-        <div id="coursesGrid" class="courses-grid">
+        <div id="coursesGrid" class="grid">
             </div>
-    </main>
+    </div>
+
+    <button class="fab" onclick="togglePanel()">+</button>
+
+    <div id="invitePanel">
+        <div id="inviteHeader">
+            <span>🚀 Invitar Alumno</span>
+            <span onclick="togglePanel()" style="cursor: pointer;">&times;</span>
+        </div>
+        <div class="panel-body">
+            <input type="email" id="invEmail" class="panel-input" placeholder="correo@estudiante.com">
+            <button class="btn btn-p" id="sendInv">ENVIAR INVITACIÓN</button>
+            <p id="invStatus" style="display:none; color: var(--s); font-size: 0.8rem; text-align: center;">✅ Enviada con éxito</p>
+        </div>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, query, where, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, query, where, onSnapshot, addDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         const firebaseConfig = { apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", authDomain: "thelearninguniverse-26.firebaseapp.com", projectId: "thelearninguniverse-26", storageBucket: "thelearninguniverse-26.firebasestorage.app", messagingSenderId: "85338996011", appId: "1:85338996011:web:1f3bb216900c07e735596e" };
@@ -103,72 +95,90 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        // 1. Control de Autenticación y Perfil
+        // 1. Gestión de Sesión
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                document.getElementById('navPhoto').src = user.photoURL || `https://ui-avatars.com/api/?name=${user.email}`;
-                document.getElementById('dropName').innerText = user.displayName || "Docente TLU";
-                document.getElementById('dropEmail').innerText = user.email;
-                syncMyCourses(user.email);
+                document.getElementById('userName').innerText = user.displayName || "Docente";
+                document.getElementById('userEmail').innerText = user.email;
+                if(user.photoURL) document.getElementById('userImg').src = user.photoURL;
+                loadCourses(user.email);
             } else {
                 window.location.href = "/login";
             }
         });
 
-        window.toggleDropdown = () => document.getElementById('drop').classList.toggle('active');
+        window.toggleDrop = () => document.getElementById('drop').classList.toggle('active');
+        window.logout = () => { signOut(auth).then(() => { localStorage.clear(); window.location.href = "/login"; }); };
 
-        window.globalLogout = () => {
-            signOut(auth).then(() => {
-                localStorage.clear();
-                window.location.href = "/login";
-            });
-        };
-
-        // 2. Lógica de Sincronización y Expiración (24 Horas)
-        function syncMyCourses(email) {
-            const grid = document.getElementById('coursesGrid');
-            const unDia = 24 * 60 * 60 * 1000;
-
+        // 2. Cargar Cursos (Lógica 24h)
+        function loadCourses(email) {
             onSnapshot(query(collection(db, "groups"), where("teacherEmail", "==", email)), (snap) => {
+                const grid = document.getElementById('coursesGrid');
                 grid.innerHTML = "";
                 const ahora = Date.now();
-
-                if (snap.empty) {
-                    grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 50px; opacity: 0.5;">No tienes cursos activos. ¡Crea uno para empezar!</div>`;
-                }
-
-                snap.forEach((d) => {
+                
+                snap.forEach(d => {
                     const data = d.data();
                     const transcurrido = ahora - data.createdAt;
+                    if (transcurrido > 86400000) { deleteDoc(doc(db, "groups", d.id)); return; }
 
-                    if (transcurrido > unDia) {
-                        deleteDoc(doc(db, "groups", d.id)); // Borrado automático
-                    } else {
-                        const horasRestantes = Math.round((unDia - transcurrido) / (1000 * 60 * 60));
-                        
-                        const card = document.createElement('div');
-                        card.className = 'course-card';
-                        card.innerHTML = `
-                            <div class="tag-expiry">⏳ Expira en ${horasRestantes}h</div>
-                            <h2 class="course-name">${data.className}</h2>
-                            <p class="course-teacher">Prof. ${data.teacherName}</p>
-                            <div class="card-footer">
-                                <button class="btn btn-members" onclick="location.href='/viewmygroups/viewmembers?uidclass=${d.id}'">👥 Miembros</button>
-                                <button class="btn btn-test" onclick="location.href='/generator-test.html?uidclass=${d.id}'">✏️ Prueba</button>
-                            </div>
-                        `;
-                        grid.appendChild(card);
-                    }
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.innerHTML = `
+                        <h3 style="margin:0; color:var(--p)">${data.className}</h3>
+                        <p style="font-size:0.8rem; opacity:0.6">ID: ${d.id}</p>
+                        <button class="btn btn-p" onclick="localStorage.setItem('activeGroupId','${d.id}'); alert('Clase seleccionada para invitar');">Seleccionar para Invitar</button>
+                    `;
+                    grid.appendChild(card);
                 });
             });
         }
 
-        // Cerrar dropdown al hacer click fuera
-        window.onclick = function(event) {
-            if (!event.target.closest('.user-section')) {
-                document.getElementById('drop').classList.remove('active');
+        // 3. Lógica del Panel Flotante e Invitación
+        window.togglePanel = () => {
+            const p = document.getElementById('invitePanel');
+            p.style.display = p.style.display === 'none' ? 'block' : 'none';
+        };
+
+        document.getElementById('sendInv').onclick = async () => {
+            const email = document.getElementById('invEmail').value;
+            const gid = localStorage.getItem('activeGroupId');
+            if(!email || !gid) return alert("Escribe un email y selecciona una clase de la lista.");
+
+            await addDoc(collection(db, "members"), {
+                groupId: gid, email: email, status: "invited", createdAt: Date.now()
+            });
+
+            document.getElementById('invStatus').style.display = 'block';
+            document.getElementById('invEmail').value = "";
+            setTimeout(() => document.getElementById('invStatus').style.display = 'none', 3000);
+        };
+
+        // --- LÓGICA DRAG & DROP (MOVIMIENTO) ---
+        const panel = document.getElementById("invitePanel");
+        const header = document.getElementById("inviteHeader");
+        let active = false, currentX, currentY, initialX, initialY, xOffset = 0, yOffset = 0;
+
+        header.addEventListener("mousedown", dragStart);
+        document.addEventListener("mousemove", drag);
+        document.addEventListener("mouseup", dragEnd);
+
+        function dragStart(e) {
+            initialX = e.clientX - xOffset;
+            initialY = e.clientY - yOffset;
+            if (e.target === header || e.target.parentNode === header) active = true;
+        }
+        function drag(e) {
+            if (active) {
+                e.preventDefault();
+                currentX = e.clientX - initialX;
+                currentY = e.clientY - initialY;
+                xOffset = currentX; yOffset = currentY;
+                panel.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
             }
         }
+        function dragEnd() { active = false; }
+
     </script>
 </body>
 </html>
