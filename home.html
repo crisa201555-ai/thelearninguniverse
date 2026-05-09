@@ -3,35 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Learning Universe | Home</title>
+    <title>TLU | Home</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #020617; --accent: #38bdf8; --glass: rgba(255, 255, 255, 0.03); }
+        :root {
+            --bg: #020617;
+            --sidebar-bg: rgba(15, 23, 42, 0.9);
+            --accent: #38bdf8;
+            --glass: rgba(255, 255, 255, 0.03);
+        }
+
         body {
             margin: 0; font-family: 'Fredoka', sans-serif; background: var(--bg);
-            color: white; overflow: hidden; height: 100vh;
+            color: white; display: flex; height: 100vh; overflow: hidden;
             background: radial-gradient(circle at top right, #1e293b, #020617);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
 
-        /* RELOJ */
+        /* --- MENÚ LATERAL --- */
+        .sidebar {
+            width: 260px; background: var(--sidebar-bg); backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1); display: flex;
+            flex-direction: column; padding: 30px 20px;
+        }
+
+        .logo { font-size: 1.8rem; font-weight: 700; color: var(--accent); margin-bottom: 50px; text-align: center; }
+
+        .nav-group { display: flex; flex-direction: column; gap: 12px; flex-grow: 1; }
+
+        .nav-btn {
+            background: var(--glass); border: 1px solid rgba(255,255,255,0.05); 
+            color: #94a3b8; padding: 16px; border-radius: 15px; text-align: left; 
+            font-size: 1rem; cursor: pointer; transition: 0.3s;
+        }
+
+        .nav-btn:hover { background: var(--accent); color: var(--bg); font-weight: 600; transform: translateX(5px); }
+
+        /* --- CONTENIDO PRINCIPAL --- */
+        .main-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+
         .top-info { position: absolute; top: 30px; right: 50px; text-align: right; }
         #time { font-size: 2.5rem; font-weight: 700; color: var(--accent); margin: 0; }
-        #date { opacity: 0.6; font-size: 1.1rem; }
+        #date { opacity: 0.6; }
 
-        /* HERO */
-        h1 { font-size: 4rem; margin: 0; letter-spacing: -2px; }
-        p { font-size: 1.2rem; opacity: 0.6; margin-bottom: 40px; }
+        h1 { font-size: 3.5rem; margin: 0; letter-spacing: -1px; }
+        .welcome-sub { font-size: 1.2rem; opacity: 0.6; margin-bottom: 40px; }
 
-        .main-btn {
+        .explore-btn {
             background: white; color: var(--bg); border: none; padding: 20px 60px;
             border-radius: 50px; font-size: 1.5rem; font-weight: 700; cursor: pointer;
-            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 10px 30px rgba(255,255,255,0.1);
+            transition: 0.3s; box-shadow: 0 10px 30px rgba(255,255,255,0.1);
         }
-        .main-btn:hover { transform: scale(1.1); box-shadow: 0 15px 40px rgba(56, 189, 248, 0.4); }
+        .explore-btn:hover { transform: scale(1.1); box-shadow: 0 15px 40px rgba(56, 189, 248, 0.4); }
 
-        /* MODAL */
+        /* MODAL MATERIAS */
         .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.8); backdrop-filter: blur(15px);
@@ -39,49 +63,55 @@
         }
         .modal-card {
             background: #0f172a; padding: 50px; border-radius: 40px;
-            border: 1px solid rgba(255,255,255,0.1); width: 450px; text-align: center;
+            border: 1px solid rgba(255,255,255,0.1); width: 400px; text-align: center;
         }
-        .modal-options { display: flex; flex-direction: column; gap: 15px; margin-top: 30px; }
-        
         .opt-btn {
             background: var(--glass); border: 1px solid rgba(255,255,255,0.1);
-            color: white; padding: 20px; border-radius: 20px; font-size: 1.2rem;
-            cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 15px;
+            color: white; padding: 18px; border-radius: 20px; font-size: 1.2rem;
+            cursor: pointer; transition: 0.3s; width: 100%; margin-bottom: 10px;
         }
         .opt-btn:hover { background: var(--accent); color: var(--bg); font-weight: 700; }
+        
+        .logout-link { color: #e63946; text-decoration: none; font-weight: 600; margin-top: 20px; display: block; opacity: 0.7; }
+        .logout-link:hover { opacity: 1; }
     </style>
 </head>
 <body>
 
-    <div class="top-info">
-        <p id="time">00:00:00</p>
-        <p id="date">-- / -- / --</p>
-    </div>
+    <nav class="sidebar">
+        <div class="logo">TLU.unv</div>
+        <div class="nav-group">
+            <button class="nav-btn" onclick="location.href='creategroup.html'">➕ Crear clase</button>
+            <button class="nav-btn" onclick="location.href='inbox.html'">📥 Bandeja de entrada</button>
+        </div>
+        <a href="login.html" class="logout-link" onclick="return confirm('¿Cerrar sesión?')">Cerrar sesión...</a>
+    </nav>
 
-    <h1>The Learning Universe</h1>
-    <p>Your journey through knowledge begins here.</p>
+    <main class="main-content">
+        <div class="top-info">
+            <p id="time">00:00:00</p>
+            <p id="date">-- / -- / --</p>
+        </div>
 
-    <button class="main-btn" onclick="openSubjects()">Explorar Materias</button>
+        <h1>BIENVENIDO, NAME</h1>
+        <p class="welcome-sub">¿Qué planeta de conocimiento visitaremos hoy?</p>
+
+        <button class="explore-btn" onclick="openSubjects()">Explorar Materias</button>
+    </main>
 
     <div id="subjectModal" class="modal" onclick="this.style.display='none'">
         <div class="modal-card" onclick="event.stopPropagation()">
-            <h2>¿Qué quieres aprender?</h2>
-            <div class="modal-options">
-                <button class="opt-btn" onclick="location.href='cienciasnaturales.html'">
-                    <span style="font-size: 1.5rem;">🌿</span> Ciencias Naturales
-                </button>
-                <button class="opt-btn" onclick="location.href='english.html'">
-                    <span style="font-size: 1.5rem;">🇬🇧</span> English Universe
-                </button>
-                <button style="background: none; border: none; color: #64748b; margin-top: 10px; cursor: pointer;" 
-                        onclick="document.getElementById('subjectModal').style.display='none'">Cerrar</button>
-            </div>
+            <h2 style="margin-bottom: 30px;">Materias</h2>
+            <button class="opt-btn" onclick="location.href='cienciasnaturales.html'">🌿 Ciencias Naturales</button>
+            <button class="opt-btn" onclick="location.href='english.html'">🇬🇧 English Universe</button>
+            <p style="color: #64748b; cursor: pointer; margin-top: 20px;" onclick="closeSubjects()">Cancelar</p>
         </div>
     </div>
 
     <script>
         function openSubjects() { document.getElementById('subjectModal').style.display = 'flex'; }
-        
+        function closeSubjects() { document.getElementById('subjectModal').style.display = 'none'; }
+
         function updateClock() {
             const now = new Date();
             document.getElementById('time').innerText = now.toLocaleTimeString();
