@@ -6,188 +6,134 @@
     <title>TLU | Océanos y Continentes</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --ocean: #0f172a;
-            --twice-pink: #ff5fa2;
-            --twice-apricot: #fcc89b;
-            --text: #f8fafc;
-        }
-
+        :root { --ocean: #0f172a; --twice-pink: #ff5fa2; --twice-apricot: #fcc89b; --accent: #00cec9; }
         body {
-            font-family: 'Fredoka', sans-serif;
-            background: var(--ocean);
+            font-family: 'Fredoka', sans-serif; background: var(--ocean);
             background: radial-gradient(circle at center, #1e3a8a 0%, #0f172a 100%);
-            color: var(--text);
-            margin: 0;
-            min-height: 100vh;
-            overflow-x: hidden;
+            color: white; margin: 0; min-height: 100vh; overflow-x: hidden;
         }
-
-        /* --- CONTENIDO DE LA LECCIÓN --- */
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 60px 20px 250px; /* Margen abajo para que no tapen las fotos */
-            text-align: center;
+        .container { max-width: 850px; margin: 0 auto; padding: 40px 20px 300px; }
+        .card { 
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); 
+            border-radius: 35px; padding: 45px; border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.4);
         }
-
-        .card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(15px);
-            border-radius: 30px;
-            padding: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        .tag { background: var(--accent); color: var(--ocean); padding: 6px 15px; border-radius: 12px; font-weight: 700; font-size: 0.8rem; display: inline-block; margin-bottom: 20px; }
+        h1 { color: var(--twice-apricot); font-size: 2.2rem; margin-top: 0; }
+        
+        /* TEST AREA */
+        .test-box { margin-top: 30px; }
+        .option { 
+            background: rgba(255,255,255,0.08); padding: 18px; border-radius: 15px; 
+            margin: 12px 0; cursor: pointer; transition: 0.3s; border: 1px solid transparent;
         }
+        .option:hover { background: rgba(255,255,255,0.15); border-color: var(--accent); }
 
-        h1 { color: var(--twice-apricot); font-size: 2.5rem; }
-        p { line-height: 1.6; font-size: 1.1rem; opacity: 0.9; }
-
-        /* --- SISTEMA DE PERSONAJES TWICE --- */
-        .twice-container {
-            position: fixed;
-            bottom: -300px; /* Escondidas al inicio */
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 5%;
-            pointer-events: none;
-            z-index: 1000;
-            transition: bottom 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        /* TWICE DYNAMICS */
+        .twice-ui { 
+            position: fixed; bottom: -350px; width: 100%; display: flex; 
+            justify-content: space-between; padding: 0 8%; pointer-events: none; 
+            z-index: 1000; transition: bottom 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
         }
-
-        .twice-container.show {
-            bottom: -20px; /* Suben hasta aquí */
+        .twice-ui.active { bottom: -20px; }
+        .char-box { position: relative; pointer-events: auto; }
+        .char-img { width: 260px; filter: drop-shadow(0 15px 30px rgba(0,0,0,0.6)); cursor: pointer; transition: 0.3s; }
+        .char-img:hover { transform: scale(1.05); }
+        .bubble { 
+            position: absolute; top: -110px; background: white; color: #1e293b; 
+            padding: 15px 20px; border-radius: 20px; font-size: 0.9rem; font-weight: 600;
+            width: 200px; opacity: 0; transition: 0.3s; box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            pointer-events: none; text-align: center;
         }
+        .bubble.show { opacity: 1; transform: translateY(-10px); }
 
-        .character-box {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            pointer-events: auto;
-        }
-
-        .img-twice {
-            width: 280px;
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
-            cursor: pointer;
-        }
-
-        /* Burbujas de texto */
-        .bubble {
-            background: white;
-            color: #1e293b;
-            padding: 15px 20px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            opacity: 0;
-            transform: scale(0.8);
-            transition: 0.3s ease;
-            max-width: 200px;
-            position: relative;
-        }
-
-        .bubble.active {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        .bubble::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-left: 8px solid transparent;
-            border-right: 8px solid transparent;
-            border-top: 8px solid white;
-        }
-
-        .btn-next {
-            background: var(--twice-pink);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 50px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 30px;
-            font-family: 'Fredoka';
+        .nav-btn { 
+            background: var(--accent); color: var(--ocean); border: none; 
+            padding: 15px 40px; border-radius: 50px; font-weight: 700; 
+            cursor: pointer; margin-top: 30px; font-family: 'Fredoka'; font-size: 1rem;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="card">
-            <h1>Océanos y Continentes</h1>
-            <p>¡Bienvenido! Hoy vamos a explorar las grandes masas de agua y tierra de nuestro planeta.</p>
-            <hr style="opacity: 0.1; margin: 30px 0;">
-            <div id="content">
-                <h3>🌊 El Océano Pacífico</h3>
-                <p>Es el océano más grande de la Tierra. ¡Ocupa la tercera parte de toda la superficie del planeta!</p>
+        <div class="card" id="lesson">
             </div>
-            <button class="btn-next" onclick="nextLesson()">Siguiente dato...</button>
+        <div style="text-align: center;">
+            <button class="nav-btn" id="nextBtn" onclick="move(1)">Continuar →</button>
         </div>
     </div>
 
-    <div class="twice-container" id="twiceUI">
-        <div class="character-box" onclick="speak('mina')">
-            <div class="bubble" id="bubble-mina"></div>
-            <img src="/mina.png" class="img-twice">
+    <div class="twice-ui" id="ui">
+        <div class="char-box" onclick="talk('mina')">
+            <div class="bubble" id="b-mina"></div>
+            <img src="/mina.png" class="char-img">
         </div>
-
-        <div class="character-box" onclick="speak('sana')">
-            <div class="bubble" id="bubble-sana"></div>
-            <img src="/sana.png" class="img-twice">
+        <div class="char-box" onclick="talk('sana')">
+            <div class="bubble" id="b-sana"></div>
+            <img src="/sana.png" class="char-img">
         </div>
     </div>
 
     <script>
-        // Mensajes Aleatorios
-        const minaQuotes = [
-            "¿Sabías que el agua cubre el 70% de la Tierra? ✨",
-            "Mantén la calma y sigue aprendiendo. ¡Lo haces genial!",
-            "El Océano Antártico es el más frío de todos. ❄️",
-            "¡Qué elegancia al estudiar! Sigue así. ✨"
-        ];
+        const url = new URLSearchParams(window.location.search);
+        let step = parseInt(url.get('classNumber')) || 1;
+        let mode = url.get('mode') || 'none';
 
-        const sanaQuotes = [
-            "¡Shy Shy Shy! ¡Vas muy rápido, genio! 🍭",
-            "¡Hwaiting! ¡Tú puedes con los 6 continentes! 🔥",
-            "¡No olvides el Océano Índico, es muy cálido! ☀️",
-            "¡Eres el mejor alumno del universo! 🍭"
-        ];
+        const minaMsgs = ["La Antártida es el continente más seco. ❄️", "El 97% del agua de la Tierra es salada.", "Sigue con esa elegancia, ONCE."];
+        const sanaMsgs = ["¡No olvides Oceanía, es hermosa! 🍭", "¡Shy shy shy! ¡Eres un genio!", "¡Hwaiting! ¡Solo queda un poco!"];
 
-        // Función para que hablen
-        function speak(member) {
-            const bubble = document.getElementById(`bubble-${member}`);
-            const quotes = member === 'mina' ? minaQuotes : sanaQuotes;
-            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
-            
-            bubble.innerText = randomQuote;
-            bubble.classList.add('active');
-            
-            setTimeout(() => {
-                bubble.classList.remove('active');
-            }, 4000);
+        const data = {
+            1: { t: "TEMA 1: LOS OCÉANOS", h: "El Mundo Azul", c: "<p>Los océanos son gigantescas masas de agua salada:</p><ul><li><b>Pacífico:</b> El rey de los océanos (el más grande).</li><li><b>Atlántico:</b> El que cruzamos para ir a Europa.</li><li><b>Índico:</b> Aguas cálidas y hermosas.</li><li><b>Ártico y Antártico:</b> Los guardianes del hielo.</li></ul>" },
+            2: { t: "TEMA 2: CONTINENTES", h: "Las 6 Tierras", c: "<p>¿Dónde pisamos? En los continentes:</p><ul><li><b>América:</b> Nuestro hogar gigante.</li><li><b>Asia:</b> Donde nace el sol y hay más gente.</li><li><b>África:</b> Cuna de la humanidad y leones.</li><li><b>Europa:</b> Un continente de mucha historia.</li><li><b>Oceanía:</b> Australia y miles de islas.</li><li><b>Antártida:</b> Solo hielo y pingüinos.</li></ul>" },
+            4: { t: "TEMA 4: DISTRIBUCIÓN DEL AGUA", h: "Salada vs Dulce", c: "<p>El agua se divide en:</p><ul><li><b>Salada (97%):</b> En los océanos.</li><li><b>Dulce (3%):</b> En ríos, lagos y glaciares. ¡Es muy escasa!</li><li><b>Subterránea:</b> Agua bajo nuestros pies que nos salva en sequías.</li></ul>" }
+        };
+
+        function render() {
+            const card = document.getElementById('lesson');
+            if(step === 3) {
+                card.innerHTML = `<div class="tag">TEMA 3: TEST</div><h1>Desafío Rápido</h1><p>¿Qué océano es el más grande del mundo?</p>
+                <div class="test-box">
+                    <div class="option" onclick="eval(true)">Océano Pacífico</div>
+                    <div class="option" onclick="eval(false)">Océano Ártico</div>
+                    <div class="option" onclick="eval(false)">Océano Índico</div>
+                </div>`;
+                document.getElementById('nextBtn').style.display = 'none';
+            } else if(data[step]) {
+                card.innerHTML = `<div class="tag">${data[step].t}</div><h1>${data[step].h}</h1>${data[step].c}`;
+            } else {
+                card.innerHTML = "<h1>¡Misión Cumplida!</h1><p>Has completado el curso de Océanos y Continentes.</p>";
+                document.getElementById('nextBtn').innerText = "Volver al Menú";
+                document.getElementById('nextBtn').onclick = () => location.href='/cienciasnaturales';
+            }
         }
 
-        // Animación de entrada al cargar
+        function eval(correct) {
+            if(correct) {
+                if(mode==='twice') talk('sana', "¡PERFECTO! ¡Eres increíble! 🍭");
+                setTimeout(() => move(1), 2000);
+            } else {
+                if(mode==='twice') talk('mina', "Oh no... Vamos a repasar el Tema 1 para reforzar.");
+                setTimeout(() => location.search = `?classNumber=1&mode=${mode}`, 3000);
+            }
+        }
+
+        function move(n) { location.search = `?classNumber=${step + n}&mode=${mode}`; }
+
+        function talk(char, msg = null) {
+            const b = document.getElementById(`b-${char}`);
+            const msgs = char === 'mina' ? minaMsgs : sanaMsgs;
+            b.innerText = msg || msgs[Math.floor(Math.random()*msgs.length)];
+            b.classList.add('show');
+            setTimeout(() => b.classList.remove('show'), 4000);
+        }
+
         window.onload = () => {
-            setTimeout(() => {
-                document.getElementById('twiceUI').classList.add('show');
-            }, 800);
-        }
-
-        function nextLesson() {
-            // Aquí puedes cambiar el texto del div 'content' para avanzar
-            alert("¡Mina y Sana están orgullosas de tu progreso!");
-        }
+            render();
+            if(mode === 'twice') {
+                setTimeout(() => document.getElementById('ui').classList.add('active'), 800);
+            }
+        };
     </script>
 </body>
 </html>
