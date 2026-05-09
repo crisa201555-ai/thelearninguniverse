@@ -3,132 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TLU | Inicio Relax</title>
+    <title>The Learning Universe | Home</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { 
-            --p: #a29bfe; /* Un morado más suave para modo oscuro */
-            --s: #00cec9; 
-            --bg: #0f172a; /* Azul noche profundo */
-            --card: #1e293b; 
-            --text: #f8fafc; 
-            --border: #334155; 
+        :root { --bg: #020617; --accent: #38bdf8; --glass: rgba(255, 255, 255, 0.03); }
+        body {
+            margin: 0; font-family: 'Fredoka', sans-serif; background: var(--bg);
+            color: white; overflow: hidden; height: 100vh;
+            background: radial-gradient(circle at top right, #1e293b, #020617);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
+
+        /* RELOJ */
+        .top-info { position: absolute; top: 30px; right: 50px; text-align: right; }
+        #time { font-size: 2.5rem; font-weight: 700; color: var(--accent); margin: 0; }
+        #date { opacity: 0.6; font-size: 1.1rem; }
+
+        /* HERO */
+        h1 { font-size: 4rem; margin: 0; letter-spacing: -2px; }
+        p { font-size: 1.2rem; opacity: 0.6; margin-bottom: 40px; }
+
+        .main-btn {
+            background: white; color: var(--bg); border: none; padding: 20px 60px;
+            border-radius: 50px; font-size: 1.5rem; font-weight: 700; cursor: pointer;
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(255,255,255,0.1);
+        }
+        .main-btn:hover { transform: scale(1.1); box-shadow: 0 15px 40px rgba(56, 189, 248, 0.4); }
+
+        /* MODAL */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(15px);
+            display: none; justify-content: center; align-items: center; z-index: 100;
+        }
+        .modal-card {
+            background: #0f172a; padding: 50px; border-radius: 40px;
+            border: 1px solid rgba(255,255,255,0.1); width: 450px; text-align: center;
+        }
+        .modal-options { display: flex; flex-direction: column; gap: 15px; margin-top: 30px; }
         
-        body { 
-            font-family: 'Fredoka', sans-serif; 
-            background: var(--bg); 
-            color: var(--text); 
-            margin: 0; 
-            padding: 0; 
-            overflow-x: hidden;
-            transition: background 0.5s ease;
+        .opt-btn {
+            background: var(--glass); border: 1px solid rgba(255,255,255,0.1);
+            color: white; padding: 20px; border-radius: 20px; font-size: 1.2rem;
+            cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 15px;
         }
-
-        /* --- NAVBAR --- */
-        nav { 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 15px 5%; background: rgba(15, 23, 42, 0.8); 
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border);
-            position: sticky; top: 0; z-index: 1000;
-        }
-        .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--p); font-size: 1.4rem; cursor: pointer; }
-        
-        .nav-links { display: flex; align-items: center; gap: 20px; }
-        .nav-item { text-decoration: none; color: #94a3b8; font-weight: 500; transition: 0.3s; padding: 8px 15px; border-radius: 12px; }
-        .nav-item:hover { background: var(--card); color: var(--p); }
-        .nav-item.active { background: var(--p); color: #0f172a; }
-
-        /* --- HERO --- */
-        .hero { 
-            height: 85vh; display: flex; flex-direction: column; 
-            justify-content: center; align-items: center; text-align: center;
-            background: radial-gradient(circle at top right, #1e1b4b, transparent);
-        }
-        .hero h1 { font-size: 3.8rem; margin: 0; color: var(--text); letter-spacing: -1px; }
-        .hero p { font-size: 1.2rem; color: #94a3b8; margin: 25px 0; max-width: 650px; line-height: 1.6; }
-
-        /* --- BOTONES --- */
-        .btn { padding: 16px 35px; border-radius: 50px; border: none; font-weight: 700; cursor: pointer; font-family: 'Fredoka'; transition: 0.3s; text-decoration: none; font-size: 1.1rem; }
-        .btn-p { background: var(--p); color: #0f172a; }
-        .btn-s { background: transparent; color: var(--s); border: 2px solid var(--s); margin-top: 15px; }
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(162, 155, 254, 0.3); }
-        .btn-s:hover { background: var(--s); color: #0f172a; }
-
-        /* --- MODAL DE RAMOS (DARK) --- */
-        .modal-overlay { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(8px);
-            display: none; justify-content: center; align-items: center; z-index: 2000; 
-        }
-        .modal-card { 
-            background: var(--card); padding: 40px; border-radius: 35px; 
-            width: 90%; max-width: 420px; text-align: center;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); 
-            border: 1px solid var(--border);
-            animation: popUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .modal-card h2 { margin-bottom: 30px; color: var(--text); font-size: 1.8rem; }
-        .modal-options { display: flex; flex-direction: column; gap: 18px; }
-        .opt-btn { 
-            padding: 18px; border-radius: 20px; border: 1px solid var(--border); 
-            background: #0f172a; color: #94a3b8; cursor: pointer; font-family: 'Fredoka'; 
-            font-weight: 600; font-size: 1.2rem; transition: 0.3s; 
-            display: flex; align-items: center; justify-content: center; gap: 15px;
-        }
-        .opt-btn:hover { border-color: var(--p); color: var(--p); background: #1e1b4b; transform: scale(1.02); }
-
-        @keyframes popUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .opt-btn:hover { background: var(--accent); color: var(--bg); font-weight: 700; }
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="logo" onclick="location.href='home.html'">
-            <img src="https://thelearninguniverses.pages.dev/unnamed-removebg-preview.png" width="40" style="filter: brightness(1.2);">
-            <span>TLU</span>
-        </div>
-        <div class="nav-links">
-            <a href="viewmygroups.html" class="nav-item active">Gestión de Clases</a>
-        </div>
-    </nav>
+    <div class="top-info">
+        <p id="time">00:00:00</p>
+        <p id="date">-- / -- / --</p>
+    </div>
 
-    <header class="hero">
-        <h1>The Learning Universe</h1>
-        <p>Tu refugio de conocimiento digital. Aprende a tu ritmo en un entorno diseñado para tu concentración.</p>
-        
-        <button class="btn btn-p" onclick="openSubjects()">Ver ramos de aprendizaje...</button>
-        <a href="viewmygroups.html" class="btn btn-s">Gestión de Clases</a>
-    </header>
+    <h1>The Learning Universe</h1>
+    <p>Your journey through knowledge begins here.</p>
 
-    <div id="subjectModal" class="modal-overlay" onclick="closeSubjects(event)">
+    <button class="main-btn" onclick="openSubjects()">Explorar Materias</button>
+
+    <div id="subjectModal" class="modal" onclick="this.style.display='none'">
         <div class="modal-card" onclick="event.stopPropagation()">
-            <h2>Elige tu camino</h2>
+            <h2>¿Qué quieres aprender?</h2>
             <div class="modal-options">
-                <button class="opt-btn" onclick="location.href='matematicas.html'">
-                    <span style="font-size: 1.5rem;">📐</span> Matemáticas
-                </button>
                 <button class="opt-btn" onclick="location.href='cienciasnaturales.html'">
                     <span style="font-size: 1.5rem;">🌿</span> Ciencias Naturales
                 </button>
-                <p style="margin-top:15px; color: #64748b; cursor: pointer; font-size: 0.9rem;" onclick="document.getElementById('subjectModal').style.display='none'">Cerrar</p>
+                <button class="opt-btn" onclick="location.href='english.html'">
+                    <span style="font-size: 1.5rem;">🇬🇧</span> English Universe
+                </button>
+                <button style="background: none; border: none; color: #64748b; margin-top: 10px; cursor: pointer;" 
+                        onclick="document.getElementById('subjectModal').style.display='none'">Cerrar</button>
             </div>
         </div>
     </div>
 
     <script>
-        function openSubjects() {
-            document.getElementById('subjectModal').style.display = 'flex';
+        function openSubjects() { document.getElementById('subjectModal').style.display = 'flex'; }
+        
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('time').innerText = now.toLocaleTimeString();
+            document.getElementById('date').innerText = now.toLocaleDateString();
         }
-
-        function closeSubjects(e) {
-            document.getElementById('subjectModal').style.display = 'none';
-        }
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === "Escape") document.getElementById('subjectModal').style.display = 'none';
-        });
+        setInterval(updateClock, 1000);
+        updateClock();
     </script>
 </body>
 </html>
