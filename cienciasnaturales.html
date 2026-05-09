@@ -2,164 +2,90 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TLU | Ciencias Naturales</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --ocean-deep: #0f172a;
-            --ocean-mid: #0077b6;
-            --ocean-light: #90e0ef;
-            --accent: #00cec9;
-            --glass: rgba(255, 255, 255, 0.05);
-            --text: #f8fafc;
-        }
-
         body {
+            background: #0f172a;
+            color: white;
             font-family: 'Fredoka', sans-serif;
-            background: var(--ocean-deep);
-            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #0077b6 100%);
-            color: var(--text);
             margin: 0;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* --- NAV / HEADER --- */
-        nav {
-            padding: 20px 5%;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            justify-content: center;
+            height: 100vh;
+            background: linear-gradient(to bottom, #0f172a, #1e3a8a);
         }
 
-        .back-btn {
-            text-decoration: none;
-            color: var(--ocean-light);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .clock-box { position: fixed; top: 20px; right: 40px; text-align: right; }
+        #time { font-size: 2rem; font-weight: 700; color: #00cec9; }
 
-        /* --- CLOCK SECTION --- */
-        .status-bar {
-            text-align: right;
-            font-weight: 300;
-        }
-        #clock { font-size: 1.4rem; font-weight: 600; display: block; }
-        #date { font-size: 0.9rem; opacity: 0.7; }
+        .header-box { text-align: center; margin-bottom: 40px; }
+        h1 { font-size: 3.5rem; margin: 0; text-shadow: 0 0 20px rgba(0,206,201,0.5); }
 
-        /* --- MAIN CONTENT --- */
-        .hero {
-            padding: 80px 5%;
-            text-align: center;
-            animation: fadeIn 1s ease;
-        }
-
-        .hero h1 {
-            font-size: 4rem;
-            margin: 0;
-            background: linear-gradient(to right, #fff, var(--ocean-light));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        .hero p { font-size: 1.3rem; opacity: 0.8; margin: 20px auto; max-width: 600px; }
-
-        /* --- BUTTONS --- */
-        .btn-view {
-            background: var(--accent);
-            color: var(--ocean-deep);
-            padding: 18px 40px;
+        .btn-main {
+            background: #00cec9;
+            color: #0f172a;
+            border: none;
+            padding: 20px 50px;
             border-radius: 50px;
-            border: none;
-            font-size: 1.2rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.4s;
-            box-shadow: 0 0 20px rgba(0, 206, 201, 0.4);
-            margin-top: 30px;
-        }
-
-        .btn-view:hover {
-            transform: scale(1.05) translateY(-5px);
-            box-shadow: 0 0 40px rgba(0, 206, 201, 0.6);
-        }
-
-        /* --- MODAL TABLE --- */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(15px);
-            display: none; justify-content: center; align-items: center; z-index: 1000;
-        }
-
-        .modal-content {
-            background: var(--glass);
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 40px;
-            border-radius: 30px;
-            width: 90%;
-            max-width: 800px;
-            animation: slideUp 0.4s ease;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 15px;
-            margin-top: 20px;
-        }
-
-        th { text-align: left; padding: 10px 20px; color: var(--ocean-light); font-size: 0.9rem; text-transform: uppercase; }
-        
-        tr.row-card { background: rgba(255,255,255,0.03); transition: 0.3s; }
-        tr.row-card:hover { background: rgba(255,255,255,0.08); }
-
-        td { padding: 20px; color: white; }
-        td:first-child { border-radius: 20px 0 0 20px; font-weight: 600; font-size: 1.1rem; }
-        td:last-child { border-radius: 0 20px 20px 0; text-align: right; }
-
-        .enter-btn {
-            background: white;
-            color: var(--ocean-deep);
-            border: none;
-            padding: 10px 25px;
-            border-radius: 12px;
+            font-size: 1.5rem;
             font-weight: 700;
             cursor: pointer;
             transition: 0.3s;
+            box-shadow: 0 10px 30px rgba(0,206,201,0.3);
         }
 
-        .enter-btn:hover { background: var(--ocean-light); }
+        .btn-main:hover { transform: scale(1.05); background: white; }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        /* TABLA MODAL */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
+            display: none; justify-content: center; align-items: center;
+        }
 
+        .table-container {
+            background: #1e293b;
+            padding: 40px;
+            border-radius: 30px;
+            border: 1px solid #334155;
+            width: 80%;
+            max-width: 800px;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; color: #94a3b8; padding: 10px; }
+        td { padding: 20px 10px; border-bottom: 1px solid #334155; }
+        
+        .btn-enter {
+            background: #6c5ce7;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
-    <nav>
-        <a href="home.html" class="back-btn">← Volver al Universo</a>
-        <div class="status-bar">
-            <span id="clock">00:00:00</span>
-            <span id="date">Cargando fecha...</span>
-        </div>
-    </nav>
+    <div class="clock-box">
+        <div id="time">00:00:00</div>
+        <div id="date">-- / -- / ----</div>
+    </div>
 
-    <main class="hero">
+    <div class="header-box">
         <h1>Ciencias Naturales</h1>
-        <p>Explora los misterios de nuestro planeta, desde las profundidades del océano hasta los confines de la biosfera.</p>
-        <button class="btn-view" onclick="openTopics()">Ver temas</button>
-    </main>
+        <p style="opacity: 0.6;">Explora el Planeta Azul con TWICE</p>
+    </div>
 
-    <div id="topicModal" class="modal-overlay" onclick="closeTopics()">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <h2 style="margin-top:0;">📚 Temas Disponibles</h2>
+    <button class="btn-main" onclick="document.getElementById('m').style.display='flex'">Ver temas</button>
+
+    <div id="m" class="modal" onclick="this.style.display='none'">
+        <div class="table-container" onclick="event.stopPropagation()">
+            <h2>Temas de Aprendizaje</h2>
             <table>
                 <thead>
                     <tr>
@@ -170,49 +96,25 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="row-card">
-                        <td>Océanos y continentes</td>
+                    <tr>
+                        <td><b>Océanos y Continentes</b></td>
                         <td>5-10 min</td>
-                        <td>2° a 5° Básico <br> <small style="opacity:0.6">Apto para todas las edades</small></td>
-                        <td><button class="enter-btn" onclick="location.href='/cienciasnaturales/oceanosycontinentes.html'">Entrar...</button></td>
+                        <td>2° a 5° Básico</td>
+                        <td><button class="btn-enter" onclick="location.href='/cienciasnaturales/oceanosycontinentes.html'">Entrar...</button></td>
                     </tr>
                 </tbody>
             </table>
-            <p style="text-align:center; margin-top:30px; cursor:pointer; opacity:0.5;" onclick="closeTopics()">Cerrar ventana</p>
         </div>
     </div>
 
     <script>
-        // --- RELOJ Y FECHA ---
-        function updateTime() {
-            const now = new Date();
-            const timeStr = now.toLocaleTimeString('es-ES', { hour12: false });
-            const dateStr = now.toLocaleDateString('es-ES', { 
-                weekday: 'long', 
-                day: 'numeric', 
-                month: 'long', 
-                year: 'numeric' 
-            });
-
-            document.getElementById('clock').innerText = timeStr;
-            document.getElementById('date').innerText = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+        function update() {
+            const n = new Date();
+            document.getElementById('time').innerText = n.toLocaleTimeString();
+            document.getElementById('date').innerText = n.toLocaleDateString();
         }
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        // --- LÓGICA DEL MODAL ---
-        function openTopics() {
-            document.getElementById('topicModal').style.display = 'flex';
-        }
-
-        function closeTopics() {
-            document.getElementById('topicModal').style.display = 'none';
-        }
-
-        // Cerrar con Escape
-        document.addEventListener('keydown', (e) => {
-            if (e.key === "Escape") closeTopics();
-        });
+        setInterval(update, 1000);
+        update();
     </script>
 </body>
 </html>
