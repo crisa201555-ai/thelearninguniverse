@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TLU | Ciencias Naturales</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ocean-deep: #0f172a;
+            --ocean-mid: #0077b6;
+            --ocean-light: #90e0ef;
+            --accent: #00cec9;
+            --glass: rgba(255, 255, 255, 0.05);
+            --text: #f8fafc;
+        }
+
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: var(--ocean-deep);
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #0077b6 100%);
+            color: var(--text);
+            margin: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- NAV / HEADER --- */
+        nav {
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: var(--ocean-light);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* --- CLOCK SECTION --- */
+        .status-bar {
+            text-align: right;
+            font-weight: 300;
+        }
+        #clock { font-size: 1.4rem; font-weight: 600; display: block; }
+        #date { font-size: 0.9rem; opacity: 0.7; }
+
+        /* --- MAIN CONTENT --- */
+        .hero {
+            padding: 80px 5%;
+            text-align: center;
+            animation: fadeIn 1s ease;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin: 0;
+            background: linear-gradient(to right, #fff, var(--ocean-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .hero p { font-size: 1.3rem; opacity: 0.8; margin: 20px auto; max-width: 600px; }
+
+        /* --- BUTTONS --- */
+        .btn-view {
+            background: var(--accent);
+            color: var(--ocean-deep);
+            padding: 18px 40px;
+            border-radius: 50px;
+            border: none;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.4s;
+            box-shadow: 0 0 20px rgba(0, 206, 201, 0.4);
+            margin-top: 30px;
+        }
+
+        .btn-view:hover {
+            transform: scale(1.05) translateY(-5px);
+            box-shadow: 0 0 40px rgba(0, 206, 201, 0.6);
+        }
+
+        /* --- MODAL TABLE --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(15px);
+            display: none; justify-content: center; align-items: center; z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--glass);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 40px;
+            border-radius: 30px;
+            width: 90%;
+            max-width: 800px;
+            animation: slideUp 0.4s ease;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 15px;
+            margin-top: 20px;
+        }
+
+        th { text-align: left; padding: 10px 20px; color: var(--ocean-light); font-size: 0.9rem; text-transform: uppercase; }
+        
+        tr.row-card { background: rgba(255,255,255,0.03); transition: 0.3s; }
+        tr.row-card:hover { background: rgba(255,255,255,0.08); }
+
+        td { padding: 20px; color: white; }
+        td:first-child { border-radius: 20px 0 0 20px; font-weight: 600; font-size: 1.1rem; }
+        td:last-child { border-radius: 0 20px 20px 0; text-align: right; }
+
+        .enter-btn {
+            background: white;
+            color: var(--ocean-deep);
+            border: none;
+            padding: 10px 25px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .enter-btn:hover { background: var(--ocean-light); }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="home.html" class="back-btn">← Volver al Universo</a>
+        <div class="status-bar">
+            <span id="clock">00:00:00</span>
+            <span id="date">Cargando fecha...</span>
+        </div>
+    </nav>
+
+    <main class="hero">
+        <h1>Ciencias Naturales</h1>
+        <p>Explora los misterios de nuestro planeta, desde las profundidades del océano hasta los confines de la biosfera.</p>
+        <button class="btn-view" onclick="openTopics()">Ver temas</button>
+    </main>
+
+    <div id="topicModal" class="modal-overlay" onclick="closeTopics()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h2 style="margin-top:0;">📚 Temas Disponibles</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Título</th>
+                        <th>Tiempo</th>
+                        <th>Nivel</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="row-card">
+                        <td>Océanos y continentes</td>
+                        <td>5-10 min</td>
+                        <td>2° a 5° Básico <br> <small style="opacity:0.6">Apto para todas las edades</small></td>
+                        <td><button class="enter-btn" onclick="location.href='/cienciasnaturales/oceanosycontinentes.html'">Entrar...</button></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="text-align:center; margin-top:30px; cursor:pointer; opacity:0.5;" onclick="closeTopics()">Cerrar ventana</p>
+        </div>
+    </div>
+
+    <script>
+        // --- RELOJ Y FECHA ---
+        function updateTime() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('es-ES', { hour12: false });
+            const dateStr = now.toLocaleDateString('es-ES', { 
+                weekday: 'long', 
+                day: 'numeric', 
+                month: 'long', 
+                year: 'numeric' 
+            });
+
+            document.getElementById('clock').innerText = timeStr;
+            document.getElementById('date').innerText = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // --- LÓGICA DEL MODAL ---
+        function openTopics() {
+            document.getElementById('topicModal').style.display = 'flex';
+        }
+
+        function closeTopics() {
+            document.getElementById('topicModal').style.display = 'none';
+        }
+
+        // Cerrar con Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "Escape") closeTopics();
+        });
+    </script>
+</body>
+</html>
