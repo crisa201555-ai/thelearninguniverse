@@ -3,182 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TLU | Panel del Docente</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>TLU | Dashboard Docente</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #6c5ce7; --s: #00cec9; --bg: #f8fafc; --text: #1e293b; --danger: #ff7675; }
+        :root { --p: #6c5ce7; --s: #00cec9; --bg: #ffffff; --text: #1e293b; --danger: #ff7675; --border: #edf2f7; }
         
-        body { font-family: 'Fredoka', sans-serif; background: var(--bg); color: var(--text); margin: 0; overflow-x: hidden; }
+        body { font-family: 'Fredoka', sans-serif; background: #fbfcfe; color: var(--text); margin: 0; padding: 0; }
 
-        /* --- NAVBAR --- */
-        nav { background: white; padding: 0 5%; height: 70px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #edf2f7; position: sticky; top: 0; z-index: 100; }
-        .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--p); font-size: 1.3rem; }
+        /* --- NAVEGACIÓN --- */
+        nav { 
+            background: white; padding: 0 5%; height: 75px; 
+            display: flex; justify-content: space-between; align-items: center; 
+            border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1000; 
+        }
+        .logo { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 1.4rem; color: var(--p); cursor: pointer; }
         
-        .profile-zone { position: relative; cursor: pointer; }
-        .avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--p); }
-        .dropdown { position: absolute; top: 55px; right: 0; width: 220px; background: white; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: none; padding: 20px; border: 1px solid #eee; }
-        .dropdown.active { display: block; }
+        .profile-container { position: relative; cursor: pointer; }
+        .user-photo { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--p); padding: 2px; }
+        
+        .profile-frame { 
+            position: absolute; top: 60px; right: 0; width: 260px; background: white; 
+            border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.1); 
+            border: 1px solid var(--border); display: none; padding: 20px; text-align: center;
+        }
+        .profile-frame.active { display: block; animation: slideIn 0.3s ease; }
+        .profile-frame h4 { margin: 10px 0 5px; font-size: 1.1rem; }
+        .profile-frame p { margin: 0 0 20px; font-size: 0.85rem; color: #64748b; }
 
         /* --- CONTENIDO --- */
-        .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
-        .card { background: white; border-radius: 20px; padding: 20px; border: 1px solid #edf2f7; transition: 0.3s; }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .main { max-width: 1100px; margin: 50px auto; padding: 0 25px; }
+        .welcome-section { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+        .welcome-section h1 { font-size: 2.2rem; font-weight: 700; margin: 0; }
+
+        /* --- GRID DE CURSOS --- */
+        .courses-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
+        
+        .course-card { 
+            background: white; border-radius: 25px; padding: 25px; border: 1px solid var(--border); 
+            transition: 0.3s; display: flex; flex-direction: column; gap: 15px; position: relative;
+        }
+        .course-card:hover { transform: translateY(-8px); border-color: var(--p); box-shadow: 0 20px 25px rgba(0,0,0,0.05); }
+        
+        .expiry-badge { 
+            font-size: 0.75rem; font-weight: 700; color: var(--danger); background: #fff1f1; 
+            padding: 6px 12px; border-radius: 12px; width: fit-content; 
+        }
 
         /* --- BOTONES --- */
-        .btn { padding: 12px 20px; border-radius: 12px; border: none; font-weight: 600; cursor: pointer; font-family: 'Fredoka'; transition: 0.3s; }
-        .btn-p { background: var(--p); color: white; width: 100%; margin-top: 10px; }
-        .btn-logout { background: #fff1f1; color: var(--danger); width: 100%; margin-top: 10px; }
-        .fab { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: var(--p); color: white; border-radius: 50%; border: none; font-size: 30px; cursor: pointer; box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4); z-index: 998; }
+        .btn { padding: 12px 20px; border-radius: 15px; border: none; font-weight: 600; cursor: pointer; font-family: 'Fredoka'; transition: 0.3s; }
+        .btn-main { background: var(--p); color: white; }
+        .btn-secondary { background: #f1f5f9; color: var(--text); }
+        .btn-danger { background: #fee2e2; color: #ef4444; width: 100%; }
+        
+        .card-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
 
-        /* --- PANEL FLOTANTE (DRAG & DROP) --- */
-        #invitePanel { 
-            position: fixed; top: 100px; left: 50px; width: 300px; 
-            background: white; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.15); 
-            border: 2px solid var(--p); z-index: 999; display: none; touch-action: none;
-        }
-        #inviteHeader { 
-            background: var(--p); color: white; padding: 15px; 
-            border-radius: 15px 15px 0 0; cursor: move; 
-            display: flex; justify-content: space-between; align-items: center; 
-        }
-        .panel-body { padding: 20px; display: flex; flex-direction: column; gap: 12px; }
-        .panel-input { padding: 12px; border-radius: 10px; border: 1px solid #ddd; outline: none; font-family: 'Fredoka'; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
     <nav>
-        <div class="logo">
-            <img src="https://thelearninguniverses.pages.dev/unnamed-removebg-preview.png" width="35"> TLU
+        <div class="logo" onclick="location.href='/viewmygroups'">
+            <img src="https://thelearninguniverses.pages.dev/unnamed-removebg-preview.png" width="40">
+            <span>The Learning Universe</span>
         </div>
-        <div class="profile-zone" onclick="toggleDrop()">
-            <img id="userImg" class="avatar" src="https://ui-avatars.com/api/?name=Docente">
-            <div id="drop" class="dropdown">
-                <b id="userName">Docente</b>
-                <p id="userEmail" style="font-size: 0.8rem; opacity: 0.6; margin: 5px 0;"></p>
-                <button class="btn btn-logout" onclick="logout()">Cerrar Sesión</button>
+        <div class="profile-container" onclick="toggleProfile()">
+            <img id="navAvatar" class="user-photo" src="https://ui-avatars.com/api/?name=Docente&background=6c5ce7&color=fff">
+            <div id="profileFrame" class="profile-frame">
+                <h4 id="profName">Nombre Docente</h4>
+                <p id="profEmail">correo@ejemplo.com</p>
+                <hr style="opacity: 0.1; margin: 15px 0;">
+                <button class="btn btn-danger" onclick="logout()">Cerrar Sesión</button>
             </div>
         </div>
     </nav>
 
-    <div class="container">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-            <h1>Mis Cursos</h1>
-            <button class="btn" style="background: var(--s); color: #004d3b;" onclick="location.href='creategroup.html'">+ Nuevo Grupo</button>
-        </div>
-        <div id="coursesGrid" class="grid">
+    <main class="main">
+        <div class="welcome-section">
+            <div>
+                <h1>Mis Cursos</h1>
+                <p style="opacity: 0.6; margin-top: 5px;">Recuerda: Los cursos se eliminan tras 24 horas de inactividad.</p>
             </div>
-    </div>
-
-    <button class="fab" onclick="togglePanel()">+</button>
-
-    <div id="invitePanel">
-        <div id="inviteHeader">
-            <span>🚀 Invitar Alumno</span>
-            <span onclick="togglePanel()" style="cursor: pointer;">&times;</span>
+            <button class="btn btn-main" onclick="location.href='/creategroup.html'">+ Nueva Clase</button>
         </div>
-        <div class="panel-body">
-            <input type="email" id="invEmail" class="panel-input" placeholder="correo@estudiante.com">
-            <button class="btn btn-p" id="sendInv">ENVIAR INVITACIÓN</button>
-            <p id="invStatus" style="display:none; color: var(--s); font-size: 0.8rem; text-align: center;">✅ Enviada con éxito</p>
-        </div>
-    </div>
+
+        <div id="grid" class="courses-grid">
+            </div>
+    </main>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, query, where, onSnapshot, addDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, query, where, onSnapshot, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        const firebaseConfig = { apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", authDomain: "thelearninguniverse-26.firebaseapp.com", projectId: "thelearninguniverse-26", storageBucket: "thelearninguniverse-26.firebasestorage.app", messagingSenderId: "85338996011", appId: "1:85338996011:web:1f3bb216900c07e735596e" };
+        const firebaseConfig = { 
+            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", 
+            authDomain: "thelearninguniverse-26.firebaseapp.com", 
+            projectId: "thelearninguniverse-26", 
+            storageBucket: "thelearninguniverse-26.firebasestorage.app", 
+            messagingSenderId: "85338996011", 
+            appId: "1:85338996011:web:1f3bb216900c07e735596e" 
+        };
+
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        // 1. Gestión de Sesión
+        // 1. Control de Perfil y Sesión
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                document.getElementById('userName').innerText = user.displayName || "Docente";
-                document.getElementById('userEmail').innerText = user.email;
-                if(user.photoURL) document.getElementById('userImg').src = user.photoURL;
-                loadCourses(user.email);
+                document.getElementById('profName').innerText = user.displayName || "Docente TLU";
+                document.getElementById('profEmail').innerText = user.email;
+                if(user.photoURL) document.getElementById('navAvatar').src = user.photoURL;
+                loadMyGroups(user.email);
             } else {
                 window.location.href = "/login";
             }
         });
 
-        window.toggleDrop = () => document.getElementById('drop').classList.toggle('active');
-        window.logout = () => { signOut(auth).then(() => { localStorage.clear(); window.location.href = "/login"; }); };
+        window.toggleProfile = () => document.getElementById('profileFrame').classList.toggle('active');
+        
+        window.logout = () => {
+            signOut(auth).then(() => {
+                localStorage.clear();
+                window.location.href = "/login";
+            });
+        };
 
-        // 2. Cargar Cursos (Lógica 24h)
-        function loadCourses(email) {
+        // 2. Cargar Cursos con Lógica de Auto-Borrado (24 Horas)
+        function loadMyGroups(email) {
+            const grid = document.getElementById('grid');
+            const unDiaMS = 24 * 60 * 60 * 1000;
+
             onSnapshot(query(collection(db, "groups"), where("teacherEmail", "==", email)), (snap) => {
-                const grid = document.getElementById('coursesGrid');
                 grid.innerHTML = "";
                 const ahora = Date.now();
-                
+
+                if (snap.empty) {
+                    grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 100px; opacity: 0.4;">
+                        <h3>Aún no has creado ningún curso.</h3>
+                    </div>`;
+                    return;
+                }
+
                 snap.forEach(d => {
                     const data = d.data();
-                    const transcurrido = ahora - data.createdAt;
-                    if (transcurrido > 86400000) { deleteDoc(doc(db, "groups", d.id)); return; }
+                    const tiempoTranscurrido = ahora - data.createdAt;
+
+                    // Si pasaron más de 24h, lo borramos de Firebase
+                    if (tiempoTranscurrido > unDiaMS) {
+                        deleteDoc(doc(db, "groups", d.id));
+                        return;
+                    }
+
+                    const horasRestantes = Math.max(0, Math.round((unDiaMS - tiempoTranscurrido) / (1000 * 60 * 60)));
 
                     const card = document.createElement('div');
-                    card.className = 'card';
+                    card.className = 'course-card';
                     card.innerHTML = `
-                        <h3 style="margin:0; color:var(--p)">${data.className}</h3>
-                        <p style="font-size:0.8rem; opacity:0.6">ID: ${d.id}</p>
-                        <button class="btn btn-p" onclick="localStorage.setItem('activeGroupId','${d.id}'); alert('Clase seleccionada para invitar');">Seleccionar para Invitar</button>
+                        <div class="expiry-badge">⏳ Expira en ${horasRestantes}h</div>
+                        <h2 style="margin: 0; color: var(--p); font-size: 1.5rem;">${data.className}</h2>
+                        <p style="margin: 0; font-size: 0.9rem; opacity: 0.6;">Prof. ${data.teacherName}</p>
+                        <div class="card-actions">
+                            <button class="btn btn-secondary" onclick="location.href='/viewmygroups/viewmembers?uidclass=${d.id}'">👥 Miembros</button>
+                            <button class="btn btn-main" onclick="location.href='/generator-test?uidclass=${d.id}'">📝 Examen</button>
+                        </div>
                     `;
                     grid.appendChild(card);
                 });
             });
         }
-
-        // 3. Lógica del Panel Flotante e Invitación
-        window.togglePanel = () => {
-            const p = document.getElementById('invitePanel');
-            p.style.display = p.style.display === 'none' ? 'block' : 'none';
-        };
-
-        document.getElementById('sendInv').onclick = async () => {
-            const email = document.getElementById('invEmail').value;
-            const gid = localStorage.getItem('activeGroupId');
-            if(!email || !gid) return alert("Escribe un email y selecciona una clase de la lista.");
-
-            await addDoc(collection(db, "members"), {
-                groupId: gid, email: email, status: "invited", createdAt: Date.now()
-            });
-
-            document.getElementById('invStatus').style.display = 'block';
-            document.getElementById('invEmail').value = "";
-            setTimeout(() => document.getElementById('invStatus').style.display = 'none', 3000);
-        };
-
-        // --- LÓGICA DRAG & DROP (MOVIMIENTO) ---
-        const panel = document.getElementById("invitePanel");
-        const header = document.getElementById("inviteHeader");
-        let active = false, currentX, currentY, initialX, initialY, xOffset = 0, yOffset = 0;
-
-        header.addEventListener("mousedown", dragStart);
-        document.addEventListener("mousemove", drag);
-        document.addEventListener("mouseup", dragEnd);
-
-        function dragStart(e) {
-            initialX = e.clientX - xOffset;
-            initialY = e.clientY - yOffset;
-            if (e.target === header || e.target.parentNode === header) active = true;
-        }
-        function drag(e) {
-            if (active) {
-                e.preventDefault();
-                currentX = e.clientX - initialX;
-                currentY = e.clientY - initialY;
-                xOffset = currentX; yOffset = currentY;
-                panel.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
-            }
-        }
-        function dragEnd() { active = false; }
-
     </script>
 </body>
 </html>
