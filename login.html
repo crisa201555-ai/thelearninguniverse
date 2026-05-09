@@ -4,125 +4,145 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - The Learning Universe</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    
     <style>
-        :root { --fondo: #0c1445; --celeste: #48dbfb; --amarillo: #feca57; --rojo: #ff6b6b; --blanco: #ffffff; }
+        :root {
+            --fondo: #020617;
+            --accent: #38bdf8;
+            --glass: rgba(255, 255, 255, 0.05);
+            --blanco: #ffffff;
+        }
+
+        body {
+            margin: 0; padding: 0; font-family: 'Montserrat', sans-serif;
+            background: var(--fondo); height: 100vh; display: flex; overflow: hidden;
+        }
+
+        /* LADO IZQUIERDO: FORMULARIO */
+        .login-side {
+            width: 40%; height: 100%; display: flex; align-items: center;
+            justify-content: center; background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
+            padding: 50px; box-sizing: border-box; z-index: 10;
+        }
+
+        .form-container { width: 100%; max-width: 380px; animation: fadeIn 0.8s ease; }
+
+        .logo {
+            font-family: 'Fredoka', sans-serif; font-size: 2.8rem;
+            color: var(--accent); margin-bottom: 35px; letter-spacing: -2px;
+        }
+
+        h2 { color: #fff; margin: 0 0 10px 0; font-size: 1.8rem; }
+        .subtitle { color: #94a3b8; font-size: 0.9rem; margin-bottom: 30px; }
+
+        .input-group { margin-bottom: 15px; }
         
-        body { 
-            margin: 0; 
-            font-family: 'Montserrat', sans-serif; 
-            background: var(--fondo); 
-            background-image: radial-gradient(circle, #1b277a 0%, #0c1445 100%); 
-            height: 100vh; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            overflow: hidden; /* Evita scrolls innecesarios */
+        input {
+            width: 100%; background: var(--glass); border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 20px; border-radius: 12px; color: #fff; font-size: 1rem;
+            box-sizing: border-box; outline: none; transition: 0.3s;
         }
 
-        .card { 
-            background: rgba(255, 255, 255, 0.1); 
-            backdrop-filter: blur(12px); 
-            padding: 40px; 
-            border-radius: 35px; 
-            border: 2px solid rgba(255,255,255,0.2); 
-            width: 100%; 
-            max-width: 380px; 
-            text-align: center; 
-            color: white; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5); 
+        input:focus { border-color: var(--accent); background: rgba(56, 189, 248, 0.05); }
+
+        .btn-main {
+            width: 100%; padding: 16px; background: var(--accent); color: var(--fondo);
+            border: none; border-radius: 12px; font-family: 'Fredoka', sans-serif;
+            font-size: 1.2rem; font-weight: 700; cursor: pointer; transition: 0.3s; margin-top: 10px;
         }
 
-        .logo { font-family: 'Fredoka One'; font-size: 2.8rem; color: var(--amarillo); margin-bottom: 25px; }
-        
-        input { 
-            width: 100%; 
-            padding: 14px 20px; 
-            margin-bottom: 15px; 
-            border-radius: 50px; 
-            border: none; 
-            outline: none; 
-            box-sizing: border-box; 
-            font-size: 1rem; 
+        .btn-main:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(56, 189, 248, 0.3); }
+
+        .divider { display: flex; align-items: center; margin: 25px 0; color: #475569; font-size: 0.75rem; font-weight: 600; }
+        .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: #1e293b; margin: 0 15px; }
+
+        .btn-social {
+            background: white; border: 1px solid #e2e8f0; color: #1e293b;
+            width: 100%; padding: 12px; border-radius: 12px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            gap: 12px; margin-bottom: 12px; font-weight: 600; transition: 0.3s;
         }
 
-        .btn { 
-            width: 100%; 
-            padding: 15px; 
-            border-radius: 50px; 
-            border: none; 
-            background: var(--celeste); 
-            color: var(--fondo); 
-            font-family: 'Fredoka One'; 
-            font-size: 1.2rem; 
-            cursor: pointer; 
-            transition: 0.3s; 
-            box-shadow: 0 5px 0 #34ace0; 
+        .btn-social.github { background: #24292e; color: white; border: none; }
+        .btn-social:hover { transform: scale(1.02); filter: brightness(0.95); }
+        .btn-social img { width: 20px; height: 20px; }
+
+        .footer-links { margin-top: 25px; text-align: center; }
+        .footer-links a { color: #64748b; text-decoration: none; font-size: 0.8rem; margin: 0 10px; }
+        .footer-links a:hover { color: var(--accent); }
+
+        /* LADO DERECHO: SLIDER */
+        .visual-side { width: 60%; height: 100%; position: relative; }
+        .slide {
+            position: absolute; width: 100%; height: 100%; opacity: 0;
+            transition: opacity 1.5s ease; background-size: cover; background-position: center;
         }
-
-        .btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
-
-        /* Estilo común para botones sociales */
-        .btn-social { 
-            width: 100%; 
-            padding: 12px; 
-            border-radius: 50px; 
-            border: none; 
-            font-family: 'Montserrat', sans-serif; 
-            font-weight: 600; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 10px; 
-            cursor: pointer; 
-            margin-top: 15px; 
-            transition: 0.3s;
+        .slide.active { opacity: 1; }
+        .slide::after {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to top, rgba(2, 6, 23, 0.9), transparent);
         }
-
-        .btn-social img { width: 20px; }
-        .btn-social:hover { transform: scale(1.02); background: #f1f1f1; }
-
-        .btn-google { background: white; color: #444; }
-        
-        .btn-github { 
-            background: #24292e; 
-            color: white; 
+        .slide-content {
+            position: absolute; bottom: 80px; left: 60px; right: 60px;
+            color: #fff; z-index: 5;
         }
-        .btn-github:hover { background: #1a1e22; }
+        .slide-content h3 { font-family: 'Fredoka'; font-size: 2.8rem; margin: 0; line-height: 1.1; }
 
-        .links { margin-top: 25px; display: flex; flex-direction: column; gap: 12px; }
-        .links a { color: rgba(255, 255, 255, 0.8); text-decoration: none; font-size: 0.85rem; }
-        
-        .btn-reset { color: var(--rojo) !important; font-weight: bold; }
-        
-        hr { border: 0; border-top: 1px solid rgba(255,255,255,0.2); margin: 20px 0; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <div class="logo">UNIVERSE</div>
-        
-        <input type="email" id="email" placeholder="Correo Espacial">
-        <input type="password" id="pass" placeholder="Tu Llave Secreta">
-        
-        <button class="btn" id="loginBtn">INICIAR VIAJE</button>
+    <div class="login-side">
+        <div class="form-container">
+            <div class="logo">The Learning Universe</div>
+            <h2>Hola, Cadete</h2>
+            <p class="subtitle">Ingresa tus credenciales para iniciar el viaje espacial.</p>
+            
+            <div class="input-group">
+                <input type="email" id="email" placeholder="Correo Espacial">
+            </div>
+            <div class="input-group">
+                <input type="password" id="pass" placeholder="Tu Llave Secreta">
+            </div>
+            
+            <button class="btn-main" id="loginBtn">INICIAR VIAJE</button>
 
-        <hr>
+            <div class="divider">O CONTINÚA CON</div>
 
-        <button class="btn-social btn-google" id="googleBtn">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google">
-            Entrar con Google
-        </button>
+            <button class="btn-social" id="googleBtn">
+                <img src="google.png" alt="Google">
+                Entrar con Google
+            </button>
 
-        <button class="btn-social btn-github" id="githubBtn">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg" alt="GitHub" style="filter: invert(1);">
-            Entrar con GitHub
-        </button>
+            <button class="btn-social github" id="githubBtn">
+                <img src="github.png" alt="GitHub" style="filter: invert(1);">
+                Entrar con GitHub
+            </button>
 
-        <div class="links">
-            <a href="resetpassword.html" class="btn-reset">¿Olvidaste tu contraseña?</a>
-            <a href="register.html">¿Eres nuevo cadete? <b>Regístrate</b></a>
+            <div class="footer-links">
+                <a href="register.html">Regístrate</a>
+                <a href="resetpassword.html">¿Olvidaste tu contraseña?</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="visual-side">
+        <div class="slide active" style="background-image: url('classroom.png');">
+            <div class="slide-content">
+                <h3>La educación es compleja,<br>debemos educar gratis a todos los niños.</h3>
+            </div>
+        </div>
+        <div class="slide" style="background-image: url('classroom2.png');">
+            <div class="slide-content">
+                <h3>¡Puedes registrarte de varias maneras!<br>100% gratis totalmente.</h3>
+            </div>
+        </div>
+        <div class="slide" style="background-image: url('classroom3.png');">
+            <div class="slide-content">
+                <h3>Es hora.<br>Regístrate y empieza tu aventura.</h3>
+            </div>
         </div>
     </div>
 
@@ -141,41 +161,47 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        
         const googleProvider = new GoogleAuthProvider();
         const githubProvider = new GithubAuthProvider();
 
-        // Login Manual
+        const saveAndRedirect = (user) => {
+            const name = user.displayName || user.email.split('@')[0];
+            localStorage.setItem('usuarioActivo', name);
+            window.location.href = 'home.html';
+        };
+
+        // Eventos de Firebase
         document.getElementById('loginBtn').addEventListener('click', async () => {
             const email = document.getElementById('email').value;
             const pass = document.getElementById('pass').value;
             try { 
-                await signInWithEmailAndPassword(auth, email, pass); 
-                window.location.href = 'home.html'; 
-            } catch (e) { 
-                alert("Error: " + e.message); 
-            }
+                const res = await signInWithEmailAndPassword(auth, email, pass); 
+                saveAndRedirect(res.user); 
+            } catch (e) { alert("Error: " + e.message); }
         });
 
-        // Login Google
         document.getElementById('googleBtn').addEventListener('click', async () => {
             try { 
-                await signInWithPopup(auth, googleProvider); 
-                window.location.href = 'home.html'; 
-            } catch (e) { 
-                alert("Error con Google: " + e.message); 
-            }
+                const res = await signInWithPopup(auth, googleProvider); 
+                saveAndRedirect(res.user); 
+            } catch (e) { alert("Google Error: " + e.message); }
         });
 
-        // Login GitHub
         document.getElementById('githubBtn').addEventListener('click', async () => {
             try { 
-                await signInWithPopup(auth, githubProvider); 
-                window.location.href = 'home.html'; 
-            } catch (e) { 
-                alert("Error con GitHub: " + e.message); 
-            }
+                const res = await signInWithPopup(auth, githubProvider); 
+                saveAndRedirect(res.user); 
+            } catch (e) { alert("GitHub Error: " + e.message); }
         });
+
+        // Lógica del Slider automático
+        const slides = document.querySelectorAll('.slide');
+        let index = 0;
+        setInterval(() => {
+            slides[index].classList.remove('active');
+            index = (index + 1) % slides.length;
+            slides[index].classList.add('active');
+        }, 6000);
     </script>
 </body>
 </html>
