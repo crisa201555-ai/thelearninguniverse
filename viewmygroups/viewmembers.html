@@ -2,59 +2,68 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>TLU | Miembros del Curso</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TLU | Gestión de Miembros</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #6c5ce7; --s: #00cec9; --bg: #f8fafc; --text: #1e293b; --danger: #ff7675; }
-        body { font-family: 'Fredoka', sans-serif; background: var(--bg); color: var(--text); margin: 0; }
+        :root { --p: #6c5ce7; --s: #00cec9; --bg: #ffffff; --text: #1e293b; --danger: #ff7675; }
         
-        /* Navbar */
-        nav { background: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; }
-        .back-btn { cursor: pointer; display: flex; align-items: center; gap: 8px; color: var(--p); font-weight: 600; text-decoration: none; }
-        
-        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
-        
-        /* Header del Curso */
-        .course-header { background: white; padding: 30px; border-radius: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
-        .course-info h1 { margin: 0; font-size: 1.8rem; color: var(--p); }
-        
-        /* Tabla de Miembros */
-        .members-card { background: white; border-radius: 25px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; }
-        table { width: 100%; border-collapse: collapse; text-align: left; }
-        th { background: #f8fafc; padding: 18px; font-weight: 600; font-size: 0.9rem; color: #64748b; text-transform: uppercase; }
-        td { padding: 18px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
-        
-        .user-cell { display: flex; align-items: center; gap: 12px; }
-        .user-avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #f1f5f9; }
-        
-        .status-pill { padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
-        .status-active { background: #dcfce7; color: #166534; }
-        .status-invited { background: #fef9c3; color: #854d0e; }
+        body { font-family: 'Fredoka', sans-serif; background: #fbfcfe; color: var(--text); margin: 0; overflow-x: hidden; }
 
-        /* Acciones */
-        .actions-btn { background: none; border: none; cursor: pointer; padding: 5px; border-radius: 8px; transition: 0.2s; font-size: 1.1rem; }
-        .actions-btn:hover { background: #f1f5f9; }
-        .btn-delete:hover { color: var(--danger); background: #fff1f1; }
+        /* HEADER */
+        nav { background: white; padding: 0 5%; height: 70px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #edf2f7; position: sticky; top: 0; z-index: 100; }
+        .back-link { display: flex; align-items: center; gap: 8px; color: var(--p); text-decoration: none; font-weight: 600; }
 
-        .empty-state { text-align: center; padding: 60px; color: #94a3b8; }
+        .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+        
+        .class-header { background: white; padding: 30px; border-radius: 24px; border: 1px solid #edf2f7; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
+        .class-header h1 { margin: 0; font-size: 1.8rem; color: var(--p); }
+
+        /* TABLA DE MIEMBROS */
+        .members-card { background: white; border-radius: 24px; border: 1px solid #edf2f7; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #f8fafc; padding: 15px 20px; text-align: left; font-size: 0.85rem; color: #64748b; text-transform: uppercase; }
+        td { padding: 15px 20px; border-bottom: 1px solid #f1f5f9; }
+        
+        .student-info { display: flex; align-items: center; gap: 12px; }
+        .student-info img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #f1f5f9; }
+        
+        .badge { padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .badge-active { background: #dcfce7; color: #166534; }
+        .badge-pending { background: #fef9c3; color: #854d0e; }
+
+        .btn-icon { background: none; border: none; cursor: pointer; font-size: 1.1rem; padding: 8px; border-radius: 10px; transition: 0.2s; }
+        .btn-icon:hover { background: #f1f5f9; }
+
+        /* PANEL FLOTANTE (DRAG & DROP) */
+        #invitePanel { 
+            position: fixed; top: 120px; right: 50px; width: 300px; 
+            background: white; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.15); 
+            border: 2px solid var(--p); z-index: 999; display: block; touch-action: none;
+        }
+        #inviteHeader { 
+            background: var(--p); color: white; padding: 15px; 
+            border-radius: 15px 15px 0 0; cursor: move; 
+            display: flex; justify-content: space-between; align-items: center; 
+        }
+        .panel-body { padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+        .panel-input { padding: 12px; border-radius: 10px; border: 1px solid #ddd; outline: none; font-family: 'Fredoka'; width: 100%; box-sizing: border-box; }
+        .btn-add { background: var(--p); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 700; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <nav>
-        <a href="/viewmygroups" class="back-btn">
-            <span>←</span> Volver a mis cursos
-        </a>
+        <a href="/viewmygroups" class="back-link"><span>←</span> Mis Cursos</a>
         <img src="https://thelearninguniverses.pages.dev/unnamed-removebg-preview.png" width="35">
     </nav>
 
     <div class="container">
-        <div class="course-header">
-            <div class="course-info">
+        <div class="class-header">
+            <div>
                 <h1 id="className">Cargando...</h1>
-                <p id="studentCount" style="margin: 5px 0 0; opacity: 0.6;">0 estudiantes inscritos</p>
+                <p id="studentCount">0 alumnos en total</p>
             </div>
-            <button class="actions-btn" onclick="invitarMasivo()" style="background: var(--p); color: white; padding: 10px 20px; border-radius: 12px; font-size: 0.9rem; font-weight: 600;">+ Invitar Alumno</button>
         </div>
 
         <div class="members-card">
@@ -68,102 +77,107 @@
                         <th>Acción</th>
                     </tr>
                 </thead>
-                <tbody id="membersTableBody">
-                    </tbody>
+                <tbody id="memberList"></tbody>
             </table>
-            <div id="emptyState" class="empty-state" style="display: none;">
-                No hay miembros registrados en esta clase aún.
-            </div>
+        </div>
+    </div>
+
+    <div id="invitePanel">
+        <div id="inviteHeader">
+            <span>➕ Añadir Miembro</span>
+            <small style="font-size: 0.6rem; opacity: 0.8;">Arrastra para mover</small>
+        </div>
+        <div class="panel-body">
+            <input type="email" id="invEmail" class="panel-input" placeholder="correo@alumno.com">
+            <button class="btn-add" id="btnAddNow">AÑADIR A LA CLASE</button>
+            <p id="invStatus" style="display:none; color: var(--s); font-size: 0.8rem; text-align: center; margin: 0;">¡Añadido con éxito!</p>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, query, where, onSnapshot, doc, getDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, query, where, onSnapshot, addDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI", authDomain: "thelearninguniverse-26.firebaseapp.com", projectId: "thelearninguniverse-26", storageBucket: "thelearninguniverse-26.firebasestorage.app", messagingSenderId: "85338996011", appId: "1:85338996011:web:1f3bb216900c07e735596e" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Obtener ID de la clase desde la URL
-        const params = new URLSearchParams(window.location.search);
-        const gid = params.get('uidclass');
+        const urlParams = new URLSearchParams(window.location.search);
+        const gid = urlParams.get('uidclass');
 
-        if (!gid) window.location.href = "/viewmygroups";
+        if(!gid) window.location.href = "/viewmygroups";
 
-        // 1. Cargar info de la clase
-        async function loadClassInfo() {
-            const snap = await getDoc(doc(db, "groups", gid));
-            if (snap.exists()) {
-                document.getElementById('className').innerText = snap.data().className;
-            }
-        }
-        loadClassInfo();
+        // 1. Obtener nombre del curso
+        getDoc(doc(db, "groups", gid)).then(s => { if(s.exists()) document.getElementById('className').innerText = s.data().className; });
 
-        // 2. Escuchar miembros en tiempo real
+        // 2. Listado en tiempo real
         onSnapshot(query(collection(db, "members"), where("groupId", "==", gid)), (snap) => {
-            const body = document.getElementById('membersTableBody');
-            const empty = document.getElementById('emptyState');
-            body.innerHTML = "";
-            
-            document.getElementById('studentCount').innerText = `${snap.size} estudiantes inscritos`;
-
-            if (snap.empty) {
-                empty.style.display = "block";
-                return;
-            } else {
-                empty.style.display = "none";
-            }
-
+            const list = document.getElementById('memberList');
+            list.innerHTML = "";
+            document.getElementById('studentCount').innerText = `${snap.size} alumnos registrados`;
             snap.forEach(d => {
                 const m = d.data();
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>
-                        <div class="user-cell">
-                            <img src="https://ui-avatars.com/api/?name=${m.studentName || m.email}&background=random" class="user-avatar">
-                            <b>${m.studentName || 'Sin Nombre'}</b>
-                        </div>
-                    </td>
-                    <td>${m.email}</td>
-                    <td>${m.birthDate || '<span style="opacity:0.3">--/--/----</span>'}</td>
-                    <td>
-                        <span class="status-pill status-${m.status}">
-                            ${m.status === 'active' ? '● Activo' : '○ Pendiente'}
-                        </span>
-                    </td>
-                    <td>
-                        <button class="actions-btn" onclick="editarMiembro('${d.id}', '${m.studentName || ''}', '${m.birthDate || ''}')" title="Editar">✏️</button>
-                        <button class="actions-btn btn-delete" onclick="eliminarMiembro('${d.id}')" title="Eliminar">🗑️</button>
-                    </td>
-                `;
-                body.appendChild(row);
+                list.innerHTML += `
+                    <tr>
+                        <td>
+                            <div class="student-info">
+                                <img src="https://ui-avatars.com/api/?name=${m.studentName || m.email}&background=random">
+                                <b>${m.studentName || 'Invitado'}</b>
+                            </div>
+                        </td>
+                        <td>${m.email}</td>
+                        <td>${m.birthDate || '--/--/----'}</td>
+                        <td><span class="badge ${m.status==='active'?'badge-active':'badge-pending'}">${m.status==='active'?'● Activo':'○ Pendiente'}</span></td>
+                        <td>
+                            <button class="btn-icon" onclick="editM('${d.id}','${m.studentName||''}','${m.birthDate||''}')">✏️</button>
+                            <button class="btn-icon" style="color:var(--danger)" onclick="delM('${d.id}')">🗑️</button>
+                        </td>
+                    </tr>`;
             });
         });
 
-        // 3. Funciones de Gestión
-        window.editarMiembro = async (id, nombreActual, fechaActual) => {
-            const nuevoNombre = prompt("Nombre del estudiante:", nombreActual);
-            const nuevaFecha = prompt("Fecha de nacimiento (DD/MM/AAAA):", fechaActual);
-            
-            if (nuevoNombre !== null) {
-                await updateDoc(doc(db, "members", id), {
-                    studentName: nuevoNombre,
-                    birthDate: nuevaFecha
-                });
-            }
+        // 3. Lógica de Añadir Miembro
+        document.getElementById('btnAddNow').onclick = async () => {
+            const email = document.getElementById('invEmail').value;
+            if(!email) return;
+            await addDoc(collection(db, "members"), {
+                groupId: gid,
+                email: email,
+                studentName: "",
+                status: "invited",
+                createdAt: Date.now()
+            });
+            document.getElementById('invEmail').value = "";
+            const status = document.getElementById('invStatus');
+            status.style.display = 'block';
+            setTimeout(() => status.style.display = 'none', 2000);
         };
 
-        window.eliminarMiembro = async (id) => {
-            if (confirm("¿Estás seguro de eliminar a este estudiante de la clase?")) {
-                await deleteDoc(doc(db, "members", id));
+        // 4. Edición y Borrado
+        window.editM = async (id, n, b) => {
+            const nn = prompt("Nombre:", n);
+            const nb = prompt("Nacimiento (DD/MM/AAAA):", b);
+            if(nn !== null) await updateDoc(doc(db, "members", id), { studentName: nn, birthDate: nb });
+        };
+        window.delM = async (id) => { if(confirm("¿Eliminar alumno?")) await deleteDoc(doc(db, "members", id)); };
+
+        // --- DRAG & DROP LOGIC ---
+        const panel = document.getElementById("invitePanel");
+        const header = document.getElementById("inviteHeader");
+        let active = false, currentX, currentY, initialX, initialY, xOffset = 0, yOffset = 0;
+
+        header.onmousedown = (e) => {
+            initialX = e.clientX - xOffset; initialY = e.clientY - yOffset;
+            if (e.target === header || e.target.parentNode === header) active = true;
+        };
+        document.onmousemove = (e) => {
+            if (active) {
+                currentX = e.clientX - initialX; currentY = e.clientY - initialY;
+                xOffset = currentX; yOffset = currentY;
+                panel.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
             }
         };
-
-        window.invitarMasivo = () => {
-            // Redirige a la página de invitación específica o abre un modal
-            window.location.href = `/viewmembers.html`; 
-        };
+        document.onmouseup = () => active = false;
 
     </script>
 </body>
