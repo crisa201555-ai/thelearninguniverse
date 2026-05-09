@@ -6,52 +6,136 @@
     <title>TLU | Océanos y Continentes</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --ocean: #0f172a; --twice-pink: #ff5fa2; --twice-apricot: #fcc89b; --accent: #00cec9; }
-        body {
-            font-family: 'Fredoka', sans-serif; background: var(--ocean);
-            background: radial-gradient(circle at center, #1e3a8a 0%, #0f172a 100%);
-            color: white; margin: 0; min-height: 100vh; overflow-x: hidden;
+        :root { 
+            --ocean: #0f172a; 
+            --twice-pink: #ff5fa2; 
+            --twice-apricot: #fcc89b; 
+            --accent: #00cec9; 
         }
-        .container { max-width: 850px; margin: 0 auto; padding: 40px 20px 300px; }
-        .card { 
-            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); 
-            border-radius: 35px; padding: 45px; border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 25px 60px rgba(0,0,0,0.4);
-        }
-        .tag { background: var(--accent); color: var(--ocean); padding: 6px 15px; border-radius: 12px; font-weight: 700; font-size: 0.8rem; display: inline-block; margin-bottom: 20px; }
-        h1 { color: var(--twice-apricot); font-size: 2.2rem; margin-top: 0; }
-        
-        /* TEST AREA */
-        .test-box { margin-top: 30px; }
-        .option { 
-            background: rgba(255,255,255,0.08); padding: 18px; border-radius: 15px; 
-            margin: 12px 0; cursor: pointer; transition: 0.3s; border: 1px solid transparent;
-        }
-        .option:hover { background: rgba(255,255,255,0.15); border-color: var(--accent); }
 
-        /* TWICE DYNAMICS */
-        .twice-ui { 
-            position: fixed; bottom: -350px; width: 100%; display: flex; 
-            justify-content: space-between; padding: 0 8%; pointer-events: none; 
-            z-index: 1000; transition: bottom 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+        body {
+            font-family: 'Fredoka', sans-serif; 
+            background: var(--ocean);
+            background: radial-gradient(circle at center, #1e3a8a 0%, #0f172a 100%);
+            color: white; 
+            margin: 0; 
+            min-height: 100vh; 
+            overflow-x: hidden;
         }
-        .twice-ui.active { bottom: -20px; }
-        .char-box { position: relative; pointer-events: auto; }
-        .char-img { width: 260px; filter: drop-shadow(0 15px 30px rgba(0,0,0,0.6)); cursor: pointer; transition: 0.3s; }
-        .char-img:hover { transform: scale(1.05); }
+
+        /* --- CONTENIDO PRINCIPAL --- */
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 40px 20px 350px; /* Espacio extra abajo para las fotos */
+            position: relative;
+            z-index: 5;
+        }
+
+        .card { 
+            background: rgba(255, 255, 255, 0.05); 
+            backdrop-filter: blur(20px); 
+            border-radius: 35px; 
+            padding: 45px; 
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+            animation: fadeIn 0.8s ease;
+        }
+
+        .tag { 
+            background: var(--accent); 
+            color: var(--ocean); 
+            padding: 6px 15px; 
+            border-radius: 12px; 
+            font-weight: 700; 
+            font-size: 0.8rem; 
+            display: inline-block; 
+            margin-bottom: 20px; 
+        }
+
+        h1 { color: var(--twice-apricot); font-size: 2.2rem; margin-top: 0; }
+        p { line-height: 1.7; font-size: 1.1rem; opacity: 0.9; }
+
+        /* --- TEST INTERACTIVO --- */
+        .option { 
+            background: rgba(255,255,255,0.08); 
+            padding: 20px; 
+            border-radius: 20px; 
+            margin: 15px 0; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            border: 2px solid transparent;
+            font-weight: 600;
+        }
+        .option:hover { 
+            background: rgba(255,255,255,0.15); 
+            border-color: var(--accent);
+            transform: translateX(10px);
+        }
+
+        /* --- MODO TWICE (CORREGIDO) --- */
+        .twice-ui { 
+            position: fixed; 
+            bottom: -500px; /* Escondidas */
+            left: 0;
+            width: 100%; 
+            display: flex; 
+            justify-content: space-between; 
+            padding: 0 5%; 
+            pointer-events: none; 
+            z-index: 1000; 
+            transition: bottom 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+        }
+        .twice-ui.active { bottom: -30px; } /* Se asoman lo justo */
+
+        .char-box { 
+            position: relative; 
+            pointer-events: auto; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .char-img { 
+            width: 300px; 
+            filter: drop-shadow(0 15px 30px rgba(0,0,0,0.7)); 
+            cursor: pointer; 
+            transition: 0.3s ease; 
+        }
+        .char-img:hover { transform: translateY(-15px) scale(1.05); }
+
         .bubble { 
-            position: absolute; top: -110px; background: white; color: #1e293b; 
-            padding: 15px 20px; border-radius: 20px; font-size: 0.9rem; font-weight: 600;
-            width: 200px; opacity: 0; transition: 0.3s; box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            pointer-events: none; text-align: center;
+            position: absolute; 
+            bottom: 105%; 
+            background: white; 
+            color: #1e293b; 
+            padding: 18px 25px; 
+            border-radius: 25px; 
+            font-size: 0.95rem; 
+            font-weight: 700;
+            width: 240px; 
+            opacity: 0; 
+            transition: 0.4s; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            text-align: center;
+            pointer-events: none;
+            transform: translateY(20px);
         }
         .bubble.show { opacity: 1; transform: translateY(-10px); }
+        .bubble::after {
+            content: ''; position: absolute; bottom: -10px; left: 50%;
+            transform: translateX(-50%); border-left: 10px solid transparent;
+            border-right: 10px solid transparent; border-top: 10px solid white;
+        }
 
         .nav-btn { 
             background: var(--accent); color: var(--ocean); border: none; 
-            padding: 15px 40px; border-radius: 50px; font-weight: 700; 
-            cursor: pointer; margin-top: 30px; font-family: 'Fredoka'; font-size: 1rem;
+            padding: 15px 45px; border-radius: 50px; font-weight: 700; 
+            cursor: pointer; margin-top: 30px; font-family: 'Fredoka'; 
+            font-size: 1.1rem; box-shadow: 0 10px 20px rgba(0,206,201,0.3);
         }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -60,7 +144,7 @@
         <div class="card" id="lesson">
             </div>
         <div style="text-align: center;">
-            <button class="nav-btn" id="nextBtn" onclick="move(1)">Continuar →</button>
+            <button class="nav-btn" id="nextBtn" onclick="move(1)">Siguiente →</button>
         </div>
     </div>
 
@@ -80,40 +164,39 @@
         let step = parseInt(url.get('classNumber')) || 1;
         let mode = url.get('mode') || 'none';
 
-        const minaMsgs = ["La Antártida es el continente más seco. ❄️", "El 97% del agua de la Tierra es salada.", "Sigue con esa elegancia, ONCE."];
-        const sanaMsgs = ["¡No olvides Oceanía, es hermosa! 🍭", "¡Shy shy shy! ¡Eres un genio!", "¡Hwaiting! ¡Solo queda un poco!"];
+        const minaMsgs = ["¿Sabías que el 97% del agua es salada? 🌊", "¡Qué buena concentración tienes!", "El Océano Pacífico es inmenso. ✨"];
+        const sanaMsgs = ["¡Shy Shy Shy! ¡Eres genial! 🍭", "¡Vamos! ¡Solo son 6 continentes!", "¡Hwaiting! ¡Tú puedes hacerlo!"];
 
-        const data = {
-            1: { t: "TEMA 1: LOS OCÉANOS", h: "El Mundo Azul", c: "<p>Los océanos son gigantescas masas de agua salada:</p><ul><li><b>Pacífico:</b> El rey de los océanos (el más grande).</li><li><b>Atlántico:</b> El que cruzamos para ir a Europa.</li><li><b>Índico:</b> Aguas cálidas y hermosas.</li><li><b>Ártico y Antártico:</b> Los guardianes del hielo.</li></ul>" },
-            2: { t: "TEMA 2: CONTINENTES", h: "Las 6 Tierras", c: "<p>¿Dónde pisamos? En los continentes:</p><ul><li><b>América:</b> Nuestro hogar gigante.</li><li><b>Asia:</b> Donde nace el sol y hay más gente.</li><li><b>África:</b> Cuna de la humanidad y leones.</li><li><b>Europa:</b> Un continente de mucha historia.</li><li><b>Oceanía:</b> Australia y miles de islas.</li><li><b>Antártida:</b> Solo hielo y pingüinos.</li></ul>" },
-            4: { t: "TEMA 4: DISTRIBUCIÓN DEL AGUA", h: "Salada vs Dulce", c: "<p>El agua se divide en:</p><ul><li><b>Salada (97%):</b> En los océanos.</li><li><b>Dulce (3%):</b> En ríos, lagos y glaciares. ¡Es muy escasa!</li><li><b>Subterránea:</b> Agua bajo nuestros pies que nos salva en sequías.</li></ul>" }
+        const lessons = {
+            1: { t: "TEMA 1: LOS OCÉANOS", h: "El Gran Mundo Azul", c: "<p>Los océanos cubren la mayor parte de nuestro hogar. Son 5:</p><ul><li><b>Pacífico:</b> El más grande del mundo.</li><li><b>Atlántico:</b> Separa América de Europa y África.</li><li><b>Índico:</b> Aguas muy cálidas.</li><li><b>Ártico:</b> En el Polo Norte (el más pequeño).</li><li><b>Antártico:</b> Rodea la Antártida (el más frío).</li></ul>" },
+            2: { t: "TEMA 2: CONTINENTES", h: "Tierra firme", c: "<p>Existen 6 grandes bloques de tierra:</p><ul><li><b>América:</b> ¡Donde vivimos!</li><li><b>Asia:</b> El más grande y poblado.</li><li><b>África:</b> Famoso por su fauna y desiertos.</li><li><b>Europa:</b> Muchos países y mucha historia.</li><li><b>Oceanía:</b> Australia y miles de islas.</li><li><b>Antártica:</b> El continente blanco de hielo.</li></ul>" },
+            4: { t: "TEMA 4: LAS AGUAS", h: "Agua Dulce y Salada", c: "<p>No toda el agua es igual:</p><ul><li><b>Agua Salada:</b> 97% de la Tierra (Mares y Océanos).</li><li><b>Agua Dulce:</b> Solo el 3% (Ríos, Lagos y Glaciares).</li><li><b>Agua Subterránea:</b> Reservas vitales bajo la tierra.</li></ul>" }
         };
 
         function render() {
             const card = document.getElementById('lesson');
             if(step === 3) {
-                card.innerHTML = `<div class="tag">TEMA 3: TEST</div><h1>Desafío Rápido</h1><p>¿Qué océano es el más grande del mundo?</p>
-                <div class="test-box">
-                    <div class="option" onclick="eval(true)">Océano Pacífico</div>
-                    <div class="option" onclick="eval(false)">Océano Ártico</div>
-                    <div class="option" onclick="eval(false)">Océano Índico</div>
-                </div>`;
+                card.innerHTML = `<div class="tag">TEMA 3: TEST RÁPIDO</div><h1>¿Cuánto has aprendido?</h1><p>¿Cuántos continentes tiene la Tierra?</p>
+                <div class="option" onclick="answer(false)">Tiene 4 continentes</div>
+                <div class="option" onclick="answer(true)">Tiene 6 continentes</div>
+                <div class="option" onclick="answer(false)">Tiene 10 continentes</div>`;
                 document.getElementById('nextBtn').style.display = 'none';
-            } else if(data[step]) {
-                card.innerHTML = `<div class="tag">${data[step].t}</div><h1>${data[step].h}</h1>${data[step].c}`;
+            } else if(lessons[step]) {
+                const l = lessons[step];
+                card.innerHTML = `<div class="tag">${l.t}</div><h1>${l.h}</h1>${l.c}`;
             } else {
-                card.innerHTML = "<h1>¡Misión Cumplida!</h1><p>Has completado el curso de Océanos y Continentes.</p>";
-                document.getElementById('nextBtn').innerText = "Volver al Menú";
-                document.getElementById('nextBtn').onclick = () => location.href='/cienciasnaturales';
+                card.innerHTML = "<h1>¡Completado!</h1><p>Dominas los Océanos y Continentes. ¡Buen trabajo!</p>";
+                document.getElementById('nextBtn').innerText = "Volver al Inicio";
+                document.getElementById('nextBtn').onclick = () => location.href='/cienciasnaturales.html';
             }
         }
 
-        function eval(correct) {
+        function answer(correct) {
             if(correct) {
-                if(mode==='twice') talk('sana', "¡PERFECTO! ¡Eres increíble! 🍭");
+                if(mode==='twice') talk('sana', "¡EXCELENTE! ¡Eres brillante! 🍭");
                 setTimeout(() => move(1), 2000);
             } else {
-                if(mode==='twice') talk('mina', "Oh no... Vamos a repasar el Tema 1 para reforzar.");
+                if(mode==='twice') talk('mina', "Oh no... Vamos a repasar el Tema 1 para estar seguros.");
                 setTimeout(() => location.search = `?classNumber=1&mode=${mode}`, 3000);
             }
         }
@@ -121,11 +204,12 @@
         function move(n) { location.search = `?classNumber=${step + n}&mode=${mode}`; }
 
         function talk(char, msg = null) {
+            if(mode !== 'twice') return;
             const b = document.getElementById(`b-${char}`);
             const msgs = char === 'mina' ? minaMsgs : sanaMsgs;
             b.innerText = msg || msgs[Math.floor(Math.random()*msgs.length)];
             b.classList.add('show');
-            setTimeout(() => b.classList.remove('show'), 4000);
+            setTimeout(() => b.classList.remove('show'), 4500);
         }
 
         window.onload = () => {
