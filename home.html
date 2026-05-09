@@ -2,196 +2,133 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>The Learning Universe | Home</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TLU | Inicio Relax</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #6c5ce7;
-            --secondary: #00cec9;
-            --accent: #fd79a8;
-            --danger: #ff7675;
-            --dark-bg: #0f172a;
+        :root { 
+            --p: #a29bfe; /* Un morado más suave para modo oscuro */
+            --s: #00cec9; 
+            --bg: #0f172a; /* Azul noche profundo */
+            --card: #1e293b; 
+            --text: #f8fafc; 
+            --border: #334155; 
         }
-
-        /* Evitamos el "parpadeo" ocultando el body hasta que Firebase confirme al usuario */
-        body { 
-            margin: 0; padding: 0; height: 100%; width: 100%;
-            font-family: 'Fredoka', sans-serif; overflow: hidden;
-            background: var(--dark-bg); display: none; 
-        }
-
-        .app-container { display: flex; width: 100vw; height: 100vh; }
-
-        /* --- SIDEBAR --- */
-        .sidebar {
-            width: 320px;
-            background: linear-gradient(180deg, #1e293b 0%, #111827 100%);
-            border-right: 2px solid rgba(0, 206, 201, 0.3);
-            display: flex; flex-direction: column; padding: 40px 20px;
-            box-sizing: border-box; flex-shrink: 0;
-        }
-
-        .sidebar h1 {
-            font-size: 1.8rem; text-align: center; color: var(--secondary);
-            margin-bottom: 40px; text-shadow: 0 0 10px rgba(0, 206, 201, 0.5);
-        }
-
-        .nav-btn {
-            text-decoration: none; color: white; padding: 15px;
-            margin-bottom: 12px; border-radius: 15px; font-weight: 700;
-            text-align: center; background: rgba(255, 255, 255, 0.05);
-            border: 2px solid transparent; transition: 0.3s;
-        }
-
-        .nav-btn:hover { background: var(--primary); border-color: white; transform: scale(1.02); }
-
-        .logout-btn {
-            margin-top: 15px; text-decoration: none; color: var(--danger);
-            padding: 12px; font-size: 0.9rem; font-weight: 700;
-            text-align: center; border: 2px solid var(--danger);
-            border-radius: 15px; cursor: pointer; transition: 0.3s;
-        }
-
-        .logout-btn:hover { background: var(--danger); color: white; }
-
-        .learn-box {
-            margin-top: auto; background: rgba(253, 121, 168, 0.1);
-            border: 2px dashed var(--accent); border-radius: 20px;
-            padding: 20px; text-align: center;
-        }
-
-        .btn-math {
-            display: block; text-decoration: none; background: white;
-            color: var(--accent); padding: 12px; border-radius: 12px;
-            font-weight: 700; margin-top: 10px; transition: 0.3s;
-        }
-
-        /* --- CONTENIDO --- */
-        .main-content {
-            flex-grow: 1; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; position: relative;
-            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
-        }
-
-        .clock-capsule {
-            position: absolute; top: 30px; background: rgba(0, 206, 201, 0.1);
-            border: 1px solid var(--secondary); padding: 10px 30px; border-radius: 50px;
-        }
-
-        #time { font-size: 2rem; color: var(--secondary); font-weight: 700; display: block; }
         
-        .hero-logo {
-            width: 280px; filter: drop-shadow(0 0 25px var(--secondary));
-            animation: float 4s ease-in-out infinite;
+        body { 
+            font-family: 'Fredoka', sans-serif; 
+            background: var(--bg); 
+            color: var(--text); 
+            margin: 0; 
+            padding: 0; 
+            overflow-x: hidden;
+            transition: background 0.5s ease;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+        /* --- NAVBAR --- */
+        nav { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 15px 5%; background: rgba(15, 23, 42, 0.8); 
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            position: sticky; top: 0; z-index: 1000;
         }
+        .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--p); font-size: 1.4rem; cursor: pointer; }
+        
+        .nav-links { display: flex; align-items: center; gap: 20px; }
+        .nav-item { text-decoration: none; color: #94a3b8; font-weight: 500; transition: 0.3s; padding: 8px 15px; border-radius: 12px; }
+        .nav-item:hover { background: var(--card); color: var(--p); }
+        .nav-item.active { background: var(--p); color: #0f172a; }
 
-        .welcome-title { font-size: 3.5rem; color: white; margin-top: 25px; }
-        .welcome-title span { color: var(--secondary); }
+        /* --- HERO --- */
+        .hero { 
+            height: 85vh; display: flex; flex-direction: column; 
+            justify-content: center; align-items: center; text-align: center;
+            background: radial-gradient(circle at top right, #1e1b4b, transparent);
+        }
+        .hero h1 { font-size: 3.8rem; margin: 0; color: var(--text); letter-spacing: -1px; }
+        .hero p { font-size: 1.2rem; color: #94a3b8; margin: 25px 0; max-width: 650px; line-height: 1.6; }
 
-        .typing-sub { font-size: 1.4rem; color: #a29bfe; margin-top: 10px; height: 30px; }
+        /* --- BOTONES --- */
+        .btn { padding: 16px 35px; border-radius: 50px; border: none; font-weight: 700; cursor: pointer; font-family: 'Fredoka'; transition: 0.3s; text-decoration: none; font-size: 1.1rem; }
+        .btn-p { background: var(--p); color: #0f172a; }
+        .btn-s { background: transparent; color: var(--s); border: 2px solid var(--s); margin-top: 15px; }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(162, 155, 254, 0.3); }
+        .btn-s:hover { background: var(--s); color: #0f172a; }
+
+        /* --- MODAL DE RAMOS (DARK) --- */
+        .modal-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(8px);
+            display: none; justify-content: center; align-items: center; z-index: 2000; 
+        }
+        .modal-card { 
+            background: var(--card); padding: 40px; border-radius: 35px; 
+            width: 90%; max-width: 420px; text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); 
+            border: 1px solid var(--border);
+            animation: popUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .modal-card h2 { margin-bottom: 30px; color: var(--text); font-size: 1.8rem; }
+        .modal-options { display: flex; flex-direction: column; gap: 18px; }
+        .opt-btn { 
+            padding: 18px; border-radius: 20px; border: 1px solid var(--border); 
+            background: #0f172a; color: #94a3b8; cursor: pointer; font-family: 'Fredoka'; 
+            font-weight: 600; font-size: 1.2rem; transition: 0.3s; 
+            display: flex; align-items: center; justify-content: center; gap: 15px;
+        }
+        .opt-btn:hover { border-color: var(--p); color: var(--p); background: #1e1b4b; transform: scale(1.02); }
+
+        @keyframes popUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <aside class="sidebar">
-            <h1>UNIVERSE</h1>
-            
-            <a href="creategroup.html" class="nav-btn">✨ Crear una clase</a>
-            <a href="viewclass.html" class="nav-btn">🚀 Ver mi clase</a>
-            <a href="inbox.html" class="nav-btn">📧 Bandeja de entrada</a>
-            
-            <div class="logout-btn" id="logoutBtn">Cerrar sesión...</div>
+    <nav>
+        <div class="logo" onclick="location.href='home.html'">
+            <img src="https://thelearninguniverses.pages.dev/unnamed-removebg-preview.png" width="40" style="filter: brightness(1.2);">
+            <span>TLU</span>
+        </div>
+        <div class="nav-links">
+            <a href="viewmygroups.html" class="nav-item active">Gestión de Clases</a>
+        </div>
+    </nav>
 
-            <div class="learn-box">
-                <span style="color: var(--accent); font-weight: 700;">¡ZONA DE ESTUDIO!</span>
-                <a href="/matematicas/home.html" class="btn-math">📐 Matemáticas</a>
+    <header class="hero">
+        <h1>The Learning Universe</h1>
+        <p>Tu refugio de conocimiento digital. Aprende a tu ritmo en un entorno diseñado para tu concentración.</p>
+        
+        <button class="btn btn-p" onclick="openSubjects()">Ver ramos de aprendizaje...</button>
+        <a href="viewmygroups.html" class="btn btn-s">Gestión de Clases</a>
+    </header>
+
+    <div id="subjectModal" class="modal-overlay" onclick="closeSubjects(event)">
+        <div class="modal-card" onclick="event.stopPropagation()">
+            <h2>Elige tu camino</h2>
+            <div class="modal-options">
+                <button class="opt-btn" onclick="location.href='matematicas.html'">
+                    <span style="font-size: 1.5rem;">📐</span> Matemáticas
+                </button>
+                <button class="opt-btn" onclick="location.href='cienciasnaturales.html'">
+                    <span style="font-size: 1.5rem;">🌿</span> Ciencias Naturales
+                </button>
+                <p style="margin-top:15px; color: #64748b; cursor: pointer; font-size: 0.9rem;" onclick="document.getElementById('subjectModal').style.display='none'">Cerrar</p>
             </div>
-        </aside>
-
-        <main class="main-content">
-            <div class="clock-capsule">
-                <span id="time">00:00:00</span>
-                <span id="date" style="color:white; opacity:0.7">Cargando...</span>
-            </div>
-
-            <img src="unnamed-removebg-preview.png" alt="Logo" class="hero-logo">
-
-            <h1 class="welcome-title">¡Hola, <span id="userName">EXPLORADOR</span>!</h1>
-            <div class="typing-sub" id="typewriter"></div>
-        </main>
+        </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    <script>
+        function openSubjects() {
+            document.getElementById('subjectModal').style.display = 'flex';
+        }
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
-            authDomain: "thelearninguniverse-26.firebaseapp.com",
-            projectId: "thelearninguniverse-26",
-            storageBucket: "thelearninguniverse-26.firebasestorage.app",
-            messagingSenderId: "85338996011",
-            appId: "1:85338996011:web:1f3bb216900c07e735596e"
-        };
+        function closeSubjects(e) {
+            document.getElementById('subjectModal').style.display = 'none';
+        }
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-
-        // --- 1. GUARDIÁN DE RUTA ---
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                // Usuario autenticado: mostramos la página y su nombre
-                document.body.style.display = "block";
-                if(user.displayName) {
-                    document.getElementById('userName').innerText = user.displayName.split(' ')[0].toUpperCase();
-                }
-                startApp();
-            } else {
-                // No hay usuario: expulsión inmediata
-                window.location.replace("login.html");
-            }
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "Escape") document.getElementById('subjectModal').style.display = 'none';
         });
-
-        // --- 2. CERRAR SESIÓN ---
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            if(confirm("¿Quieres cerrar tu sesión espacial? 🚀")) {
-                signOut(auth).then(() => {
-                    localStorage.clear();
-                    window.location.replace("login.html");
-                });
-            }
-        });
-
-        // --- 3. LÓGICA DE LA INTERFAZ ---
-        function startApp() {
-            updateClock();
-            setInterval(updateClock, 1000);
-            typeEffect();
-        }
-
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('time').innerText = now.toLocaleTimeString('es-ES');
-            document.getElementById('date').innerText = now.toLocaleDateString('es-ES', { 
-                weekday: 'long', day: 'numeric', month: 'long' 
-            });
-        }
-
-        const text = "¡Hoy es un gran día para descubrir algo nuevo!";
-        let i = 0;
-        function typeEffect() {
-            if (i < text.length) {
-                document.getElementById("typewriter").innerHTML += text.charAt(i);
-                i++;
-                setTimeout(typeEffect, 50);
-            }
-        }
     </script>
 </body>
 </html>
