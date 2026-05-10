@@ -3,118 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <title>TLU | Ciencias Naturales</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
+        :root { --bg: #020617; --accent: #0ea5e9; --glass: rgba(14, 165, 233, 0.05); }
         body {
-            background: #0f172a;
-            color: white;
-            font-family: 'Fredoka', sans-serif;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background: linear-gradient(to bottom, #0f172a, #1e3a8a);
+            background: var(--bg); color: white; font-family: 'Fredoka', sans-serif; margin: 0;
+            display: flex; flex-direction: column; height: 100vh;
+            background: radial-gradient(circle at bottom right, #0c4a6e, #020617);
         }
-
-        .clock-box { position: fixed; top: 20px; right: 40px; text-align: right; }
-        #time { font-size: 2rem; font-weight: 700; color: #00cec9; }
-
-        .header-box { text-align: center; margin-bottom: 40px; }
-        h1 { font-size: 3.5rem; margin: 0; text-shadow: 0 0 20px rgba(0,206,201,0.5); }
-
-        .btn-main {
-            background: #00cec9;
-            color: #0f172a;
-            border: none;
-            padding: 20px 50px;
-            border-radius: 50px;
-            font-size: 1.5rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 10px 30px rgba(0,206,201,0.3);
-        }
-        .btn-main:hover { transform: scale(1.05); background: white; }
-
-        /* MODAL */
-        .modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
-            display: none; justify-content: center; align-items: center; z-index: 1000;
-        }
-
-        .table-container {
-            background: #1e293b;
-            padding: 40px;
-            border-radius: 30px;
-            border: 1px solid #334155;
-            width: 80%;
-            max-width: 800px;
-        }
-
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; color: #94a3b8; padding: 10px; }
-        td { padding: 20px 10px; border-bottom: 1px solid #334155; }
+        .nav-top { padding: 25px 50px; display: flex; justify-content: space-between; align-items: center; }
+        .back-link { color: var(--accent); text-decoration: none; font-weight: 600; }
         
-        .btn-enter {
-            background: #6c5ce7;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
+        .content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; gap: 20px; }
+        h1 { font-size: 3.5rem; color: #7dd3fc; margin: 0; text-transform: uppercase; letter-spacing: 4px; }
+
+        .unit-card {
+            width: 100%; max-width: 800px; background: var(--glass);
+            border-radius: 35px; border: 1px solid rgba(14, 165, 233, 0.2);
+            padding: 30px 40px; backdrop-filter: blur(10px);
+            display: flex; justify-content: space-between; align-items: center;
+            transition: 0.3s;
         }
+        .unit-card:hover { border-color: var(--accent); transform: scale(1.02); background: rgba(14, 165, 233, 0.1); }
+        
+        .unit-info h2 { margin: 0; font-size: 1.8rem; color: white; }
+        .unit-info p { margin: 5px 0 0; opacity: 0.7; font-size: 0.9rem; }
+
+        .btn-launch {
+            background: var(--accent); color: white; border: none; padding: 15px 35px;
+            border-radius: 18px; font-weight: 700; cursor: pointer; transition: 0.3s;
+        }
+        .btn-launch:hover { box-shadow: 0 0 20px rgba(14, 165, 233, 0.5); }
     </style>
 </head>
 <body>
+    <nav class="nav-top">
+        <a href="home.html" class="back-link">← VOLVER AL HOME</a>
+        <div style="color: var(--accent); font-weight: 700; letter-spacing: 2px;">CIENCIAS NATURALES</div>
+    </nav>
+    <div class="content">
+        <h1>Laboratorio Terrestre</h1>
 
-    <div class="clock-box">
-        <div id="time">00:00:00</div>
-        <div id="date">-- / -- / ----</div>
-    </div>
-
-    <div class="header-box">
-        <h1>Ciencias Naturales</h1>
-        <p style="opacity: 0.6;">Explora el Planeta Azul</p>
-    </div>
-
-    <button class="btn-main" onclick="document.getElementById('m').style.display='flex'">Ver temas</button>
-
-    <div id="m" class="modal" onclick="this.style.display='none'">
-        <div class="table-container" onclick="event.stopPropagation()">
-            <h2>Temas de Aprendizaje</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Título</th>
-                        <th>Tiempo</th>
-                        <th>Nivel</th>
-                        <th>Acción</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><b>Océanos y Continentes</b></td>
-                        <td>5-10 min</td>
-                        <td>2° a 5° Básico</td>
-                        <td><button class="btn-enter" onclick="location.href='/cienciasnaturales/seleccion-modo.html'">Entrar...</button></td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="unit-card">
+            <div class="unit-info">
+                <h2>Los Seres de la Tierra</h2>
+                <p>Explora la diferencia entre seres vivos e inertes.</p>
+            </div>
+            <button class="btn-launch" onclick="location.href='seleccion-modo.html?lesson=seres'">INICIAR MISIÓN</button>
         </div>
     </div>
-
-    <script>
-        function update() {
-            const n = new Date();
-            document.getElementById('time').innerText = n.toLocaleTimeString();
-            document.getElementById('date').innerText = n.toLocaleDateString();
-        }
-        setInterval(update, 1000);
-        update();
-    </script>
 </body>
 </html>
