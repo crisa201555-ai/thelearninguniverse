@@ -8,19 +8,19 @@
         body {
             margin: 0; background: #020617; color: white; font-family: 'Fredoka', sans-serif;
             display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;
+            background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
         }
-        .modes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; max-width: 800px; }
+        .modes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; max-width: 800px; width: 90%; }
         .mode-card {
-            background: #0f172a; border: 2px solid #1e293b; padding: 50px 30px;
+            background: rgba(255,255,255,0.02); border: 2px solid rgba(255,255,255,0.1); padding: 50px 30px;
             border-radius: 40px; cursor: pointer; transition: 0.4s; text-align: center;
         }
-        .focus:hover { border-color: #6366f1; box-shadow: 0 0 30px rgba(99, 102, 241, 0.2); }
-        .twice:hover { border-color: #f472b6; box-shadow: 0 0 30px rgba(244, 114, 182, 0.2); }
+        .focus:hover { border-color: #38bdf8; background: rgba(56, 189, 248, 0.05); transform: translateY(-10px); }
+        .twice:hover { border-color: #f472b6; background: rgba(244, 114, 182, 0.05); transform: translateY(-10px); }
         
         .icon { font-size: 4rem; display: block; margin-bottom: 20px; }
         h1 { margin-bottom: 10px; font-size: 2.5rem; letter-spacing: 1px; }
-        .subtitle { color: #6366f1; margin-bottom: 40px; font-weight: 600; }
-        .trans-sm { font-size: 0.8rem; opacity: 0.5; display: block; margin-top: 5px; font-style: italic; }
+        .subtitle { color: #6366f1; margin-bottom: 40px; font-weight: 600; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -31,24 +31,23 @@
         <div class="mode-card focus" onclick="selectMode('focus')">
             <span class="icon">🛰️</span>
             <h3>FOCUS MODE</h3>
-            <span class="trans-sm">MODO ENFOQUE</span>
-            <p>Standard galactic interface.</p>
+            <p style="opacity:0.6;">Standard galactic interface.</p>
         </div>
         <div class="mode-card twice" onclick="selectMode('twice')">
             <span class="icon">🍭</span>
             <h3 style="color: #f472b6;">TWICE MODE</h3>
-            <span class="trans-sm">MODO TWICE</span>
-            <p>Learning with your idols.</p>
+            <p style="opacity:0.6;">Learning with your idols.</p>
         </div>
     </div>
 
-    <button onclick="history.back()" style="background:none; border:none; color:#444; margin-top:40px; cursor:pointer;">← Go Back (Volver)</button>
-
     <script>
+        // Captura el número de clase de la URL
         const urlParams = new URLSearchParams(window.location.search);
         const classNum = urlParams.get('classNumber') || '1';
+
         function selectMode(mode) {
-            location.href = `lesson1.html?classNumber=${classNum}&mode=${mode}`;
+            // Redirige dinámicamente: si classNumber es 2, va a lesson2.html
+            location.href = `lesson${classNum}.html?classNumber=${classNum}&mode=${mode}`;
         }
     </script>
 </body>
