@@ -2,46 +2,158 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TLU | Ciencias Naturales</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #020617; --accent: #0ea5e9; --glass: rgba(14, 165, 233, 0.05); }
+        :root { 
+            --bg: #020617; 
+            --accent: #0ea5e9; 
+            --glass: rgba(14, 165, 233, 0.05); 
+            --border: rgba(14, 165, 233, 0.2);
+        }
+
         body {
-            background: var(--bg); color: white; font-family: 'Fredoka', sans-serif; margin: 0;
-            display: flex; flex-direction: column; height: 100vh;
+            background: var(--bg);
+            color: white;
+            font-family: 'Fredoka', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
             background: radial-gradient(circle at bottom right, #0c4a6e, #020617);
+            overflow-x: hidden;
         }
-        .nav-top { padding: 25px 50px; display: flex; justify-content: space-between; align-items: center; }
-        .back-link { color: var(--accent); text-decoration: none; font-weight: 600; }
-        .content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; gap: 20px; }
-        h1 { font-size: 3.5rem; color: #7dd3fc; margin: 0; text-transform: uppercase; letter-spacing: 4px; text-align: center; }
+
+        /* BARRA DE NAVEGACIÓN */
+        .nav-top { 
+            padding: 25px 50px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: rgba(2, 6, 23, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-link { 
+            color: var(--accent); 
+            text-decoration: none; 
+            font-weight: 600; 
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        .back-link:hover { opacity: 0.8; transform: translateX(-5px); }
+
+        /* CONTENIDO PRINCIPAL */
+        .content { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 60px 20px; 
+            gap: 25px; 
+        }
+
+        h1 { 
+            font-size: clamp(2.5rem, 8vw, 4rem); 
+            color: #7dd3fc; 
+            margin: 0; 
+            text-transform: uppercase; 
+            letter-spacing: 4px; 
+            text-align: center;
+            text-shadow: 0 0 20px rgba(125, 211, 252, 0.3);
+        }
+
+        .subtitle {
+            color: var(--accent);
+            font-weight: 600;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+        }
+
+        /* TARJETAS DE MISIONES */
         .unit-card {
-            width: 100%; max-width: 800px; background: var(--glass);
-            border-radius: 35px; border: 1px solid rgba(14, 165, 233, 0.2);
-            padding: 30px 40px; backdrop-filter: blur(10px);
-            display: flex; justify-content: space-between; align-items: center; transition: 0.3s;
+            width: 100%;
+            max-width: 850px;
+            background: var(--glass);
+            border-radius: 30px;
+            border: 1px solid var(--border);
+            padding: 30px 45px;
+            backdrop-filter: blur(15px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .unit-card:hover { border-color: var(--accent); transform: scale(1.02); background: rgba(14, 165, 233, 0.1); }
-        .unit-info h2 { margin: 0; font-size: 1.8rem; color: white; }
+
+        .unit-card:hover {
+            border-color: var(--accent);
+            transform: scale(1.03);
+            background: rgba(14, 165, 233, 0.12);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .unit-info h2 { 
+            margin: 0; 
+            font-size: 1.8rem; 
+            color: white; 
+        }
+
+        .unit-info p { 
+            margin: 8px 0 0; 
+            opacity: 0.7; 
+            font-size: 1rem; 
+            color: #e0f2fe;
+        }
+
+        /* BOTONES */
         .btn-launch {
-            background: var(--accent); color: white; border: none; padding: 15px 35px;
-            border-radius: 18px; font-weight: 700; cursor: pointer; transition: 0.3s; font-family: 'Fredoka';
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: 'Fredoka';
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
         }
-        .btn-launch:hover { box-shadow: 0 0 20px rgba(14, 165, 233, 0.5); background: #38bdf8; }
+
+        .btn-launch:hover {
+            background: #38bdf8;
+            box-shadow: 0 0 25px rgba(14, 165, 233, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .btn-launch:active { transform: translateY(0); }
+
+        @media (max-width: 600px) {
+            .unit-card { flex-direction: column; text-align: center; gap: 20px; padding: 30px; }
+            .btn-launch { width: 100%; }
+        }
     </style>
 </head>
 <body>
+
     <nav class="nav-top">
         <a href="home.html" class="back-link">← VOLVER AL HOME</a>
-        <div style="color: var(--accent); font-weight: 700; letter-spacing: 2px;">CIENCIAS NATURALES</div>
+        <div style="color: var(--accent); font-weight: 700; letter-spacing: 2px;">CIENCIA TLU</div>
     </nav>
+
     <div class="content">
         <h1>Laboratorio Terrestre</h1>
+        <div class="subtitle">MISIONES EXPLORATORIAS</div>
 
         <div class="unit-card">
             <div class="unit-info">
                 <h2>Los Seres de la Tierra</h2>
-                <p>Seres vivos e inertes.</p>
+                <p>Aprende a diferenciar lo vivo de lo inerte.</p>
             </div>
             <button class="btn-launch" onclick="location.href='cienciasnaturales/seleccion-modo.html?lesson=seres'">MISION 01</button>
         </div>
@@ -49,10 +161,20 @@
         <div class="unit-card">
             <div class="unit-info">
                 <h2>Océanos y Continentes</h2>
-                <p>Grandes masas de agua y tierra.</p>
+                <p>Viaja por las grandes masas de agua y tierra.</p>
             </div>
             <button class="btn-launch" onclick="location.href='cienciasnaturales/seleccion-modo.html?lesson=oceanosycontinentes'">MISION 02</button>
         </div>
+
+        <div class="unit-card">
+            <div class="unit-info">
+                <h2>Equilibrio Natural</h2>
+                <p>Descubre los ecosistemas y sus componentes.</p>
+            </div>
+            <button class="btn-launch" onclick="location.href='cienciasnaturales/seleccion-modo.html?lesson=ecosistemas'">MISION 03</button>
+        </div>
+
     </div>
+
 </body>
 </html>
