@@ -2,49 +2,67 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>TLU | Seleccionar Modo</title>
+    <title>TLU | Modo de Viaje</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        :root { --accent-blue: #38bdf8; --accent-pink: #ff5fa2; }
         body {
             margin: 0; background: #020617; color: white; font-family: 'Fredoka', sans-serif;
             display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;
+            background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
         }
-        .container { text-align: center; max-width: 800px; }
-        h1 { font-size: 2.5rem; margin-bottom: 40px; }
-        .modes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .container { text-align: center; max-width: 900px; padding: 40px; }
+        h1 { font-size: 3rem; margin-bottom: 15px; background: linear-gradient(to right, #fff, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        p.desc { opacity: 0.5; margin-bottom: 50px; font-size: 1.2rem; }
+        
+        .modes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; width: 100%; }
         
         .mode-card {
-            background: rgba(255,255,255,0.03); border: 2px solid rgba(255,255,255,0.1);
-            padding: 40px; border-radius: 30px; cursor: pointer; transition: 0.3s;
-        }
-        .mode-card:hover { 
-            border-color: #38bdf8; background: rgba(56, 189, 248, 0.05); 
-            transform: translateY(-10px); 
+            background: rgba(255,255,255,0.02); border: 2px solid rgba(255,255,255,0.08);
+            padding: 60px 40px; border-radius: 45px; cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: center;
         }
         
-        .icon { font-size: 3rem; margin-bottom: 20px; }
-        h3 { margin: 10px 0; font-size: 1.5rem; }
-        p { opacity: 0.6; font-size: 0.9rem; }
+        /* Hover Modo Focus */
+        .focus-card:hover { 
+            border-color: var(--accent-blue); background: rgba(56, 189, 248, 0.05); 
+            transform: translateY(-15px); box-shadow: 0 30px 60px rgba(56, 189, 248, 0.15);
+        }
         
-        .btn-back { margin-top: 50px; color: #64748b; cursor: pointer; background: none; border: none; font-family: 'Fredoka'; }
+        /* Hover Modo TWICE */
+        .twice-card:hover { 
+            border-color: var(--accent-pink); background: rgba(255, 95, 162, 0.05); 
+            transform: translateY(-15px); box-shadow: 0 30px 60px rgba(255, 95, 162, 0.15);
+        }
+        
+        .icon { font-size: 4.5rem; margin-bottom: 25px; display: block; filter: drop-shadow(0 0 10px rgba(255,255,255,0.2)); }
+        h3 { margin: 10px 0; font-size: 2rem; font-weight: 700; }
+        .mode-card p { opacity: 0.6; font-size: 1rem; line-height: 1.5; padding: 0 10px; }
+        
+        .btn-back { margin-top: 60px; color: #475569; cursor: pointer; background: none; border: none; font-family: 'Fredoka'; font-size: 1rem; font-weight: 600; transition: 0.3s; }
+        .btn-back:hover { color: #fff; transform: scale(1.1); }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Elige tu método de aprendizaje</h1>
+        <h1>Configura tu Experiencia</h1>
+        <p class="desc">Selecciona la interfaz que mejor se adapte a tu estudio</p>
+        
         <div class="modes-grid">
-            <div class="mode-card" onclick="location.href='pueblosoriginarios.html?mode=focus'">
-                <div class="icon">🧘‍♂️</div>
+            <div class="mode-card focus-card" onclick="location.href='pueblosoriginarios.html?mode=focus'">
+                <span class="icon">🏛️</span>
                 <h3>Modo Focus</h3>
-                <p>Lectura limpia, música ambiental y máxima concentración.</p>
+                <p>Estética clásica, música ambiente suave y lectura sin distracciones.</p>
             </div>
-            <div class="mode-card" onclick="location.href='pueblosoriginarios.html?mode=twice'">
-                <div class="icon">🍭</div>
-                <h3>Modo TWICE</h3>
-                <p>Aprende con tus Idols. Estética colorida y dinámicas divertidas.</p>
+            
+            <div class="mode-card twice-card" onclick="location.href='pueblosoriginarios.html?mode=twice'">
+                <span class="icon">🍭</span>
+                <h3 style="color: var(--accent-pink);">Modo TWICE</h3>
+                <p>Interacción dinámica, visuales K-Pop y retos con tus integrantes favoritas.</p>
             </div>
         </div>
-        <button class="btn-back" onclick="history.back()">← Volver atrás</button>
+        
+        <button class="btn-back" onclick="location.href='../history.html'">← VOLVER AL MUSEO</button>
     </div>
 </body>
 </html>
