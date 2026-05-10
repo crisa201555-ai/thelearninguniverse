@@ -16,33 +16,27 @@
         }
         .focus:hover { border-color: #0ea5e9; background: rgba(14, 165, 233, 0.05); transform: translateY(-10px); }
         .twice:hover { border-color: #f472b6; background: rgba(244, 114, 182, 0.05); transform: translateY(-10px); }
-        
         .icon { font-size: 4rem; display: block; margin-bottom: 20px; }
-        h1 { margin-bottom: 40px; font-size: 2.5rem; }
     </style>
 </head>
 <body>
     <h1>ELIGE TU INTERFAZ</h1>
-
     <div class="modes-grid">
         <div class="mode-card focus" onclick="setMode('focus')">
             <span class="icon">🛰️</span>
             <h3>MODO FOCUS</h3>
-            <p style="opacity:0.6;">Concentración máxima en ciencia.</p>
         </div>
         <div class="mode-card twice" onclick="setMode('twice')">
             <span class="icon">🍭</span>
-            <h3 style="color: #f472b6;">MODO TWICE</h3>
-            <p style="opacity:0.6;">Aprende con tus idols favoritas.</p>
+            <h3>MODO TWICE</h3>
         </div>
     </div>
-
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        const lessonName = urlParams.get('lesson') || 'seres'; // Por defecto seres si no hay nada
+        const lessonName = urlParams.get('lesson');
 
         function setMode(mode) {
-            // Te manda a [nombre_leccion].html?mode=[focus o twice]
+            // Se queda en la misma carpeta para buscar la lección
             location.href = `${lessonName}.html?mode=${mode}`;
         }
     </script>
