@@ -14,33 +14,32 @@
         .nav-top { padding: 25px 50px; display: flex; justify-content: space-between; align-items: center; }
         .back-link { color: #6366f1; text-decoration: none; font-weight: 600; font-size: 0.9rem; }
         
-        .content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; }
-        h1 { font-size: 3.5rem; color: #a5b4fc; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 4px; }
-        .h1-sub { color: #6366f1; margin-bottom: 50px; font-weight: 600; letter-spacing: 2px; }
+        .content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; gap: 20px; }
+        h1 { font-size: 3.5rem; color: #a5b4fc; margin: 0; text-transform: uppercase; letter-spacing: 4px; }
+        .h1-sub { color: #6366f1; margin-bottom: 30px; font-weight: 600; letter-spacing: 2px; }
 
         .unit-card {
             width: 100%; max-width: 900px; background: var(--glass);
             border-radius: 35px; border: 1px solid rgba(139, 92, 246, 0.2);
-            padding: 40px; backdrop-filter: blur(10px);
+            padding: 30px 40px; backdrop-filter: blur(10px);
             display: flex; justify-content: space-between; align-items: center;
             transition: 0.3s;
         }
-        .unit-card:hover { border-color: #8b5cf6; transform: scale(1.02); }
+        .unit-card:hover { border-color: #8b5cf6; transform: scale(1.02); background: rgba(139, 92, 246, 0.1); }
         
-        .unit-info h2 { margin: 0; font-size: 2rem; color: white; }
-        .unit-info p { color: #94a3b8; margin: 10px 0 0 0; }
+        .unit-info h2 { margin: 0; font-size: 1.8rem; color: white; }
         .translation { font-size: 0.8rem; color: #6366f1; display: block; margin-top: 5px; font-style: italic; }
 
         .btn-launch {
-            background: #6366f1; color: white; border: none; padding: 18px 40px;
-            border-radius: 20px; font-weight: 700; cursor: pointer; transition: 0.3s; font-family: 'Fredoka';
+            background: #6366f1; color: white; border: none; padding: 15px 35px;
+            border-radius: 18px; font-weight: 700; cursor: pointer; transition: 0.3s; font-family: 'Fredoka';
         }
-        .btn-launch:hover { background: #818cf8; box-shadow: 0 0 25px rgba(99, 102, 241, 0.5); }
+        .btn-launch:hover { background: #818cf8; box-shadow: 0 0 20px rgba(99, 102, 241, 0.5); }
     </style>
 </head>
 <body>
     <nav class="nav-top">
-        <a href="home.html" class="back-link">← BACK TO EARTH <span style="display:block; font-size:0.7rem; opacity:0.6;">(Volver a la Tierra)</span></a>
+        <a href="home.html" class="back-link">← BACK TO EARTH <span style="display:block; font-size:0.7rem; opacity:0.6;">(Volver)</span></a>
         <div style="color: #818cf8; font-weight: 700; letter-spacing: 2px;">ENGLISH UNIVERSE</div>
     </nav>
     <div class="content">
@@ -49,12 +48,18 @@
 
         <div class="unit-card">
             <div class="unit-info">
-                <h2>Lesson 1: The Greetings</h2>
+                <h2>Lesson 1: Greetings</h2>
                 <span class="translation">Lección 1: Los Saludos</span>
-                <p>Learn how to introduce yourself in the galaxy.</p>
-                <span class="translation" style="margin-top:2px;">Aprende cómo presentarte en la galaxia.</span>
             </div>
-            <button class="btn-launch" onclick="location.href='english/select-mode.html?classNumber=1'">LAUNCH MISSION</button>
+            <button class="btn-launch" onclick="location.href='english/select-mode.html?classNumber=1'">LAUNCH 01</button>
+        </div>
+
+        <div class="unit-card">
+            <div class="unit-info">
+                <h2>Lesson 2: School Objects</h2>
+                <span class="translation">Lección 2: Útiles Escolares</span>
+            </div>
+            <button class="btn-launch" onclick="location.href='english/select-mode.html?classNumber=2'">LAUNCH 02</button>
         </div>
     </div>
 </body>
