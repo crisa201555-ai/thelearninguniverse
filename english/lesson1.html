@@ -5,76 +5,101 @@
     <title>Lesson 1 | English Universe</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --p-blue: #6366f1; --p-pink: #f472b6; --bg: #020617; }
-        body { margin: 0; font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; transition: 0.5s; }
+        :root { 
+            --p-blue: #6366f1; 
+            --p-pink: #f472b6; 
+            --bg: #0f172a; 
+            --card-bg: #1e293b;
+        }
         
-        /* HEADER MULTIMEDIA */
+        body { margin: 0; font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; transition: 0.8s; }
+        
+        /* MODO FOCUS: Colores relajantes */
+        body.focus-mode { 
+            background: #0f172a; 
+            --p-blue: #38bdf8; 
+            --card-bg: rgba(30, 41, 59, 0.7);
+        }
+
+        /* MODO TWICE: Colores vibrantes */
+        body.twice-mode { 
+            background: #1a0a14; 
+            --p-pink: #ff5fa2;
+            --card-bg: #2d101e;
+        }
+
         .header-img { 
             height: 35vh; width: 100%; background-size: cover; background-position: center;
             display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;
         }
         .header-img::after { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.6); }
-        h1 { position: relative; z-index: 2; font-size: 3.5rem; margin: 0; }
-        .h1-trans { position: relative; z-index: 2; color: var(--p-blue); font-weight: 600; }
-
-        .container { max-width: 850px; margin: -40px auto 100px; background: #0f172a; padding: 50px; border-radius: 40px; position: relative; z-index: 10; border: 1px solid #1e293b; }
         
-        /* CONTENIDO */
-        .bubble { background: #1e293b; padding: 20px; border-radius: 25px; margin: 15px 0; border-left: 5px solid var(--p-blue); }
-        .eng { font-size: 1.4rem; font-weight: 700; color: white; display: block; }
-        .esp { font-size: 1rem; color: var(--p-blue); font-style: italic; }
+        .container { 
+            max-width: 850px; margin: -40px auto 100px; background: var(--card-bg); 
+            padding: 50px; border-radius: 40px; position: relative; z-index: 10; 
+            border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px);
+        }
 
-        .how-to-say { background: rgba(99, 102, 241, 0.1); border: 2px dashed var(--p-blue); padding: 25px; border-radius: 30px; margin-top: 40px; text-align: center; }
+        .bubble { 
+            background: rgba(255,255,255,0.05); padding: 20px; border-radius: 25px; 
+            margin: 15px 0; border-left: 5px solid var(--p-blue); transition: 0.3s; 
+        }
 
-        /* MODO TWICE */
-        body.twice-mode { background: #1a0a14; }
-        body.twice-mode .container { background: #2d101e; border-color: var(--p-pink); }
-        body.twice-mode .bubble { border-left-color: var(--p-pink); background: rgba(244, 114, 182, 0.05); }
-        body.twice-mode .esp, body.twice-mode .h1-trans { color: var(--p-pink); }
-        body.twice-mode .how-to-say { border-color: var(--p-pink); }
-        
-        .idol-guide { display: none; align-items: center; gap: 20px; margin-bottom: 30px; border: 2px dashed #f472b6; padding: 20px; border-radius: 20px; }
+        /* BOTÓN TRADUCTOR */
+        .translate-btn {
+            position: fixed; top: 20px; right: 20px; z-index: 100;
+            background: white; color: black; border: none; padding: 10px 20px;
+            border-radius: 50px; font-weight: 700; cursor: pointer; font-family: 'Fredoka';
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
 
-        .btn-finish { width: 100%; padding: 22px; border-radius: 25px; border: none; background: var(--p-blue); color: white; font-weight: 700; font-size: 1.4rem; cursor: pointer; margin-top: 40px; font-family: 'Fredoka'; transition: 0.3s; }
-        .btn-finish:hover { transform: scale(1.02); }
+        .lang-es { display: none; color: var(--p-blue); font-style: italic; font-size: 0.9rem; margin-top: 5px; }
+        body.show-tr .lang-es { display: block; }
+
+        .btn-finish { 
+            width: 100%; padding: 22px; border-radius: 25px; border: none; 
+            background: var(--p-blue); color: white; font-weight: 700; 
+            font-size: 1.4rem; cursor: pointer; margin-top: 40px; transition: 0.3s; 
+        }
         body.twice-mode .btn-finish { background: var(--p-pink); }
+        body.twice-mode .bubble { border-left-color: var(--p-pink); }
     </style>
 </head>
 <body id="mainBody">
 
-    <audio id="finishSound" src="takedown.mp3"></audio>
+    <button class="translate-btn" onclick="document.body.classList.toggle('show-tr')">
+        🌐 Translate / Traducir
+    </button>
+
+    <audio id="finishSound" src="https://thelearninguniverses.pages.dev/takedown.mp3"></audio>
 
     <div class="header-img" id="hero">
-        <h1 id="title">Lesson 1</h1>
-        <span class="h1-trans">Primera Clase</span>
+        <h1 id="title">Lesson 1: Greetings</h1>
+        <p class="lang-es">Lección 1: Saludos</p>
     </div>
 
     <div class="container">
-        <div class="idol-guide" id="twiceGuide">
-            <span style="font-size: 2.5rem;">🍭</span> 
-            <div>
-                <span style="color:#f472b6; font-weight:700;">TWICE Guide:</span><br>
-                "Ready to finish? Click below!"
-            </div>
+        <h2 id="section-title">Essential Phrases</h2>
+        <p class="lang-es">Frases Esenciales</p>
+
+        <div class="bubble">
+            <span style="font-size: 1.3rem; font-weight: 700;">Hello, how are you?</span>
+            <span class="lang-es">Hola, ¿cómo estás?</span>
         </div>
 
         <div class="bubble">
-            <span class="eng">Hello, how are you?</span>
-            <span class="esp">Hola, ¿cómo estás?</span>
+            <span style="font-size: 1.3rem; font-weight: 700;">This is my / This is your</span>
+            <span class="lang-es">Esto es mi / Esto es tu</span>
         </div>
 
-        <div class="bubble">
-            <span class="eng">This is my / This is your</span>
-            <span class="esp">Esto es mi / Esto es tu</span>
-        </div>
-
-        <div class="how-to-say">
-            <h3>❓ How do I say "Esto es"?</h3>
-            <p style="font-size: 1.5rem; font-weight: 700;">THIS IS...</p>
+        <div style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 30px; margin-top: 30px; text-align: center; border: 1px dashed var(--p-blue);">
+            <h3>How do I say "Esto es"?</h3>
+            <p class="lang-es">¿Cómo digo "Esto es"?</p>
+            <p style="font-size: 2rem; font-weight: 700; color: var(--p-blue);">THIS IS...</p>
         </div>
 
         <button class="btn-finish" onclick="playAndFinish()">
-            MISSION COMPLETE! (Finalizar)
+            MISSION COMPLETE
         </button>
     </div>
 
@@ -83,26 +108,23 @@
         const mode = params.get('mode');
         const body = document.getElementById('mainBody');
         const hero = document.getElementById('hero');
-        const guide = document.getElementById('twiceGuide');
         const sound = document.getElementById('finishSound');
 
-        // Configuración de imagen y modo
+        // Configuración según el modo
         if (mode === 'twice') {
             body.classList.add('twice-mode');
-            guide.style.display = 'flex';
-            // URL de imagen actualizada
             hero.style.backgroundImage = "url('https://thelearninguniverses.pages.dev/twice_classroom.jpg')";
         } else {
+            body.classList.add('focus-mode');
             hero.style.backgroundImage = "url('classroom.png')";
         }
 
-        // Función para reproducir sonido y salir
         function playAndFinish() {
-            sound.play();
-            alert("Mission Accomplished! / ¡Misión cumplida!");
+            sound.play().catch(e => console.log("Error de audio:", e));
+            alert("Great job! / ¡Buen trabajo!");
             setTimeout(() => {
                 location.href = '../english.html';
-            }, 500); // Pequeño delay para que se escuche el inicio del audio
+            }, 800); 
         }
     </script>
 </body>
