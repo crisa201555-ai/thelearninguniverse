@@ -41,14 +41,14 @@
 
         .nav-btn:hover { background: var(--accent); color: var(--bg); font-weight: 600; transform: translateX(8px); }
 
-        /* --- MAIN --- */
+        /* --- MAIN CONTENT --- */
         .main-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
 
         .top-info { position: absolute; top: 30px; right: 50px; text-align: right; }
         #time { font-size: 2.5rem; font-weight: 700; color: var(--accent); margin: 0; }
         #date { opacity: 0.6; }
 
-        h1 { font-size: 3.5rem; margin: 0; letter-spacing: -1px; text-align: center; }
+        h1 { font-size: 3.5rem; margin: 0; letter-spacing: -1px; text-align: center; text-transform: uppercase; }
         .welcome-sub { font-size: 1.2rem; opacity: 0.6; margin-bottom: 40px; }
 
         .explore-btn {
@@ -58,24 +58,25 @@
         }
         .explore-btn:hover { transform: scale(1.08); box-shadow: 0 15px 40px rgba(56, 189, 248, 0.4); }
 
-        /* MODAL */
+        /* MODAL MATERIAS */
         .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); backdrop-filter: blur(15px);
             display: none; justify-content: center; align-items: center; z-index: 100;
         }
         .modal-card {
-            background: #0f172a; padding: 50px; border-radius: 40px;
-            border: 1px solid rgba(255,255,255,0.1); width: 400px; text-align: center;
+            background: #0f172a; padding: 40px; border-radius: 40px;
+            border: 1px solid rgba(255,255,255,0.1); width: 420px; text-align: center;
         }
         .opt-btn {
             background: var(--glass); border: 1px solid rgba(255,255,255,0.1);
-            color: white; padding: 20px; border-radius: 20px; font-size: 1.2rem;
+            color: white; padding: 18px; border-radius: 20px; font-size: 1.1rem;
             cursor: pointer; transition: 0.3s; width: 100%; margin-bottom: 12px; font-family: 'Fredoka';
+            display: flex; align-items: center; justify-content: center; gap: 10px;
         }
         .opt-btn:hover { background: var(--accent); color: var(--bg); font-weight: 700; }
         
-        .logout-link { color: #e63946; text-decoration: none; font-weight: 600; margin-top: 20px; display: block; opacity: 0.7; font-size: 0.9rem; }
+        .logout-link { color: #e63946; background: none; border: none; font-weight: 600; margin-top: 20px; cursor: pointer; opacity: 0.7; font-family: 'Fredoka'; }
         .logout-link:hover { opacity: 1; }
     </style>
 </head>
@@ -87,7 +88,7 @@
             <button class="nav-btn" onclick="location.href='creategroup.html'">➕ Crear clase</button>
             <button class="nav-btn" onclick="location.href='inbox.html'">📥 Bandeja de entrada</button>
         </div>
-        <a href="login.html" class="logout-link" onclick="return confirm('¿Seguro que quieres salir?')">Cerrar sesión...</a>
+        <button class="logout-link" onclick="logout()">Cerrar sesión...</button>
     </nav>
 
     <main class="main-content">
@@ -96,37 +97,60 @@
             <p id="date">-- / -- / --</p>
         </div>
 
-        <h1 id="user-welcome">BIENVENIDO, USUARIO</h1>
+        <h1 id="user-welcome">BIENVENIDO</h1>
         <p class="welcome-sub">¿Qué planeta de conocimiento visitaremos hoy?</p>
 
         <button class="explore-btn" onclick="openSubjects()">Explorar Materias</button>
     </main>
 
-    <div id="subjectModal" class="modal" onclick="this.style.display='none'">
+    <div id="subjectModal" class="modal" onclick="closeSubjects()">
         <div class="modal-card" onclick="event.stopPropagation()">
-            <h2 style="margin-bottom: 30px; color: var(--accent);">Materias</h2>
-            <button class="opt-btn" onclick="location.href='cienciasnaturales.html'">🌿 Ciencias Naturales</button>
-            <button class="opt-btn" onclick="location.href='english.html'">🇬🇧 English Universe</button>
-            <p style="color: #64748b; cursor: pointer; margin-top: 20px;" onclick="closeSubjects()">Cancelar</p>
+            <h2 style="margin-bottom: 25px; color: var(--accent);">Selecciona una Materia</h2>
+            
+            <button class="opt-btn" onclick="location.href='history.html'">
+                <span>🏛️</span> History Universe
+            </button>
+            
+            <button class="opt-btn" onclick="location.href='cienciasnaturales.html'">
+                <span>🌿</span> Ciencias Naturales
+            </button>
+            
+            <button class="opt-btn" onclick="location.href='english.html'">
+                <span>🇬🇧</span> English Universe
+            </button>
+
+            <p style="color: #64748b; cursor: pointer; margin-top: 20px; font-size: 0.9rem;" onclick="closeSubjects()">Cancelar</p>
         </div>
     </div>
 
     <script>
-        // LÓGICA PARA EL NOMBRE DEL USUARIO
-        // Puedes cambiar 'Estudiante' por cualquier nombre o jalarlo de un login
-        const userName = "ONCE"; 
-        document.getElementById('user-welcome').innerText = `BIENVENIDO, ${userName}`;
+        // Carga el nombre del usuario guardado en el Login
+        function loadUser() {
+            const name = localStorage.getItem('usuarioActivo') || "CADETE";
+            document.getElementById('user-welcome').innerText = `BIENVENIDO, ${name}`;
+        }
 
         function openSubjects() { document.getElementById('subjectModal').style.display = 'flex'; }
         function closeSubjects() { document.getElementById('subjectModal').style.display = 'none'; }
+
+        function logout() {
+            if(confirm('¿Deseas finalizar tu sesión espacial?')) {
+                localStorage.removeItem('usuarioActivo');
+                location.href = 'login.html';
+            }
+        }
 
         function updateClock() {
             const now = new Date();
             document.getElementById('time').innerText = now.toLocaleTimeString();
             document.getElementById('date').innerText = now.toLocaleDateString();
         }
-        setInterval(updateClock, 1000);
-        updateClock();
+
+        window.onload = () => {
+            loadUser();
+            updateClock();
+            setInterval(updateClock, 1000);
+        };
     </script>
 </body>
 </html>
