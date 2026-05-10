@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>The Learning Universe | Historia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #0a0a0a; --accent: #d4af37; --glass: rgba(255, 255, 255, 0.03); }
+        body {
+            background: var(--bg); color: white; font-family: 'Fredoka', sans-serif; margin: 0;
+            display: flex; flex-direction: column; height: 100vh;
+            background: radial-gradient(circle at top right, #1c1917, #0a0a0a);
+        }
+        .nav-top { padding: 20px 50px; display: flex; justify-content: space-between; align-items: center; }
+        .back-link { color: var(--accent); text-decoration: none; font-weight: 600; }
+        
+        .content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        h1 { font-size: 3rem; color: var(--accent); margin-bottom: 40px; text-transform: uppercase; letter-spacing: 2px; }
+
+        .history-table {
+            width: 90%; max-width: 1000px; background: var(--glass);
+            border-radius: 30px; border: 1px solid rgba(255,255,255,0.1);
+            overflow: hidden; backdrop-filter: blur(10px);
+        }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: rgba(212, 175, 55, 0.1); color: var(--accent); padding: 20px; text-align: left; font-size: 0.8rem; }
+        td { padding: 25px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        .badge { background: #166534; color: #4ade80; padding: 5px 12px; border-radius: 10px; font-size: 0.7rem; font-weight: 700; }
+        .btn-enter {
+            background: var(--accent); color: #000; border: none; padding: 12px 25px;
+            border-radius: 15px; font-weight: 700; cursor: pointer; transition: 0.3s;
+        }
+        .btn-enter:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(212, 175, 55, 0.4); }
+    </style>
+</head>
+<body>
+    <nav class="nav-top">
+        <a href="home.html" class="back-link">← VOLVER AL DASHBOARD</a>
+        <div style="color: var(--accent); font-weight: 700;">HISTORY UNIVERSE</div>
+    </nav>
+    <div class="content">
+        <h1>Cronología Maestra</h1>
+        <div class="history-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>UNIDAD</th>
+                        <th>DESCRIPCIÓN</th>
+                        <th>DURACIÓN</th>
+                        <th>ESTADO</th>
+                        <th>ACCIÓN</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><b>Pueblos Originarios</b></td>
+                        <td>Raíces, ubicación y cultura ancestral.</td>
+                        <td>5-10 min</td>
+                        <td><span class="badge">DISPONIBLE</span></td>
+                        <td><button class="btn-enter" onclick="location.href='select-mode.html?topic=pueblos'">ENTRAR</button></td>
+                    </tr>
+                    <tr style="opacity: 0.4;">
+                        <td><b>Colonización</b></td>
+                        <td>Llegada de españoles y mestizaje.</td>
+                        <td>15 min</td>
+                        <td><span>PRÓXIMAMENTE</span></td>
+                        <td><button class="btn-enter" style="background:#444;" disabled>BLOQUEADO</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
