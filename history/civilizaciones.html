@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TLU | Civilizaciones del Mundo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --inca-gold: #d4af37;
+            --maya-jade: #2d5a27;
+            --azteca-red: #991b1b;
+            --fondo: #0f172a;
+            --texto: #f8fafc;
+        }
+
+        body {
+            margin: 0; font-family: 'Montserrat', sans-serif; background: var(--fondo);
+            color: var(--texto); scroll-behavior: smooth; overflow-x: hidden;
+        }
+
+        /* --- HEADER ÉPICO --- */
+        .hero {
+            height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.7)), url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=2000');
+            background-size: cover; background-attachment: fixed; text-align: center;
+        }
+
+        .hero h1 { font-family: 'Fredoka'; font-size: 5rem; margin: 0; color: var(--inca-gold); }
+        .hero p { font-size: 1.5rem; opacity: 0.8; }
+        .scroll-indicator { margin-top: 50px; animation: bounce 2s infinite; font-size: 2rem; }
+
+        /* --- SECCIONES DE APRENDIZAJE --- */
+        .section {
+            min-height: 100vh; padding: 100px 10%; display: flex; align-items: center; justify-content: center;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px);
+            padding: 50px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.1);
+            max-width: 900px; width: 100%; transition: 0.5s;
+        }
+
+        .card:hover { transform: translateY(-10px); border-color: var(--accent); }
+
+        h2 { font-family: 'Fredoka'; font-size: 3rem; margin-bottom: 20px; }
+        .tag { display: inline-block; padding: 5px 15px; border-radius: 10px; font-weight: 700; margin-bottom: 20px; }
+
+        .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px; }
+        .feature-item { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 20px; }
+
+        /* --- COLORES POR CIVILIZACIÓN --- */
+        .inca { --accent: var(--inca-gold); }
+        .maya { --accent: var(--maya-jade); }
+        .azteca { --accent: var(--azteca-red); }
+
+        .inca h2, .inca .tag { color: var(--inca-gold); }
+        .maya h2, .maya .tag { color: #4ade80; }
+        .azteca h2, .azteca .tag { color: #f87171; }
+
+        /* --- FOOTER / ACCIÓN --- */
+        .footer-action { padding: 100px 10%; text-align: center; background: #020617; }
+        .btn-finish {
+            background: var(--inca-gold); color: #000; border: none; padding: 20px 50px;
+            border-radius: 20px; font-family: 'Fredoka'; font-size: 1.5rem; font-weight: 700;
+            cursor: pointer; transition: 0.3s;
+        }
+        .btn-finish:hover { transform: scale(1.1); background: white; }
+
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-10px);} 60% {transform: translateY(-5px);} }
+    </style>
+</head>
+<body>
+
+    <header class="hero">
+        <h1>Civilizaciones del Mundo</h1>
+        <p>Incas • Mayas • Aztecas</p>
+        <div class="scroll-indicator">↓ Desliza para comenzar el viaje</div>
+    </header>
+
+    <section class="section inca" id="incas">
+        <div class="card">
+            <span class="tag">LOS SEÑORES DE LOS ANDES</span>
+            <h2>1. Incas</h2>
+            <p>Fueron la civilización más poderosa de los Andes, con su capital en <b>Cusco (Perú)</b>[cite: 1, 2]. Su imperio, el <b>Tahuantinsuyo</b>, se extendió desde Colombia hasta el río Maule en Chile[cite: 2].</p>
+            
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <b>☀️ Organización:</b> Controlada por el Inca, un gobernante absoluto[cite: 4].
+                </div>
+                <div class="feature-item">
+                    <b>🏔️ Agricultura:</b> Expertos en terrazas de cultivo y domesticación de llamas[cite: 5].
+                </div>
+                <div class="feature-item">
+                    <b>🧶 Tecnología:</b> No usaron escritura, sino el <b>Quipu</b> (nudos en cuerdas)[cite: 8].
+                </div>
+                <div class="feature-item">
+                    <b>🏗️ Obras:</b> Construyeron caminos, puentes y tambos (albergues)[cite: 6].
+                </div>
+            </div>
+            <p style="margin-top:20px; font-size: 0.9rem; opacity: 0.7;">Religión politeísta con culto al Sol (Inti)[cite: 7]. Cayeron en 1532 ante los españoles[cite: 9].</p>
+        </div>
+    </section>
+
+    <section class="section maya" id="mayas">
+        <div class="card">
+            <span class="tag">LOS MAESTROS DEL TIEMPO</span>
+            <h2>2. Mayas</h2>
+            <p>Se ubicaron en México, Guatemala, Belice y Honduras[cite: 11]. No fueron un imperio unido, sino <b>ciudades-estado independientes</b>[cite: 12].</p>
+
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <b>⭐ Ciencia:</b> Usaron el <b>cero</b> y crearon calendarios precisos[cite: 14].
+                </div>
+                <div class="feature-item">
+                    <b>✍️ Escritura:</b> Usaron jeroglíficos para registrar su historia y religión[cite: 15].
+                </div>
+                <div class="feature-item">
+                    <b>🌽 Cultivo:</b> Basado en maíz y frijol con técnicas de terrazas y chinampas[cite: 17].
+                </div>
+                <div class="feature-item">
+                    <b>📐 Arquitectura:</b> Pirámides monumentales y observatorios[cite: 16].
+                </div>
+            </div>
+            <p style="margin-top:20px; font-size: 0.9rem; opacity: 0.7;">Tuvieron un colapso misterioso en el siglo X, pero su cultura sobrevivió[cite: 18].</p>
+        </div>
+    </section>
+
+    <section class="section azteca" id="aztecas">
+        <div class="card">
+            <span class="tag">EL IMPERIO DEL SOL Y LA GUERRA</span>
+            <h2>3. Aztecas (Mexicas)</h2>
+            <p>Fundaron su capital, <b>Tenochtitlán</b>, en 1325 sobre un lago en el centro de México[cite: 21]. Crearon un imperio militar masivo en tiempo récord[cite: 22].</p>
+
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <b>🛶 Chinampas:</b> Huertos flotantes para agricultura intensiva[cite: 24].
+                </div>
+                <div class="feature-item">
+                    <b>👑 Sociedad:</b> Muy jerárquica, desde el gobernante hasta los guerreros[cite: 23].
+                </div>
+                <div class="feature-item">
+                    <b>🩸 Rituales:</b> Realizaban sacrificios humanos para mantener el orden del cosmos.
+                </div>
+                <div class="feature-item">
+                    <b>🏛️ Arte:</b> Arquitectura monumental como el Templo Mayor[cite: 27].
+                </div>
+            </div>
+            <p style="margin-top:20px; font-size: 0.9rem; opacity: 0.7;">Cayeron en 1521 ante españoles y pueblos aliados que querían liberarse de sus tributos[cite: 25, 28].</p>
+        </div>
+    </section>
+
+    <footer class="footer-action">
+        <h2>¿Estás listo para el desafío final?</h2>
+        <p>Has recorrido miles de años de historia en minutos.</p>
+        <button class="btn-finish" onclick="completeModule()">¡He Aprendido Todo!</button>
+    </footer>
+
+    <script>
+        function completeModule() {
+            alert("¡Excelente explorador! Has asimilado el legado de los Incas, Mayas y Aztecas.");
+            location.href = 'history.html'; // O tu menú de historia
+        }
+    </script>
+</body>
+</html>
