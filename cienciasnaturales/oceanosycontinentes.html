@@ -7,106 +7,49 @@
     <style>
         :root { --p-blue: #0ea5e9; --p-pink: #f472b6; --bg: #0f172a; --card-bg: #1e293b; }
         body { margin: 0; font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; transition: 0.8s; }
-        
         body.focus-mode { background: #0f172a; --accent: var(--p-blue); }
         body.twice-mode { background: #1a0a14; --accent: var(--p-pink); }
-
-        .header-img { 
-            height: 30vh; width: 100%; background-size: cover; background-position: center;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;
-        }
+        .header-img { height: 30vh; width: 100%; background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; position: relative; }
         .header-img::after { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.6); }
-
-        .container { 
-            max-width: 900px; margin: -40px auto 100px; background: var(--card-bg); 
-            padding: 50px; border-radius: 40px; position: relative; z-index: 10; 
-            border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px);
-        }
-
-        .map-explorer {
-            background: rgba(0,0,0,0.3); padding: 30px; border-radius: 30px;
-            text-align: center; border: 2px solid var(--accent); margin-bottom: 30px;
-        }
-
-        .grid-labels { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
-        .label-btn { 
-            background: rgba(255,255,255,0.05); border: 1px solid var(--accent); 
-            color: white; padding: 15px; border-radius: 15px; cursor: pointer; transition: 0.3s;
-        }
+        .container { max-width: 900px; margin: -40px auto 100px; background: var(--card-bg); padding: 50px; border-radius: 40px; position: relative; z-index: 10; border: 1px solid rgba(255,255,255,0.1); }
+        .grid-labels { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 20px; }
+        .label-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--accent); color: white; padding: 15px; border-radius: 15px; cursor: pointer; transition: 0.3s; }
         .label-btn:hover { background: var(--accent); transform: scale(1.05); }
-
-        .info-panel { margin-top: 20px; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 20px; min-height: 80px; }
-
-        .btn-finish { 
-            width: 100%; padding: 22px; border-radius: 25px; border: none; 
-            background: var(--accent); color: white; font-weight: 700; 
-            font-size: 1.4rem; cursor: pointer; margin-top: 40px;
-        }
+        .btn-finish { width: 100%; padding: 22px; border-radius: 25px; border: none; background: var(--accent); color: white; font-weight: 700; font-size: 1.4rem; cursor: pointer; margin-top: 40px; }
     </style>
 </head>
 <body id="mainBody">
-
     <audio id="finishSound" src="https://thelearninguniverses.pages.dev/takedown.mp3"></audio>
-
-    <div class="header-img" id="hero">
-        <h1>Océanos y Continentes</h1>
-    </div>
-
+    <div class="header-img" id="hero"><h1 style="position:relative; z-index:2;">Océanos y Continentes</h1></div>
     <div class="container">
-        <h2>Explora el Planeta Azul</h2>
-        <p>Haz clic en los nombres para aprender sobre ellos:</p>
-
-        <div class="map-explorer">
-            <div id="display-title" style="font-size: 2rem; font-weight: 700; color: var(--accent);">Selecciona un lugar</div>
-            <div id="display-desc" class="info-panel">Nuestro mundo se divide en grandes extensiones de tierra (Continentes) y agua (Océanos).</div>
+        <h2>Explora el Mundo</h2>
+        <div id="display" style="background:rgba(0,0,0,0.2); padding:20px; border-radius:20px; text-align:center; border:1px solid var(--accent);">
+            <h3 id="display-title" style="color:var(--accent);">Selecciona un lugar</h3>
+            <p id="display-desc">Haz clic en los botones de abajo.</p>
         </div>
-
-        <h3 style="color: var(--accent);">Continentes</h3>
+        <h3>Continentes</h3>
         <div class="grid-labels">
-            <button class="label-btn" onclick="showInfo('América', 'Es el continente donde vivimos. Se divide en Norte, Centro y Sur.')">🌎 América</button>
-            <button class="label-btn" onclick="showInfo('Europa', 'Tiene mucha historia y países como España, Francia e Italia.')">🏰 Europa</button>
-            <button class="label-btn" onclick="showInfo('Asia', 'Es el continente más grande y poblado del mundo.')">🐉 Asia</button>
-            <button class="label-btn" onclick="showInfo('África', 'Conocido por su fauna salvaje y el gran desierto del Sahara.')">🦁 África</button>
-            <button class="label-btn" onclick="showInfo('Oceanía', 'Formado por miles de islas, la más grande es Australia.')">🐨 Oceanía</button>
-            <button class="label-btn" onclick="showInfo('Antártida', 'El continente más frío, cubierto totalmente de hielo.')">🐧 Antártida</button>
+            <button class="label-btn" onclick="show('América', 'El continente donde estamos.')">🌎 América</button>
+            <button class="label-btn" onclick="show('Antártida', 'Hielo puro y pingüinos.')">🐧 Antártida</button>
         </div>
-
-        <h3 style="color: var(--accent); margin-top: 30px;">Océanos</h3>
-        <div class="grid-labels">
-            <button class="label-btn" onclick="showInfo('Océano Pacífico', 'Es el más grande de todos y baña nuestras costas.')">🌊 Pacífico</button>
-            <button class="label-btn" onclick="showInfo('Océano Atlántico', 'Separa a América de Europa y África.')">🚢 Atlántico</button>
-            <button class="label-btn" onclick="showInfo('Océano Índico', 'Es el tercer océano más grande, ubicado al sur de Asia.')">🏝️ Índico</button>
-        </div>
-
         <button class="btn-finish" onclick="playAndFinish()">FINALIZAR MISIÓN</button>
     </div>
-
     <script>
         const params = new URLSearchParams(window.location.search);
         const mode = params.get('mode');
-        const body = document.getElementById('mainBody');
-        const hero = document.getElementById('hero');
         const sound = document.getElementById('finishSound');
-
         if (mode === 'twice') {
-            body.classList.add('twice-mode');
-            hero.style.backgroundImage = "url('https://thelearninguniverses.pages.dev/twice_classroom.jpg')";
+            document.body.classList.add('twice-mode');
+            document.getElementById('hero').style.backgroundImage = "url('https://thelearninguniverses.pages.dev/twice_classroom.jpg')";
         } else {
-            body.classList.add('focus-mode');
-            hero.style.backgroundImage = "url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2000')"; 
+            document.body.classList.add('focus-mode');
+            document.getElementById('hero').style.backgroundImage = "url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2000')";
         }
-
-        function showInfo(title, desc) {
-            document.getElementById('display-title').innerText = title;
-            document.getElementById('display-desc').innerText = desc;
-        }
-
+        function show(t, d) { document.getElementById('display-title').innerText = t; document.getElementById('display-desc').innerText = d; }
         function playAndFinish() {
             sound.play();
-            alert("¡Misión Geográfica Completada!");
-            setTimeout(() => {
-                location.href = '../cienciasnaturales.html'; 
-            }, 800);
+            alert("Misión completada!");
+            setTimeout(() => { location.href = '../cienciasnaturales.html'; }, 800);
         }
     </script>
 </body>
