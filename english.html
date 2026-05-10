@@ -5,80 +5,57 @@
     <title>TLU | English Universe</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #0a0f1d; --accent: #e63946; --sec: #457b9d; }
+        :root { --bg: #020617; --accent: #8b5cf6; --glass: rgba(139, 92, 246, 0.05); }
         body {
             background: var(--bg); color: white; font-family: 'Fredoka', sans-serif; margin: 0;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;
-            background: radial-gradient(circle at top right, #1b263b, #0a0f1d);
+            display: flex; flex-direction: column; height: 100vh;
+            background: radial-gradient(circle at bottom left, #1e1b4b, #020617);
         }
-        .clock-box { position: fixed; top: 20px; right: 40px; text-align: right; }
-        #time { font-size: 2rem; font-weight: 700; color: var(--accent); }
+        .nav-top { padding: 25px 50px; display: flex; justify-content: space-between; align-items: center; }
+        .back-link { color: #6366f1; text-decoration: none; font-weight: 600; font-size: 0.9rem; }
         
-        .hero { text-align: center; }
-        h1 { font-size: 3.5rem; margin: 0; text-shadow: 0 0 20px rgba(230, 57, 70, 0.3); }
-        
-        .btn-view {
-            background: var(--accent); color: white; border: none; padding: 20px 50px;
-            border-radius: 50px; font-size: 1.4rem; font-weight: 700; cursor: pointer;
-            transition: 0.3s; margin-top: 30px; box-shadow: 0 10px 30px rgba(230, 57, 70, 0.3);
-        }
-        .btn-view:hover { transform: scale(1.05); background: white; color: var(--accent); }
+        .content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; }
+        h1 { font-size: 3.5rem; color: #a5b4fc; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 4px; }
+        .h1-sub { color: #6366f1; margin-bottom: 50px; font-weight: 600; letter-spacing: 2px; }
 
-        .modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
-            display: none; justify-content: center; align-items: center; z-index: 1000;
+        .unit-card {
+            width: 100%; max-width: 900px; background: var(--glass);
+            border-radius: 35px; border: 1px solid rgba(139, 92, 246, 0.2);
+            padding: 40px; backdrop-filter: blur(10px);
+            display: flex; justify-content: space-between; align-items: center;
+            transition: 0.3s;
         }
-        .table-card {
-            background: #161b22; padding: 40px; border-radius: 35px; border: 1px solid #30363d;
-            width: 85%; max-width: 850px;
+        .unit-card:hover { border-color: #8b5cf6; transform: scale(1.02); }
+        
+        .unit-info h2 { margin: 0; font-size: 2rem; color: white; }
+        .unit-info p { color: #94a3b8; margin: 10px 0 0 0; }
+        .translation { font-size: 0.8rem; color: #6366f1; display: block; margin-top: 5px; font-style: italic; }
+
+        .btn-launch {
+            background: #6366f1; color: white; border: none; padding: 18px 40px;
+            border-radius: 20px; font-weight: 700; cursor: pointer; transition: 0.3s; font-family: 'Fredoka';
         }
-        table { width: 100%; border-collapse: collapse; margin-top: 25px; }
-        th { text-align: left; color: #8b949e; padding: 10px; font-size: 0.9rem; }
-        td { padding: 20px 10px; border-bottom: 1px solid #30363d; }
-        .btn-start { background: var(--sec); color: white; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; font-weight: 600; transition: 0.2s; }
-        .btn-start:hover { background: white; color: var(--sec); }
+        .btn-launch:hover { background: #818cf8; box-shadow: 0 0 25px rgba(99, 102, 241, 0.5); }
     </style>
 </head>
 <body>
+    <nav class="nav-top">
+        <a href="home.html" class="back-link">← BACK TO EARTH <span style="display:block; font-size:0.7rem; opacity:0.6;">(Volver a la Tierra)</span></a>
+        <div style="color: #818cf8; font-weight: 700; letter-spacing: 2px;">ENGLISH UNIVERSE</div>
+    </nav>
+    <div class="content">
+        <h1>Satellite Missions</h1>
+        <span class="h1-sub">MISIONES SATELITALES</span>
 
-    <div class="clock-box">
-        <div id="time">00:00:00</div>
-        <div id="date" style="opacity: 0.6;">---</div>
-    </div>
-
-    <div class="hero">
-        <h1>English Universe</h1>
-        <p style="font-size: 1.2rem; opacity: 0.7;">Let's make learning English a relaxing journey.</p>
-        <button class="btn-view" onclick="document.getElementById('m').style.display='flex'">View Lessons</button>
-    </div>
-
-    <div id="m" class="modal" onclick="this.style.display='none'">
-        <div class="table-card" onclick="event.stopPropagation()">
-            <h2 style="margin:0;">🇬🇧 Course Catalog</h2>
-            <table>
-                <thead>
-                    <tr><th>Lesson</th><th>Duration</th><th>Level</th><th>Action</th></tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><b>Greetings & Introductions</b></td>
-                        <td>5 min</td>
-                        <td>A1 Beginner</td>
-                        <td><button class="btn-start" onclick="location.href='english-selection-mode.html'">Start Lesson</button></td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="unit-card">
+            <div class="unit-info">
+                <h2>Lesson 1: The Greetings</h2>
+                <span class="translation">Lección 1: Los Saludos</span>
+                <p>Learn how to introduce yourself in the galaxy.</p>
+                <span class="translation" style="margin-top:2px;">Aprende cómo presentarte en la galaxia.</span>
+            </div>
+            <button class="btn-launch" onclick="location.href='english/select-mode.html?classNumber=1'">LAUNCH MISSION</button>
         </div>
     </div>
-
-    <script>
-        function update() {
-            const n = new Date();
-            document.getElementById('time').innerText = n.toLocaleTimeString('en-GB');
-            document.getElementById('date').innerText = n.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
-        }
-        setInterval(update, 1000); update();
-    </script>
 </body>
 </html>
