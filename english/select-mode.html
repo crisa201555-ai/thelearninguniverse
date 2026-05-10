@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Interface Mode</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0; background: #020617; color: white; font-family: 'Fredoka', sans-serif;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;
+        }
+        .modes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; max-width: 800px; }
+        .mode-card {
+            background: #0f172a; border: 2px solid #1e293b; padding: 50px 30px;
+            border-radius: 40px; cursor: pointer; transition: 0.4s; text-align: center;
+        }
+        .focus:hover { border-color: #6366f1; box-shadow: 0 0 30px rgba(99, 102, 241, 0.2); }
+        .twice:hover { border-color: #f472b6; box-shadow: 0 0 30px rgba(244, 114, 182, 0.2); }
+        
+        .icon { font-size: 4rem; display: block; margin-bottom: 20px; }
+        h1 { margin-bottom: 10px; font-size: 2.5rem; letter-spacing: 1px; }
+        .subtitle { color: #6366f1; margin-bottom: 40px; font-weight: 600; }
+        .trans-sm { font-size: 0.8rem; opacity: 0.5; display: block; margin-top: 5px; font-style: italic; }
+    </style>
+</head>
+<body>
+    <h1>CHOOSE YOUR INTERFACE</h1>
+    <div class="subtitle">ELIGE TU INTERFAZ</div>
+
+    <div class="modes-grid">
+        <div class="mode-card focus" onclick="selectMode('focus')">
+            <span class="icon">🛰️</span>
+            <h3>FOCUS MODE</h3>
+            <span class="trans-sm">MODO ENFOQUE</span>
+            <p>Standard galactic interface.</p>
+        </div>
+        <div class="mode-card twice" onclick="selectMode('twice')">
+            <span class="icon">🍭</span>
+            <h3 style="color: #f472b6;">TWICE MODE</h3>
+            <span class="trans-sm">MODO TWICE</span>
+            <p>Learning with your idols.</p>
+        </div>
+    </div>
+
+    <button onclick="history.back()" style="background:none; border:none; color:#444; margin-top:40px; cursor:pointer;">← Go Back (Volver)</button>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const classNum = urlParams.get('classNumber') || '1';
+        function selectMode(mode) {
+            location.href = `lesson1.html?classNumber=${classNum}&mode=${mode}`;
+        }
+    </script>
+</body>
+</html>
