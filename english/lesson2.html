@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lesson 2 | School Objects</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --p-blue: #6366f1; 
+            --p-pink: #f472b6; 
+            --bg: #0f172a; 
+            --card-bg: #1e293b;
+        }
+        
+        body { margin: 0; font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; transition: 0.8s; }
+        
+        /* MODO FOCUS */
+        body.focus-mode { background: #0f172a; --p-blue: #38bdf8; --card-bg: rgba(30, 41, 59, 0.7); }
+
+        /* MODO TWICE */
+        body.twice-mode { background: #1a0a14; --p-pink: #ff5fa2; --card-bg: #2d101e; }
+
+        .header-img { 
+            height: 35vh; width: 100%; background-size: cover; background-position: center;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;
+        }
+        .header-img::after { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.6); }
+        
+        .container { 
+            max-width: 850px; margin: -40px auto 100px; background: var(--card-bg); 
+            padding: 50px; border-radius: 40px; position: relative; z-index: 10; 
+            border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px);
+        }
+
+        .translate-btn {
+            position: fixed; top: 20px; right: 20px; z-index: 100;
+            background: white; color: black; border: none; padding: 10px 20px;
+            border-radius: 50px; font-weight: 700; cursor: pointer;
+        }
+
+        .lang-es { display: none; color: var(--p-blue); font-style: italic; font-size: 0.9rem; margin-top: 5px; }
+        body.show-tr .lang-es { display: block; }
+
+        /* INTERACTIVE OBJECTS GRID */
+        .object-display {
+            text-align: center; background: rgba(0,0,0,0.3); padding: 30px;
+            border-radius: 30px; margin-bottom: 30px; border: 2px solid var(--p-blue);
+        }
+        #display-name { font-size: 2.5rem; font-weight: 700; color: var(--p-blue); margin: 0; }
+        #display-trans { font-size: 1.2rem; opacity: 0.7; font-style: italic; }
+
+        .objects-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 15px; margin-top: 20px;
+        }
+        .obj-item {
+            background: rgba(255,255,255,0.1); padding: 20px; border-radius: 20px;
+            text-align: center; cursor: pointer; transition: 0.3s; font-size: 2rem;
+        }
+        .obj-item:hover { transform: scale(1.1); background: var(--p-blue); }
+
+        .bubble { 
+            background: rgba(255,255,255,0.05); padding: 20px; border-radius: 25px; 
+            margin: 15px 0; border-left: 5px solid var(--p-blue); 
+        }
+
+        .btn-finish { 
+            width: 100%; padding: 22px; border-radius: 25px; border: none; 
+            background: var(--p-blue); color: white; font-weight: 700; 
+            font-size: 1.4rem; cursor: pointer; margin-top: 40px; 
+        }
+        body.twice-mode .btn-finish { background: var(--p-pink); }
+        body.twice-mode .object-display { border-color: var(--p-pink); }
+        body.twice-mode #display-name { color: var(--p-pink); }
+        body.twice-mode .obj-item:hover { background: var(--p-pink); }
+    </style>
+</head>
+<body id="mainBody">
+
+    <button class="translate-btn" onclick="document.body.classList.toggle('show-tr')">
+        🌐 Translate / Traducir
+    </button>
+
+    <audio id="finishSound" src="https://thelearninguniverses.pages.dev/takedown.mp3"></audio>
+
+    <div class="header-img" id="hero">
+        <h1 id="title">Lesson 2: School Objects</h1>
+        <p class="lang-es">Lección 2: Útiles Escolares</p>
+    </div>
+
+    <div class="container">
+        
+        <div class="object-display">
+            <p id="display-name">Select an object</p>
+            <p id="display-trans" class="lang-es">Selecciona un objeto</p>
+        </div>
+
+        <div class="objects-grid">
+            <div class="obj-item" onclick="updateObj('Scissors', 'Tijeras')">✂️</div>
+            <div class="obj-item" onclick="updateObj('Ruler', 'Regla')">📏</div>
+            <div class="obj-item" onclick="updateObj('Sharpener', 'Sacapuntas')">✏️</div>
+            <div class="obj-item" onclick="updateObj('Pen', 'Lápiz Pasta/Pluma')">🖋️</div>
+            <div class="obj-item" onclick="updateObj('Pencil', 'Lápiz Grafito')">✏️</div>
+            <div class="obj-item" onclick="updateObj('Backpack', 'Mochila')">🎒</div>
+            <div class="obj-item" onclick="updateObj('Eraser', 'Goma')">🧼</div>
+            <div class="obj-item" onclick="updateObj('Notebook', 'Cuaderno')">📓</div>
+        </div>
+
+        <h2 style="margin-top: 40px;">Practical Examples</h2>
+        <p class="lang-es">Ejemplos Prácticos</p>
+
+        <div class="bubble">
+            <span style="font-weight: 700;">"This is my scissors"</span>
+            <span class="lang-es">Estas son mis tijeras</span>
+        </div>
+
+        <div class="bubble">
+            <span style="font-weight: 700;">"Is this your pencil?"</span>
+            <span class="lang-es">¿Es este tu lápiz?</span>
+        </div>
+
+        <div class="bubble">
+            <span style="font-weight: 700;">"Where is my ruler?"</span>
+            <span class="lang-es">¿Dónde está mi regla?</span>
+        </div>
+
+        <button class="btn-finish" onclick="playAndFinish()">
+            FINISH LESSON 2
+        </button>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const mode = params.get('mode');
+        const body = document.getElementById('mainBody');
+        const hero = document.getElementById('hero');
+        const sound = document.getElementById('finishSound');
+
+        if (mode === 'twice') {
+            body.classList.add('twice-mode');
+            hero.style.backgroundImage = "url('https://thelearninguniverses.pages.dev/twice_classroom.jpg')";
+        } else {
+            body.classList.add('focus-mode');
+            hero.style.backgroundImage = "url('classroom.png')";
+        }
+
+        function updateObj(name, trans) {
+            document.getElementById('display-name').innerText = name;
+            document.getElementById('display-trans').innerText = trans;
+        }
+
+        function playAndFinish() {
+            sound.play().catch(e => console.log("Audio Error"));
+            alert("Lesson 2 Completed! / ¡Lección 2 Completada!");
+            setTimeout(() => {
+                location.href = '../english.html';
+            }, 800); 
+        }
+    </script>
+</body>
+</html>
