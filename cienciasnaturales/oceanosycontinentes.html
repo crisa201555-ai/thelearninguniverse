@@ -2,222 +2,112 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TLU | Océanos y Continentes</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Ciencias | Océanos y Continentes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { 
-            --ocean: #0f172a; 
-            --twice-pink: #ff5fa2; 
-            --twice-apricot: #fcc89b; 
-            --accent: #00cec9; 
-        }
+        :root { --p-blue: #0ea5e9; --p-pink: #f472b6; --bg: #0f172a; --card-bg: #1e293b; }
+        body { margin: 0; font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; transition: 0.8s; }
+        
+        body.focus-mode { background: #0f172a; --accent: var(--p-blue); }
+        body.twice-mode { background: #1a0a14; --accent: var(--p-pink); }
 
-        body {
-            font-family: 'Fredoka', sans-serif; 
-            background: var(--ocean);
-            background: radial-gradient(circle at center, #1e3a8a 0%, #0f172a 100%);
-            color: white; 
-            margin: 0; 
-            min-height: 100vh; 
-            overflow-x: hidden;
+        .header-img { 
+            height: 30vh; width: 100%; background-size: cover; background-position: center;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;
         }
+        .header-img::after { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.6); }
 
-        /* --- CONTENIDO PRINCIPAL --- */
         .container { 
-            max-width: 800px; 
-            margin: 0 auto; 
-            padding: 40px 20px 350px; /* Espacio extra abajo para las fotos */
-            position: relative;
-            z-index: 5;
+            max-width: 900px; margin: -40px auto 100px; background: var(--card-bg); 
+            padding: 50px; border-radius: 40px; position: relative; z-index: 10; 
+            border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px);
         }
 
-        .card { 
-            background: rgba(255, 255, 255, 0.05); 
-            backdrop-filter: blur(20px); 
-            border-radius: 35px; 
-            padding: 45px; 
-            border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 25px 60px rgba(0,0,0,0.4);
-            animation: fadeIn 0.8s ease;
+        .map-explorer {
+            background: rgba(0,0,0,0.3); padding: 30px; border-radius: 30px;
+            text-align: center; border: 2px solid var(--accent); margin-bottom: 30px;
         }
 
-        .tag { 
-            background: var(--accent); 
-            color: var(--ocean); 
-            padding: 6px 15px; 
-            border-radius: 12px; 
-            font-weight: 700; 
-            font-size: 0.8rem; 
-            display: inline-block; 
-            margin-bottom: 20px; 
+        .grid-labels { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+        .label-btn { 
+            background: rgba(255,255,255,0.05); border: 1px solid var(--accent); 
+            color: white; padding: 15px; border-radius: 15px; cursor: pointer; transition: 0.3s;
         }
+        .label-btn:hover { background: var(--accent); transform: scale(1.05); }
 
-        h1 { color: var(--twice-apricot); font-size: 2.2rem; margin-top: 0; }
-        p { line-height: 1.7; font-size: 1.1rem; opacity: 0.9; }
+        .info-panel { margin-top: 20px; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 20px; min-height: 80px; }
 
-        /* --- TEST INTERACTIVO --- */
-        .option { 
-            background: rgba(255,255,255,0.08); 
-            padding: 20px; 
-            border-radius: 20px; 
-            margin: 15px 0; 
-            cursor: pointer; 
-            transition: 0.3s; 
-            border: 2px solid transparent;
-            font-weight: 600;
+        .btn-finish { 
+            width: 100%; padding: 22px; border-radius: 25px; border: none; 
+            background: var(--accent); color: white; font-weight: 700; 
+            font-size: 1.4rem; cursor: pointer; margin-top: 40px;
         }
-        .option:hover { 
-            background: rgba(255,255,255,0.15); 
-            border-color: var(--accent);
-            transform: translateX(10px);
-        }
-
-        /* --- MODO TWICE (CORREGIDO) --- */
-        .twice-ui { 
-            position: fixed; 
-            bottom: -500px; /* Escondidas */
-            left: 0;
-            width: 100%; 
-            display: flex; 
-            justify-content: space-between; 
-            padding: 0 5%; 
-            pointer-events: none; 
-            z-index: 1000; 
-            transition: bottom 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-        }
-        .twice-ui.active { bottom: -30px; } /* Se asoman lo justo */
-
-        .char-box { 
-            position: relative; 
-            pointer-events: auto; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .char-img { 
-            width: 300px; 
-            filter: drop-shadow(0 15px 30px rgba(0,0,0,0.7)); 
-            cursor: pointer; 
-            transition: 0.3s ease; 
-        }
-        .char-img:hover { transform: translateY(-15px) scale(1.05); }
-
-        .bubble { 
-            position: absolute; 
-            bottom: 105%; 
-            background: white; 
-            color: #1e293b; 
-            padding: 18px 25px; 
-            border-radius: 25px; 
-            font-size: 0.95rem; 
-            font-weight: 700;
-            width: 240px; 
-            opacity: 0; 
-            transition: 0.4s; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-            text-align: center;
-            pointer-events: none;
-            transform: translateY(20px);
-        }
-        .bubble.show { opacity: 1; transform: translateY(-10px); }
-        .bubble::after {
-            content: ''; position: absolute; bottom: -10px; left: 50%;
-            transform: translateX(-50%); border-left: 10px solid transparent;
-            border-right: 10px solid transparent; border-top: 10px solid white;
-        }
-
-        .nav-btn { 
-            background: var(--accent); color: var(--ocean); border: none; 
-            padding: 15px 45px; border-radius: 50px; font-weight: 700; 
-            cursor: pointer; margin-top: 30px; font-family: 'Fredoka'; 
-            font-size: 1.1rem; box-shadow: 0 10px 20px rgba(0,206,201,0.3);
-        }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body>
+<body id="mainBody">
 
-    <div class="container">
-        <div class="card" id="lesson">
-            </div>
-        <div style="text-align: center;">
-            <button class="nav-btn" id="nextBtn" onclick="move(1)">Siguiente →</button>
-        </div>
+    <audio id="finishSound" src="https://thelearninguniverses.pages.dev/takedown.mp3"></audio>
+
+    <div class="header-img" id="hero">
+        <h1>Océanos y Continentes</h1>
     </div>
 
-    <div class="twice-ui" id="ui">
-        <div class="char-box" onclick="talk('mina')">
-            <div class="bubble" id="b-mina"></div>
-            <img src="/mina.png" class="char-img">
+    <div class="container">
+        <h2>Explora el Planeta Azul</h2>
+        <p>Haz clic en los nombres para aprender sobre ellos:</p>
+
+        <div class="map-explorer">
+            <div id="display-title" style="font-size: 2rem; font-weight: 700; color: var(--accent);">Selecciona un lugar</div>
+            <div id="display-desc" class="info-panel">Nuestro mundo se divide en grandes extensiones de tierra (Continentes) y agua (Océanos).</div>
         </div>
-        <div class="char-box" onclick="talk('sana')">
-            <div class="bubble" id="b-sana"></div>
-            <img src="/sana.png" class="char-img">
+
+        <h3 style="color: var(--accent);">Continentes</h3>
+        <div class="grid-labels">
+            <button class="label-btn" onclick="showInfo('América', 'Es el continente donde vivimos. Se divide en Norte, Centro y Sur.')">🌎 América</button>
+            <button class="label-btn" onclick="showInfo('Europa', 'Tiene mucha historia y países como España, Francia e Italia.')">🏰 Europa</button>
+            <button class="label-btn" onclick="showInfo('Asia', 'Es el continente más grande y poblado del mundo.')">🐉 Asia</button>
+            <button class="label-btn" onclick="showInfo('África', 'Conocido por su fauna salvaje y el gran desierto del Sahara.')">🦁 África</button>
+            <button class="label-btn" onclick="showInfo('Oceanía', 'Formado por miles de islas, la más grande es Australia.')">🐨 Oceanía</button>
+            <button class="label-btn" onclick="showInfo('Antártida', 'El continente más frío, cubierto totalmente de hielo.')">🐧 Antártida</button>
         </div>
+
+        <h3 style="color: var(--accent); margin-top: 30px;">Océanos</h3>
+        <div class="grid-labels">
+            <button class="label-btn" onclick="showInfo('Océano Pacífico', 'Es el más grande de todos y baña nuestras costas.')">🌊 Pacífico</button>
+            <button class="label-btn" onclick="showInfo('Océano Atlántico', 'Separa a América de Europa y África.')">🚢 Atlántico</button>
+            <button class="label-btn" onclick="showInfo('Océano Índico', 'Es el tercer océano más grande, ubicado al sur de Asia.')">🏝️ Índico</button>
+        </div>
+
+        <button class="btn-finish" onclick="playAndFinish()">FINALIZAR MISIÓN</button>
     </div>
 
     <script>
-        const url = new URLSearchParams(window.location.search);
-        let step = parseInt(url.get('classNumber')) || 1;
-        let mode = url.get('mode') || 'none';
+        const params = new URLSearchParams(window.location.search);
+        const mode = params.get('mode');
+        const body = document.getElementById('mainBody');
+        const hero = document.getElementById('hero');
+        const sound = document.getElementById('finishSound');
 
-        const minaMsgs = ["¿Sabías que el 97% del agua es salada? 🌊", "¡Qué buena concentración tienes!", "El Océano Pacífico es inmenso. ✨"];
-        const sanaMsgs = ["¡Shy Shy Shy! ¡Eres genial! 🍭", "¡Vamos! ¡Solo son 6 continentes!", "¡Hwaiting! ¡Tú puedes hacerlo!"];
-
-        const lessons = {
-            1: { t: "TEMA 1: LOS OCÉANOS", h: "El Gran Mundo Azul", c: "<p>Los océanos cubren la mayor parte de nuestro hogar. Son 5:</p><ul><li><b>Pacífico:</b> El más grande del mundo.</li><li><b>Atlántico:</b> Separa América de Europa y África.</li><li><b>Índico:</b> Aguas muy cálidas.</li><li><b>Ártico:</b> En el Polo Norte (el más pequeño).</li><li><b>Antártico:</b> Rodea la Antártida (el más frío).</li></ul>" },
-            2: { t: "TEMA 2: CONTINENTES", h: "Tierra firme", c: "<p>Existen 6 grandes bloques de tierra:</p><ul><li><b>América:</b> ¡Donde vivimos!</li><li><b>Asia:</b> El más grande y poblado.</li><li><b>África:</b> Famoso por su fauna y desiertos.</li><li><b>Europa:</b> Muchos países y mucha historia.</li><li><b>Oceanía:</b> Australia y miles de islas.</li><li><b>Antártica:</b> El continente blanco de hielo.</li></ul>" },
-            4: { t: "TEMA 4: LAS AGUAS", h: "Agua Dulce y Salada", c: "<p>No toda el agua es igual:</p><ul><li><b>Agua Salada:</b> 97% de la Tierra (Mares y Océanos).</li><li><b>Agua Dulce:</b> Solo el 3% (Ríos, Lagos y Glaciares).</li><li><b>Agua Subterránea:</b> Reservas vitales bajo la tierra.</li></ul>" }
-        };
-
-        function render() {
-            const card = document.getElementById('lesson');
-            if(step === 3) {
-                card.innerHTML = `<div class="tag">TEMA 3: TEST RÁPIDO</div><h1>¿Cuánto has aprendido?</h1><p>¿Cuántos continentes tiene la Tierra?</p>
-                <div class="option" onclick="answer(false)">Tiene 4 continentes</div>
-                <div class="option" onclick="answer(true)">Tiene 6 continentes</div>
-                <div class="option" onclick="answer(false)">Tiene 10 continentes</div>`;
-                document.getElementById('nextBtn').style.display = 'none';
-            } else if(lessons[step]) {
-                const l = lessons[step];
-                card.innerHTML = `<div class="tag">${l.t}</div><h1>${l.h}</h1>${l.c}`;
-            } else {
-                card.innerHTML = "<h1>¡Completado!</h1><p>Dominas los Océanos y Continentes. ¡Buen trabajo!</p>";
-                document.getElementById('nextBtn').innerText = "Volver al Inicio";
-                document.getElementById('nextBtn').onclick = () => location.href='/cienciasnaturales.html';
-            }
+        if (mode === 'twice') {
+            body.classList.add('twice-mode');
+            hero.style.backgroundImage = "url('https://thelearninguniverses.pages.dev/twice_classroom.jpg')";
+        } else {
+            body.classList.add('focus-mode');
+            hero.style.backgroundImage = "url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2000')"; 
         }
 
-        function answer(correct) {
-            if(correct) {
-                if(mode==='twice') talk('sana', "¡EXCELENTE! ¡Eres brillante! 🍭");
-                setTimeout(() => move(1), 2000);
-            } else {
-                if(mode==='twice') talk('mina', "Oh no... Vamos a repasar el Tema 1 para estar seguros.");
-                setTimeout(() => location.search = `?classNumber=1&mode=${mode}`, 3000);
-            }
+        function showInfo(title, desc) {
+            document.getElementById('display-title').innerText = title;
+            document.getElementById('display-desc').innerText = desc;
         }
 
-        function move(n) { location.search = `?classNumber=${step + n}&mode=${mode}`; }
-
-        function talk(char, msg = null) {
-            if(mode !== 'twice') return;
-            const b = document.getElementById(`b-${char}`);
-            const msgs = char === 'mina' ? minaMsgs : sanaMsgs;
-            b.innerText = msg || msgs[Math.floor(Math.random()*msgs.length)];
-            b.classList.add('show');
-            setTimeout(() => b.classList.remove('show'), 4500);
+        function playAndFinish() {
+            sound.play();
+            alert("¡Misión Geográfica Completada!");
+            setTimeout(() => {
+                location.href = '../cienciasnaturales.html'; 
+            }, 800);
         }
-
-        window.onload = () => {
-            render();
-            if(mode === 'twice') {
-                setTimeout(() => document.getElementById('ui').classList.add('active'), 800);
-            }
-        };
     </script>
 </body>
 </html>
