@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>TLU | Seleccionar Modo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0; background: #020617; color: white; font-family: 'Fredoka', sans-serif;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;
+        }
+        .container { text-align: center; max-width: 800px; }
+        h1 { font-size: 2.5rem; margin-bottom: 40px; }
+        .modes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        
+        .mode-card {
+            background: rgba(255,255,255,0.03); border: 2px solid rgba(255,255,255,0.1);
+            padding: 40px; border-radius: 30px; cursor: pointer; transition: 0.3s;
+        }
+        .mode-card:hover { 
+            border-color: #38bdf8; background: rgba(56, 189, 248, 0.05); 
+            transform: translateY(-10px); 
+        }
+        
+        .icon { font-size: 3rem; margin-bottom: 20px; }
+        h3 { margin: 10px 0; font-size: 1.5rem; }
+        p { opacity: 0.6; font-size: 0.9rem; }
+        
+        .btn-back { margin-top: 50px; color: #64748b; cursor: pointer; background: none; border: none; font-family: 'Fredoka'; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Elige tu método de aprendizaje</h1>
+        <div class="modes-grid">
+            <div class="mode-card" onclick="location.href='pueblosoriginarios.html?mode=focus'">
+                <div class="icon">🧘‍♂️</div>
+                <h3>Modo Focus</h3>
+                <p>Lectura limpia, música ambiental y máxima concentración.</p>
+            </div>
+            <div class="mode-card" onclick="location.href='pueblosoriginarios.html?mode=twice'">
+                <div class="icon">🍭</div>
+                <h3>Modo TWICE</h3>
+                <p>Aprende con tus Idols. Estética colorida y dinámicas divertidas.</p>
+            </div>
+        </div>
+        <button class="btn-back" onclick="history.back()">← Volver atrás</button>
+    </div>
+</body>
+</html>
