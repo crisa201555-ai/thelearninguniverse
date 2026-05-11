@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>TLU Math | Fraction Quest</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --p-purple: #d946ef; --p-blue: #0ea5e9; --bg: #020617; }
+        body { 
+            margin: 0; font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; 
+            display: flex; flex-direction: column; align-items: center; overflow-x: hidden;
+        }
+
+        /* HEADER ESTILO HUD */
+        .hud-header {
+            width: 100%; padding: 20px; background: rgba(217, 70, 239, 0.1);
+            border-bottom: 2px solid var(--p-purple); text-align: center;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .game-container { max-width: 900px; width: 95%; margin: 40px auto; }
+
+        /* PANTALLA DE MISIÓN */
+        .mission-card {
+            background: rgba(30, 41, 59, 0.7); border: 2px solid var(--p-purple);
+            border-radius: 30px; padding: 40px; position: relative;
+            box-shadow: 0 0 30px rgba(217, 70, 239, 0.2); margin-bottom: 40px;
+        }
+
+        .mission-title { font-family: 'Orbitron', sans-serif; color: var(--p-purple); font-size: 1.8rem; margin-bottom: 20px; }
+
+        .visual-area { 
+            background: #000; height: 200px; border-radius: 20px; margin: 20px 0;
+            display: flex; align-items: center; justify-content: center; font-size: 5rem;
+        }
+
+        /* INPUTS GAMER */
+        .input-group { display: flex; align-items: center; justify-content: center; gap: 15px; margin-top: 30px; }
+        .fraction-input {
+            width: 70px; height: 70px; background: transparent; border: 3px solid var(--p-purple);
+            border-radius: 15px; color: white; text-align: center; font-size: 2rem;
+            font-family: 'Orbitron', sans-serif; outline: none;
+        }
+        .fraction-bar { width: 40px; height: 4px; background: white; }
+
+        /* BOTONES */
+        .btn-check {
+            background: var(--p-purple); color: white; border: none; padding: 15px 40px;
+            border-radius: 50px; font-weight: 700; cursor: pointer; margin-top: 30px;
+            font-family: 'Orbitron', sans-serif; transition: 0.3s;
+        }
+        .btn-check:hover { transform: scale(1.1); box-shadow: 0 0 20px var(--p-purple); }
+
+        /* FEEDBACK */
+        #feedback { margin-top: 20px; font-weight: 700; min-height: 24px; }
+    </style>
+</head>
+<body id="gameBody">
+
+    <audio id="winSound" src="https://thelearninguniverses.pages.dev/takedown.mp3"></audio>
+
+    <div class="hud-header">
+        <h1>FRACTION QUEST: Misión Diaria</h1>
+        <div id="score">NIVEL DE SINCRONIZACIÓN: 0%</div>
+    </div>
+
+    <div class="game-container">
+        <div class="mission-card" id="missionBox">
+            <div class="mission-title" id="m-title">MISIÓN 1: EL SUMINISTRO DE ENERGÍA (PIZZA)</div>
+            <p id="m-desc">Has pedido una pizza de 8 trozos. Si te comes 3 trozos, ¿qué fracción de la pizza has consumido?</p>
+            
+            <div class="visual-area" id="m-visual">🍕</div>
+
+            <div class="input-group">
+                <input type="number" id="num" class="fraction-input" placeholder="?">
+                <div class="fraction-bar"></div>
+                <input type="number" id="den" class="fraction-input" placeholder="?">
+            </div>
+
+            <center>
+                <div id="feedback"></div>
+                <button class="btn-check" onclick="checkAnswer()">VERIFICAR CÓDIGO</button>
+            </center>
+        </div>
+    </div>
+
+    <script>
+        let currentMission = 0;
+        let score = 0;
+
+        const missions = [
+            {
+                title: "MISIÓN 1: PROTOCOLO PIZZA",
+                desc: "Una pizza tiene 8 rebanadas. Si quedan 3 rebanadas en la caja, ¿qué fracción representa lo que queda?",
+                visual: "🍕",
+                correctNum: 3,
+                correctDen: 8
+            },
+            {
+                title: "MISIÓN 2: MATRIZ DE CHOCOLATE",
+                desc: "Una barra de chocolate tiene 12 cuadritos. Si regalas 5 a un amigo, ¿qué fracción regalaste?",
+                visual: "🍫",
+                correctNum: 5,
+                correctDen: 12
+            },
+            {
+                title: "MISIÓN 3: CARGA DE CRONOS",
+                desc: "Una hora tiene 60 minutos. ¿Qué fracción de una hora representan 15 minutos? (Simplifica si puedes, o usa 15/60)",
+                visual: "⏱️",
+                correctNum: 15,
+                correctDen: 60
+            }
+        ];
+
+        function checkAnswer() {
+            const userNum = document.getElementById('num').value;
+            const userDen = document.getElementById('den').value;
+            const feedback = document.getElementById('feedback');
+            const mission = missions[currentMission];
+
+            if (userNum == mission.correctNum && userDen == mission.correctDen) {
+                feedback.innerText = "¡Sincronización Exitosa! +33%";
+                feedback.style.color = "#22c55e";
+                score += 33;
+                document.getElementById('score').innerText = `NIVEL DE SINCRONIZACIÓN: ${score}%`;
+                
+                setTimeout(nextMission, 1500);
+            } else {
+                feedback.innerText = "Error de Cálculo. Reintenta.";
+                feedback.style.color = "#ef4444";
+            }
+        }
+
+        function nextMission() {
+            currentMission++;
+            if (currentMission < missions.length) {
+                const m = missions[currentMission];
+                document.getElementById('m-title').innerText = m.title;
+                document.getElementById('m-desc').innerText = m.desc;
+                document.getElementById('m-visual').innerText = m.visual;
+                document.getElementById('num').value = "";
+                document.getElementById('den').value = "";
+                document.getElementById('feedback').innerText = "";
+            } else {
+                finishGame();
+            }
+        }
+
+        function finishGame() {
+            document.getElementById('winSound').play();
+            document.getElementById('missionBox').innerHTML = `
+                <h2 style="color: var(--p-purple)">¡SISTEMA REPARADO!</h2>
+                <p>Has dominado las fracciones de la vida diaria.</p>
+                <button class="btn-check" onclick="location.href='../matematicas.html'">VOLVER AL MAPA</button>
+            `;
+        }
+
+        // Detectar modo (Focus/Twice)
+        const mode = new URLSearchParams(window.location.search).get('mode');
+        if(mode === 'twice') {
+            document.body.style.background = "radial-gradient(circle, #2d101e 0%, #020617 100%)";
+            document.querySelector('.hud-header').style.background = "rgba(244, 114, 182, 0.1)";
+        }
+    </script>
+</body>
+</html>
