@@ -54,6 +54,16 @@
 
         .btn-main:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(56, 189, 248, 0.3); }
 
+        /* ESTILO PASSKEY */
+        .btn-passkey {
+            width: 100%; padding: 14px; background: #fff; color: #1e293b;
+            border: none; border-radius: 12px; font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: 0.3s;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            margin-bottom: 15px;
+        }
+        .btn-passkey:hover { background: #f1f5f9; transform: scale(1.02); }
+
         .divider { display: flex; align-items: center; margin: 25px 0; color: #475569; font-size: 0.75rem; font-weight: 600; }
         .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: #1e293b; margin: 0 15px; }
 
@@ -100,6 +110,10 @@
             <h2>Hola, Cadete</h2>
             <p class="subtitle">Ingresa tus credenciales para iniciar el viaje espacial.</p>
             
+            <button class="btn-passkey" id="passkeyBtn">
+                <span>🆔</span> Iniciar con Passkey
+            </button>
+
             <div class="input-group">
                 <input type="email" id="email" placeholder="Correo Espacial">
             </div>
@@ -169,6 +183,22 @@
             localStorage.setItem('usuarioActivo', name);
             window.location.href = 'home.html';
         };
+
+        // EVENTO PASSKEY (Simulación funcional de WebAuthn)
+        document.getElementById('passkeyBtn').addEventListener('click', async () => {
+            try {
+                // Simula la llamada al sistema de seguridad del dispositivo
+                const confirmacion = confirm("¿Deseas iniciar sesión usando la Passkey vinculada a este dispositivo?");
+                if (confirmacion) {
+                    // En un entorno Passkey real se usa navigator.credentials.get
+                    // Aquí lo vinculamos a tu lógica de sesión actual
+                    localStorage.setItem('usuarioActivo', 'Agente_Biométrico');
+                    window.location.href = 'home.html';
+                }
+            } catch (e) {
+                alert("Error en Passkey: " + e.message);
+            }
+        });
 
         // Eventos de Firebase
         document.getElementById('loginBtn').addEventListener('click', async () => {
