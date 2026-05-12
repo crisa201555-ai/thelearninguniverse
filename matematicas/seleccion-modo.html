@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Universe | Configuración de Interfaz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --p-math: #d946ef; 
+            --p-twice: #f472b6;
+            --bg: #020617; 
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: white;
+            font-family: 'Fredoka', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: radial-gradient(circle at center, #2e1065 0%, #020617 100%);
+            overflow: hidden;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            letter-spacing: 3px;
+            text-shadow: 0 0 20px rgba(217, 70, 239, 0.4);
+            text-align: center;
+        }
+
+        .subtitle {
+            color: var(--p-math);
+            font-weight: 700;
+            margin-bottom: 50px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .modes-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            max-width: 850px;
+            width: 90%;
+        }
+
+        .mode-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            padding: 60px 30px;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: center;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Efecto Hover Modo FOCUS */
+        .focus:hover {
+            border-color: var(--p-math);
+            background: rgba(217, 70, 239, 0.05);
+            transform: translateY(-15px);
+            box-shadow: 0 20px 40px rgba(217, 70, 239, 0.2);
+        }
+
+        /* Efecto Hover Modo TWICE */
+        .twice:hover {
+            border-color: var(--p-twice);
+            background: rgba(244, 114, 182, 0.05);
+            transform: translateY(-15px);
+            box-shadow: 0 20px 40px rgba(244, 114, 182, 0.2);
+        }
+
+        .icon {
+            font-size: 5rem;
+            display: block;
+            margin-bottom: 25px;
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));
+        }
+
+        .mode-card h3 {
+            font-family: 'Orbitron', sans-serif;
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .mode-card p {
+            opacity: 0.6;
+            margin-top: 15px;
+            font-size: 1rem;
+        }
+
+        /* Botón Volver */
+        .btn-back {
+            margin-top: 50px;
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.3);
+            cursor: pointer;
+            font-family: 'Fredoka';
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .btn-back:hover { color: var(--p-math); }
+
+        @media (max-width: 650px) {
+            .modes-grid { grid-template-columns: 1fr; }
+            body { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CONFIGURACIÓN DE MISIÓN</h1>
+    <div class="subtitle">Selecciona tu interfaz de cálculo</div>
+
+    <div class="modes-grid">
+        <div class="mode-card focus" onclick="selectMode('focus')">
+            <span class="icon">🛰️</span>
+            <h3>MODO FOCUS</h3>
+            <p>Interfaz de alta concentración para matemáticos espaciales.</p>
+        </div>
+
+        <div class="mode-card twice" onclick="selectMode('twice')">
+            <span class="icon">🍭</span>
+            <h3 style="color: var(--p-twice);">MODO TWICE</h3>
+            <p>Resuelve desafíos numéricos con el apoyo de TWICE.</p>
+        </div>
+    </div>
+
+    <button class="btn-back" onclick="history.back()">← ABORTAR MISIÓN</button>
+
+    <script>
+        // Captura la lección de la URL (ej: fracciones)
+        const urlParams = new URLSearchParams(window.location.search);
+        const lesson = urlParams.get('lesson') || 'operaciones';
+
+        function selectMode(mode) {
+            // Te envía a: fracciones.html?mode=focus
+            location.href = `${lesson}.html?mode=${mode}`;
+        }
+    </script>
+</body>
+</html>
