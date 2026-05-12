@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Math Universe | Operaciones Básicas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --p-math: #d946ef; --p-blue: #0ea5e9; --bg: #020617; }
+        body { 
+            margin: 0; font-family: 'Fredoka', sans-serif; background: var(--bg); color: white; 
+            display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+        }
+
+        /* HUD SUPERIOR */
+        .hud {
+            width: 100%; padding: 20px; background: rgba(217, 70, 239, 0.1);
+            border-bottom: 2px solid var(--p-math); display: flex; justify-content: space-around;
+            font-family: 'Orbitron', sans-serif; position: sticky; top: 0; z-index: 100;
+        }
+
+        .container { max-width: 800px; width: 90%; margin: 50px auto; text-align: center; }
+
+        /* PANTALLA DE OPERACIÓN */
+        .op-card {
+            background: rgba(30, 41, 59, 0.7); border: 2px solid var(--p-math);
+            border-radius: 40px; padding: 60px 40px; position: relative;
+            box-shadow: 0 0 40px rgba(217, 70, 239, 0.2);
+        }
+
+        .screen-display {
+            font-family: 'Orbitron', sans-serif; font-size: 5rem; margin-bottom: 30px;
+            text-shadow: 0 0 20px var(--p-math); letter-spacing: 10px;
+        }
+
+        .input-answer {
+            background: transparent; border: 3px solid white; border-radius: 20px;
+            width: 200px; padding: 15px; color: white; font-size: 2.5rem;
+            text-align: center; font-family: 'Orbitron', sans-serif; outline: none;
+            transition: 0.3s;
+        }
+
+        .input-answer:focus { border-color: var(--p-math); box-shadow: 0 0 20px var(--p-math); }
+
+        .btn-send {
+            display: block; margin: 30px auto 0; background: var(--p-math);
+            color: white; border: none; padding: 15px 50px; border-radius: 50px;
+            font-family: 'Orbitron', sans-serif; font-weight: 700; cursor: pointer; transition: 0.3s;
+        }
+
+        .btn-send:hover { transform: scale(1.1); box-shadow: 0 0 30px var(--p-math); }
+
+        /* FEEDBACK ANIMATION */
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        .loading { animation: pulse 1s infinite; color: var(--p-math); font-family: 'Orbitron'; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <audio id="winSound" src="https://thelearninguniverses.pages.dev/takedown.mp3"></audio>
+
+    <div class="hud">
+        <div>MISIÓN: CÁLCULO VELOZ</div>
+        <div id="score">PROGRESO: 0%</div>
+        <div id="timer">ESTADO: ESTABLE</div>
+    </div>
+
+    <div class="container">
+        <div class="op-card" id="gameBox">
+            <p style="font-family: 'Orbitron'; color: var(--p-math); letter-spacing: 2px;">RESOLVER ECUACIÓN DE NÚCLEO</p>
+            
+            <div class="screen-display" id="problem">-- + --</div>
+
+            <input type="number" id="userAns" class="input-answer" placeholder="?" autocomplete="off">
+            
+            <button class="btn-send" onclick="check()">VALIDAR DATOS</button>
+            <div id="msg"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentLevel = 0;
+        let points = 0;
+        let num1, num2, correctAns;
+
+        // Generar operación aleatoria
+        function generateOp() {
+            num1 = Math.floor(Math.random() * 20) + 1;
+            num2 = Math.floor(Math.random() * 20) + 1;
+            const isSuma = Math.random() > 0.5;
+
+            if(isSuma) {
+                correctAns = num1 + num2;
+                document.getElementById('problem').innerText = `${num1} + ${num2}`;
+            } else {
+                // Asegurar que la resta no de negativo para niños
+                if(num1 < num2) [num1, num2] = [num2, num1];
+                correctAns = num1 - num2;
+                document.getElementById('problem').innerText = `${num1} - ${num2}`;
+            }
+            document.getElementById('userAns').value = "";
+            document.getElementById('userAns').focus();
+        }
+
+        function check() {
+            const val = document.getElementById('userAns').value;
+            const msg = document.getElementById('msg');
+
+            if(val == correctAns) {
+                points += 20;
+                document.getElementById('score').innerText = `PROGRESO: ${points}%`;
+                msg.innerHTML = "<p style='color:#22c55e'>✓ ENERGÍA SINCRONIZADA</p>";
+                
+                if(points >= 100) {
+                    finish();
+                } else {
+                    setTimeout(generateOp, 1000);
+                }
+            } else {
+                msg.innerHTML = "<p style='color:#ef4444'>X ERROR EN EL SISTEMA</p>";
+                setTimeout(() => msg.innerHTML = "", 1000);
+            }
+        }
+
+        function finish() {
+            document.getElementById('winSound').play();
+            document.getElementById('gameBox').innerHTML = `
+                <h1 style="font-family:'Orbitron'; color:var(--p-math)">NÚCLEO REPARADO</h1>
+                <p>Has dominado las operaciones básicas de este cuadrante.</p>
+                <button class="btn-send" onclick="location.href='../matematicas.html'">VOLVER AL HUB</button>
+            `;
+        }
+
+        // Permitir Enter
+        document.getElementById('userAns').addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') check();
+        });
+
+        // Iniciar
+        generateOp();
+
+        // Aplicar modo Twice si existe
+        if(new URLSearchParams(window.location.search).get('mode') === 'twice') {
+            document.body.style.background = "radial-gradient(circle at bottom left, #4a1033, #020617)";
+        }
+    </script>
+</body>
+</html>
