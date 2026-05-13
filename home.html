@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Learning Universe | Home</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #020617;
@@ -23,10 +23,11 @@
         .sidebar {
             width: 280px; background: var(--sidebar-bg); backdrop-filter: blur(20px);
             border-right: 1px solid rgba(255, 255, 255, 0.1); display: flex;
-            flex-direction: column; padding: 35px 25px;
+            flex-direction: column; padding: 35px 25px; z-index: 10;
         }
 
         .logo-text { 
+            font-family: 'Orbitron', sans-serif;
             font-size: 1.4rem; font-weight: 700; color: var(--accent); 
             margin-bottom: 50px; text-align: center; line-height: 1.2;
         }
@@ -48,15 +49,28 @@
         #time { font-size: 2.5rem; font-weight: 700; color: var(--accent); margin: 0; }
         #date { opacity: 0.6; }
 
-        h1 { font-size: 3.5rem; margin: 0; letter-spacing: -1px; text-align: center; text-transform: uppercase; }
+        h1 { font-family: 'Orbitron', sans-serif; font-size: 3.5rem; margin: 0; letter-spacing: -1px; text-align: center; text-transform: uppercase; }
         .welcome-sub { font-size: 1.2rem; opacity: 0.6; margin-bottom: 40px; }
 
         .explore-btn {
             background: white; color: var(--bg); border: none; padding: 20px 60px;
             border-radius: 50px; font-size: 1.5rem; font-weight: 700; cursor: pointer;
             transition: 0.3s; box-shadow: 0 10px 30px rgba(255,255,255,0.1);
+            font-family: 'Fredoka';
         }
         .explore-btn:hover { transform: scale(1.08); box-shadow: 0 15px 40px rgba(56, 189, 248, 0.4); }
+
+        /* --- FOOTER --- */
+        footer {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.8rem;
+            color: rgba(148, 163, 184, 0.5);
+            letter-spacing: 1px;
+            pointer-events: none;
+        }
 
         /* MODAL MATERIAS */
         .modal {
@@ -87,6 +101,7 @@
         <div class="nav-group">
             <button class="nav-btn" onclick="location.href='creategroup.html'">➕ Crear clase</button>
             <button class="nav-btn" onclick="location.href='inbox.html'">📥 Bandeja de entrada</button>
+            <button class="nav-btn" onclick="location.href='service-privacy.html'">⚖️ Privacidad</button>
         </div>
         <button class="logout-link" onclick="logout()">Cerrar sesión...</button>
     </nav>
@@ -101,11 +116,15 @@
         <p class="welcome-sub">¿Qué planeta de conocimiento visitaremos hoy?</p>
 
         <button class="explore-btn" onclick="openSubjects()">Explorar Materias</button>
+
+        <footer>
+            COPYRIGHT IMAGE 2026 BMC y Fernanda Leyenda
+        </footer>
     </main>
 
     <div id="subjectModal" class="modal" onclick="closeSubjects()">
         <div class="modal-card" onclick="event.stopPropagation()">
-            <h2 style="margin-bottom: 25px; color: var(--accent);">Selecciona una Materia</h2>
+            <h2 style="margin-bottom: 25px; color: var(--accent); font-family: 'Orbitron';">Materia Seleccionada</h2>
             
             <button class="opt-btn" onclick="location.href='history.html'">
                 <span>🏛️</span> History Universe
@@ -123,19 +142,19 @@
                 <span>➕</span> Matemáticas
             </button>
 
-            <button class="opt-btn" onclick="location.href='/orientacion/index.html'">
+            <button class="opt-btn" onclick="location.href='orientacion/index.html'">
                 <span>📕</span> Orientación
             </button>
 
-            <button class="opt-btn" onclick="location.href='/lenguaje.html'">
+            <button class="opt-btn" onclick="location.href='lenguaje.html'">
                 <span>📖</span> Lenguaje
             </button>
+            
             <p style="color: #64748b; cursor: pointer; margin-top: 20px; font-size: 0.9rem;" onclick="closeSubjects()">Cancelar</p>
         </div>
     </div>
 
     <script>
-        // Carga el nombre del usuario guardado en el Login
         function loadUser() {
             const name = localStorage.getItem('usuarioActivo') || "CADETE";
             document.getElementById('user-welcome').innerText = `BIENVENIDO, ${name}`;
