@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>TLU | Los Cretinos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <script src="../../js/auth.js"></script>
+    <style>
+        :root {
+            --tlu-blue: #38bdf8;
+            --tlu-orange: #fb923c; /* Color suciedad/barba */
+            --bg: #020617;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Fredoka', sans-serif;
+            background: var(--bg);
+            background: radial-gradient(circle at top, #1e1b4b 0%, #020617 100%);
+            color: white;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header-book {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--tlu-orange);
+            font-size: 2.5rem;
+        }
+
+        .aviso-repaso {
+            background: rgba(251, 146, 60, 0.1);
+            border: 1px solid var(--tlu-orange);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 30px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--tlu-blue);
+        }
+
+        .character-box {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border-left: 5px solid var(--tlu-orange);
+        }
+
+        .lesson-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .lesson-list li
