@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>TLU | Vida Personal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
+    <script src="../js/auth.js"></script>
+    <style>
+        body {
+            margin: 0; font-family: 'Fredoka', sans-serif; background: #0f172a; color: white;
+            line-height: 1.6; display: flex; flex-direction: column; align-items: center;
+        }
+        .content { max-width: 750px; width: 90%; margin: 50px auto; background: rgba(255,255,255,0.03); padding: 40px; border-radius: 30px; }
+        h1 { color: #38bdf8; text-align: center; font-size: 2.5rem; }
+        .creador-box { background: rgba(56, 189, 248, 0.1); padding: 20px; border-radius: 20px; border-left: 5px solid #38bdf8; margin: 30px 0; }
+        
+        /* Sección canción */
+        .music-section { margin-top: 40px; padding: 25px; background: #1e293b; border-radius: 20px; text-align: center; }
+        input { padding: 12px; border-radius: 10px; border: none; width: 70%; margin-bottom: 10px; font-family: 'Fredoka'; }
+        button { padding: 12px 25px; border-radius: 10px; border: none; background: #38bdf8; cursor: pointer; font-weight: 700; }
+        #musicResult { margin-top: 15px; font-weight: 700; color: #38bdf8; }
+    </style>
+</head>
+<body>
+
+    <div class="content">
+        <h1>Es hora. Vamos a reflexionar.</h1>
+        
+        <p>Tu vida es realmente importante. Aquí puedes hablar de tus metas, tus sueños y lo que te importa. Tú, que estás leyendo esto, eres alguien especial. Si vas al colegio, ¡disfruta cada momento!</p>
+
+        <div class="creador-box">
+            <strong>Mensaje de Cristóbal:</strong><br>
+            Yo soy Cristóbal, el creador de esta página. Cuando tenía 10 años y disfrutaba mucho la escuela, decidí hacer esto para compartir contigo: quiero motivarte cada día, tal como yo lo viví. Estoy aquí para ayudarte, para que nunca te rindas y crezcas feliz.
+        </div>
+
+        <p>¡Es tu momento! Puedes expresarte como quieras: dibuja, escribe, estudia, crea o haz lo que más te guste. Cuando te sientas aburrido, puedes leer, dibujar o descubrir cosas nuevas. ¡Eres muy bienvenido aquí!</p>
+
+        <h2 style="color: #f472b6;">Vamos a empezar con nuestro primer tema: ¡La vida es feliz!</h2>
+        <p>Cada día de tu vida puede ser feliz. Un simple abrazo a alguien que quieres, un momento compartido, o una cosa que te gusta hacer: esas pequeñas cosas son las que hacen que tu día sea increíble. Hay que valorarlas, porque aunque parezcan pocas, son mucho más importantes de lo que creemos.</p>
+        
+        <p>Ser feliz no es tan difícil como parece, solo hay que aprender algunas cosas para sentirnos bien y seguros siempre.</p>
+
+        <div class="music-section">
+            <h3>🎵 ¡Comparte tu música!</h3>
+            <p>¿Cuál es tu canción favorita en este momento?</p>
+            <input type="text" id="songInput" placeholder="Nombre de la canción...">
+            <button onclick="checkSong()">Compartir</button>
+            <div id="musicResult"></div>
+        </div>
+        
+        <center><a href="../home.html" style="color: white; opacity: 0.5; text-decoration: none; display: block; margin-top: 40px;">← Volver al inicio</a></center>
+    </div>
+
+    <script>
+        function checkSong() {
+            const songName = document.getElementById('songInput').value.trim();
+            const result = document.getElementById('musicResult');
+
+            // Filtro de seguridad (puedes añadir más palabras aquí)
+            const forbidden = ["pene", "vagina", "sexo", "puta", "mierda", "ctm", "67", "sixseven", "six seven", "seissiete", "seis y siete", "penerico", "testiculos", "Weon"]; 
+            
+            const isInsolent = forbidden.some(word => songName.toLowerCase().includes(word));
+
+            if (songName === "") {
+                result.innerText = "¡Dime el nombre de una canción!";
+                return;
+            }
+
+            if (isInsolent) {
+                result.innerText = "¡Ups! Ese nombre no parece ser una canción adecuada para nuestra comunidad. ✋";
+                result.style.color = "#fb7185";
+            } else {
+                result.innerText = `¡Wow! La canción "${songName}" es realmente increíble, me gusta. ✨`;
+                result.style.color = "#38bdf8";
+            }
+        }
+    </script>
+</body>
+</html>
