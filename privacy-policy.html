@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TLU | Política de Privacidad</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --fondo: #020617;
+            --accent: #38bdf8;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Fredoka', sans-serif;
+            background: var(--fondo);
+            background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .privacy-container {
+            max-width: 700px;
+            width: 90%;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            padding: 50px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--accent);
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            line-height: 1.6;
+            color: #94a3b8;
+            margin-bottom: 30px;
+        }
+
+        .download-box {
+            background: rgba(56, 189, 248, 0.1);
+            border: 2px dashed var(--accent);
+            padding: 30px;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .btn-download {
+            background: var(--accent);
+            color: var(--fondo);
+            text-decoration: none;
+            padding: 15px 40px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-download:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(56, 189, 248, 0.4);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+
+        .back-link:hover {
+            color: white;
+        }
+
+        .icon-doc {
+            font-size: 3rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="privacy-container">
+        <div class="icon-doc">📜</div>
+        <h1>Privacidad del Cadete</h1>
+        <p>En <b>The Learning Universe</b>, protegemos tus datos como si fueran planos de una estrella. No vendemos tu información y solo usamos lo necesario para que tu aprendizaje sea épico.</p>
+
+        <div class="download-box">
+            <span style="font-size: 0.9rem; font-weight: bold; color: var(--accent);">DOCUMENTO OFICIAL: PRIVACY.PDF</span>
+            <a href="privacy.pdf" download="TLU_Privacidad.pdf" class="btn-download">
+                📥 DESCARGAR POLÍTICA
+            </a>
+            <span style="font-size: 0.7rem; opacity: 0.6;">Versión 1.0 (PDF - 145 KB)</span>
+        </div>
+
+        <a href="login.html" class="back-link">← Volver al Sistema de Acceso</a>
+    </div>
+
+    <script>
+        // Descomenta la línea de abajo si quieres que la descarga sea automática al abrir la página
+        // window.onload = () => { document.querySelector('.btn-download').click(); };
+    </script>
+</body>
+</html>
