@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>TLU | Ami, el niño de las estrellas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <script src="../../js/auth.js"></script>
+    <style>
+        :root {
+            --tlu-blue: #38bdf8;
+            --tlu-purple: #d946ef;
+            --bg: #020617;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Fredoka', sans-serif;
+            background: var(--bg);
+            background: radial-gradient(circle at top, #0f172a 0%, #020617 100%);
+            color: white;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header-book {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeIn 1s ease;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--tlu-blue);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+        }
+
+        .author {
+            font-size: 1.2rem;
+            color: var(--tlu-purple);
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .aviso-repaso {
+            background: rgba(217, 70, 239, 0.1);
+            border: 1px solid var(--tlu-purple);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 30px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--tlu-blue);
+            border-bottom: 2px solid rgba(56, 189, 248, 0.3);
+            padding-bottom: 10px;
+        }
+
+        .character-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .char-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 4px solid var(--tlu-purple);
+        }
+
+        .btn-back {
+            display: inline-block;
+            margin-top: 40px;
+            padding: 12px 25px;
+            background: transparent;
+            color: white;
+            border: 1px solid white;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .btn-back:hover { background: white; color: var(--bg); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-book">
+            <h1>Ami, el niño de las estrellas</h1>
+            <div class="author">Autor: Enrique Barrios</div>
+        </div>
+
+        <div class="aviso-repaso">
+            <span style="font-size: 2rem;">⚠️</span>
+            <p style="margin: 0;"><strong>AVISO:</strong> Este es un resumen del libro, pero si tienes alguna prueba sobre esto, aunque hayas visto el resumen, puedes leer para repasarlo.</p>
+        </div>
+
+        <div class="card">
+            <h2>🔭 Resumen de la Misión</h2>
+            <p>La historia comienza cuando <strong>Pedro</strong>, un niño de diez años, conoce a un ser especial que cae del mar en una zona costera. [cite: 2, 3] Pedro decide llamarlo <strong>Ami</strong>, y juntos inician un viaje increíble por la Tierra y otros planetas en una nave espacial. [cite: 4, 5]</p>
+            <p>A través de esta aventura, Ami le enseña a Pedro que el <strong>Amor</strong> es la ley fundamental del universo. [cite: 7] Pedro descubre civilizaciones mucho más avanzadas donde no existe la violencia ni el egoísmo, sino la paz y el cuidado mutuo. [cite: 6, 8]</p>
+        </div>
+
+        <h2>👥 Personajes Principales</h2>
+        <div class="character-grid">
+            <div class="char-card">
+                <h3 style="color: var(--tlu-blue);">Ami</h3>
+                <p>Es un guía bondadoso de otro mundo con gran sabiduría. [cite: 18, 19, 20] Su misión es enseñar valores espirituales y mostrar que se puede vivir en armonía. [cite: 21]</p>
+            </div>
+            <div class="char-card">
+                <h3 style="color: var(--tlu-blue);">Pedro</h3>
+                <p>Un niño curioso y sensible de 10 años que representa a quienes buscan mejorar como seres humanos. [cite: 13, 16] Es el encargado de escribir todo lo aprendido. [cite: 9]</p>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top: 30px;">
+            <h2>✨ Gran Enseñanza</h2>
+            <p>El libro nos enseña que la evolución consiste en acercarse al amor y dejar atrás barreras como la envidia y la discriminación. [cite: 7, 8] Al final, todos compartimos la misma necesidad: <strong>amar y ser amados</strong>. [cite: 10]</p>
+        </div>
+
+        <center>
+            <a href="../resumendelibros" class="btn-back">← Volver al Centro de Mando</a>
+        </center>
+    </div>
+
+</body>
+</html>
