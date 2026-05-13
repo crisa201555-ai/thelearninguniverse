@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>TLU | Papelucho</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <script src="../../js/auth.js"></script>
+    <style>
+        :root {
+            --tlu-blue: #38bdf8;
+            --tlu-paper: #f8fafc;
+            --tlu-ink: #1e293b;
+            --bg: #020617;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Fredoka', sans-serif;
+            background: var(--bg);
+            background: radial-gradient(circle at top, #1e293b 0%, #020617 100%);
+            color: white;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header-book {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .book-img {
+            width: 180px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(56, 189, 248, 0.3);
+            margin-bottom: 20px;
+            transform: rotate(-3deg); /* Efecto de libro apoyado */
+            border: 5px solid white;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--tlu-blue);
+            font-size: 2.8rem;
+            margin: 10px 0;
+        }
+
+        .diario-page {
+            background: var(--tlu-paper);
+            color: var(--tlu-ink);
+            padding: 40px;
+            border-radius: 5px;
+            box-shadow: 10px 10px 0px rgba(56, 189, 248, 0.2);
+            position: relative;
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 25px 25px; /* Efecto de papel cuadriculado */
+            margin-bottom: 30px;
+        }
+
+        .diario-page::before {
+            content: "";
+            position: absolute;
+            left: 25px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #fca5a5; /* Margen rojo de cuaderno */
+        }
+
+        h2 {
+            font-family: 'Fredoka', sans-serif;
+            color: #0f172a;
+            border-bottom: 2px dashed #94a3b8;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .aviso-repaso {
+            background: rgba(56, 189, 248, 0.1);
+            border: 2px dashed var(--tlu-blue);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 30px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .character-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .char-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            border-bottom: 4px solid var(--tlu-blue);
+        }
+
+        .btn-back {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 35px;
+            background: var(--tlu-blue);
+            color: var(--bg);
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .btn-back:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(56, 189, 248, 0.5); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-book">
+            <img src="../papelucho-diario.jpg" alt="Papelucho" class="book-img">
+            <h1>Papelucho</h1>
+            <p style="opacity: 0.8;">Escrito por Marcela Paz</p>
+        </div>
+
+        <div class="aviso-repaso">
+            <span style="font-size: 1.5rem;">✍️</span>
+            <p style="margin: 0;"><strong>DATO:</strong> Este libro está escrito como un diario de vida.  ¡Léelo para entender cómo piensa un niño de 8 años!</p>
+        </div>
+
+        <div class="diario-page">
+            <h2>📖 Resumen de mi Diario</h2>
+            <p>Todo empieza cuando Papelucho, un niño de ocho años muy imaginativo, cree por error que ha envenenado a <strong>Domitila</strong>, la empleada de su casa. [cite: 160] Para desahogarse, decide escribir todo lo que siente en un diario. [cite: 161]</p>
+            <p>En sus páginas nos cuenta su vida diaria en Santiago: las clases en el colegio, las peleas y juegos con su hermano mayor <strong>Javier</strong>, y sus intentos por resolver problemas que para los adultos parecen tonterías, pero para él son súper importantes. [cite: 161, 164, 165]</p>
+            <p>Papelucho no es un niño perfecto; es inquieto, curioso y a veces se mete en líos por intentar arreglar las cosas de formas muy originales. [cite: 166] Pero siempre tiene buen corazón y una forma de ver el mundo llena de humor e inocencia. [cite: 166, 159]</p>
+        </div>
+
+        <div class="card" style="background: rgba(255,255,255,0.03); padding: 30px; border-radius: 20px;">
+            <h2 style="color: var(--tlu-blue);">🌟 ¿Qué aprendemos?</h2>
+            <ul style="list-style-type: '🚀 '; padding-left: 20px;">
+                <li>La importancia de ser sinceros y decir lo que pensamos. [cite: 171]</li>
+                <li>Que la familia y los amigos son lo más valioso. [cite: 172]</li>
+                <li>A aprender de nuestros errores (aunque metamos la pata). [cite: 174]</li>
+            </ul>
+        </div>
+
+        <h2 style="margin-top: 40px; color: var(--tlu-blue); font-family: 'Orbitron'; text-align: center;">Personajes Principales</h2>
+        <div class="character-list">
+            <div class="char-card">
+                <strong>👦 Papelucho:</strong> El protagonista. Ingenioso, travieso y con una imaginación sin límites. [cite: 178]
+            </div>
+            <div class="char-card">
+                <strong>🧹 Domitila:</strong> Es como una segunda madre para él; amable, paciente y siempre lo escucha. [cite: 194]
+            </div>
+            <div class="char-card">
+                <strong>👨‍👩‍👧‍👦 La Familia:</strong> Sus padres y sus hermanos (Javier y la Ji), que representan su mundo cotidiano y afectivo. [cite: 164, 183, 185]
+            </div>
+        </div>
+
+        <center>
+            <a href="../resumendelibros.html" class="btn-back">← Volver a la Biblioteca</a>
+        </center>
+    </div>
+
+</body>
+</html>
