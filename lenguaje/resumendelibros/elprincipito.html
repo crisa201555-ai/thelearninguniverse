@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>TLU | El Principito</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <script src="../../js/auth.js"></script>
+    <style>
+        :root {
+            --tlu-blue: #38bdf8;
+            --tlu-gold: #facc15;
+            --tlu-rose: #fb7185;
+            --bg: #020617;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Fredoka', sans-serif;
+            background: var(--bg);
+            background: radial-gradient(circle at top, #1e293b 0%, #020617 100%);
+            color: white;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header-book {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .book-img {
+            width: 200px;
+            border-radius: 50% 50% 0 0; /* Estilo redondeado superior */
+            box-shadow: 0 0 30px rgba(250, 204, 21, 0.3);
+            margin-bottom: 20px;
+            border: 3px solid var(--tlu-gold);
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--tlu-gold);
+            font-size: 2.8rem;
+            margin: 10px 0;
+            text-shadow: 0 0 15px rgba(250, 204, 21, 0.5);
+        }
+
+        .aviso-repaso {
+            background: rgba(250, 204, 21, 0.1);
+            border: 1px solid var(--tlu-gold);
+            padding: 20px;
+            border-radius: 20px;
+            margin: 30px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 35px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--tlu-blue);
+            font-size: 1.5rem;
+            margin-top: 0;
+        }
+
+        .planet-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .planet-item {
+            background: rgba(56, 189, 248, 0.1);
+            padding: 15px;
+            border-radius: 15px;
+            border-left: 4px solid var(--tlu-blue);
+            font-size: 0.9rem;
+        }
+
+        .quote {
+            font-size: 1.4rem;
+            font-style: italic;
+            text-align: center;
+            color: var(--tlu-rose);
+            margin: 40px 0;
+            font-weight: 700;
+        }
+
+        .character-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .character-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 20px;
+            border-top: 4px solid var(--tlu-rose);
+        }
+
+        .btn-back {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 35px;
+            background: var(--tlu-gold);
+            color: #000;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .btn-back:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(250, 204, 21, 0.4); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-book">
+            <img src="../principito.jpg" alt="El Principito" class="book-img">
+            <h1>El Principito</h1>
+            <p style="opacity: 0.7; font-size: 1.1rem;">Antoine de Saint-Exupéry</p>
+        </div>
+
+        <div class="aviso-repaso">
+            <span style="font-size: 1.5rem;">⭐</span>
+            <p style="margin: 0;"><strong>RECUERDA:</strong> Lo esencial es invisible a los ojos. Este resumen te ayudará a repasar los puntos clave para tu prueba.</p>
+        </div>
+
+        <div class="card">
+            <h2>🌍 El Encuentro en el Desierto</h2>
+            <p>La historia comienza cuando un piloto se queda varado en el <strong>desierto del Sahara</strong> tras una avería en su avión. Allí conoce al Principito, un niño de cabello dorado que viene del <strong>Asteroide B-612</strong>, un planeta muy pequeño donde vive con tres volcanes y una Rosa muy especial.</p>
+        </div>
+
+        <div class="quote">
+            "Solo se ve bien con el corazón, lo esencial es invisible a los ojos."
+        </div>
+
+        <div class="card">
+            <h2>🌌 Los Viajes por los Planetas</h2>
+            <p>Antes de llegar a la Tierra, el Principito visitó otros asteroides habitados por adultos que representaban diferentes defectos humanos:</p>
+            <div class="planet-list">
+                <div class="planet-item"><strong>El Rey:</strong> Cree que todos le obedecen sin tener súbditos.</div>
+                <div class="planet-item"><strong>El Vanidoso:</strong> Solo quiere que lo aplaudan.</div>
+                <div class="planet-item"><strong>El Bebedor:</strong> Bebe para olvidar la vergüenza de beber.</div>
+                <div class="planet-item"><strong>El Farolero:</strong> Obedece órdenes sin cuestionarlas.</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🦊 La Lección del Zorro</h2>
+            <p>En la Tierra, el Principito conoce a un zorro que le enseña el significado de <strong>domesticar</strong>: crear vínculos que hacen que los seres sean únicos el uno para el otro. Gracias a esto, entiende que su Rosa es única en el mundo porque es la flor que él ha cuidado.</p>
+        </div>
+
+        <div class="card">
+            <h2>👥 Personajes Clave</h2>
+            <div class="character-grid">
+                <div class="character-card">
+                    <strong style="color: var(--tlu-gold);">Principito:</strong> Representa la inocencia y la sabiduría de ver la vida con amor.
+                </div>
+                <div class="character-card">
+                    <strong style="color: var(--tlu-rose);">La Rosa:</strong> El amor del Principito; es orgullosa pero necesita su cuidado.
+                </div>
+                <div class="character-card">
+                    <strong style="color: #4ade80;">El Zorro:</strong> El maestro que explica el valor de la amistad verdadera.
+                </div>
+                <div class="character-card">
+                    <strong style="color: var(--tlu-blue);">El Piloto:</strong> El adulto que aprende a recuperar su niño interior.
+                </div>
+            </div>
+        </div>
+
+        <center>
+            <a href="../resumendelibros.html" class="btn-back">← Volver a la Galaxia de Libros</a>
+        </center>
+    </div>
+
+</body>
+</html>
