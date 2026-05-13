@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>TLU | Solicitar Nuevo Libro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <script src="../../js/auth.js"></script>
+    <style>
+        :root {
+            --tlu-blue: #38bdf8;
+            --tlu-purple: #d946ef;
+            --bg: #020617;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Fredoka', sans-serif;
+            background: var(--bg);
+            background: radial-gradient(circle at top left, #0f172a, #020617);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .form-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 40px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            color: var(--tlu-blue);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #94a3b8;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.3);
+            color: white;
+            font-family: 'Fredoka';
+            box-sizing: border-box;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--tlu-blue);
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, var(--tlu-blue), var(--tlu-purple));
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            transform: scale(1.02);
+            filter: brightness(1.1);
+        }
+
+        .info-msg {
+            font-size: 0.8rem;
+            color: #64748b;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .btn-back {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-card">
+        <h1>Nueva Solicitud</h1>
+        
+        <form id="requestForm">
+            <div class="input-group">
+                <label>Nombre del Libro *</label>
+                <input type="text" id="bookName" required placeholder="Ej: Crónicas de Narnia">
+            </div>
+
+            <div class="input-group">
+                <label>Autor *</label>
+                <input type="text" id="bookAuthor" required placeholder="Ej: C.S. Lewis">
+            </div>
+
+            <div class="input-group">
+                <label>Link (Opcional)</label>
+                <input type="url" id="bookLink" placeholder="https://...">
+            </div>
+
+            <div class="input-group">
+                <label>¿Por qué quieres este resumen? (Opcional)</label>
+                <textarea id="bookReason" rows="3" placeholder="Tengo prueba la próxima semana..."></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit">ENVIAR SOLICITUD</button>
+        </form>
+
+        <p class="info-msg">Máximo 5 solicitudes permitidas por día.</p>
+        <a href="../resumendelibros.html" class="btn-back">← Cancelar y volver</a>
+    </div>
+
+    <script>
+        document.getElementById('requestForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Lógica de límite de 5 envíos
+            const today = new Date().toLocaleDateString();
+            let requests = JSON.parse(localStorage.getItem('tlu_requests')) || { date: today, count: 0 };
+
+            if (requests.date !== today) {
+                requests = { date: today, count: 0 };
+            }
+
+            if (requests.count >= 5) {
+                alert("Has alcanzado el límite de 5 solicitudes por hoy. ¡Vuelve mañana! 🚀");
+                return;
+            }
+
+            // Datos del formulario
+            const nombre = document.getElementById('bookName').value;
+            const autor = document.getElementById('bookAuthor').value;
+            const link = document.getElementById('bookLink').value || "No proporcionado";
+            const porque = document.getElementById('bookReason').value || "No proporcionado";
+
+            // Formatear el cuerpo del correo según tu requerimiento
+            const subject = "Nueva Solicitud de Libro - TLU";
+            const body = `Bienvenido Cristóbal. Ha llegado nueva solicitud para subir un libro.\n\n` +
+                         `Nombre: ${nombre}\n` +
+                         `Autor: ${autor}\n` +
+                         `Link: ${link}\n` +
+                         `Porque: ${porque}\n\n` +
+                         `Gracias.\nMensaje enviado por Equipo de TLU.`;
+
+            // Abrir cliente de correo
+            const mailtoUrl = `mailto:thelearninguniverse@googlegroups.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.location.href = mailtoUrl;
+
+            // Actualizar contador
+            requests.count++;
+            localStorage.setItem('tlu_requests', JSON.stringify(requests));
+            
+            alert("¡Solicitud preparada! Revisa tu cliente de correo para confirmar el envío.");
+        });
+    </script>
+
+</body>
+</html>
