@@ -2,23 +2,121 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>TLU | Vida Personal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
-    <script src="../js/auth.js"></script>
+    <title>TLU | Vida Personal - Reflexión</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+        (function () {
+            const session = localStorage.getItem('userTLU') || localStorage.getItem('usuarioActivo');
+            if (!session) {
+                document.documentElement.style.display = 'none';
+                window.location.href = '../login.html';
+            }
+        })();
+    </script>
     <style>
-        body {
-            margin: 0; font-family: 'Fredoka', sans-serif; background: #0f172a; color: white;
-            line-height: 1.6; display: flex; flex-direction: column; align-items: center;
+        :root {
+            --accent: #38bdf8;
+            --pink: #f472b6;
+            --bg: #0f172a;
         }
-        .content { max-width: 750px; width: 90%; margin: 50px auto; background: rgba(255,255,255,0.03); padding: 40px; border-radius: 30px; }
-        h1 { color: #38bdf8; text-align: center; font-size: 2.5rem; }
-        .creador-box { background: rgba(56, 189, 248, 0.1); padding: 20px; border-radius: 20px; border-left: 5px solid #38bdf8; margin: 30px 0; }
+
+        body {
+            margin: 0;
+            font-family: 'Fredoka', sans-serif;
+            background: var(--bg);
+            color: white;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        .content {
+            max-width: 750px;
+            width: 90%;
+            margin: 50px auto;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 40px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        h1 { color: var(--accent); text-align: center; font-size: 2.5rem; font-family: 'Orbitron', sans-serif; }
         
+        .creador-box {
+            background: rgba(56, 189, 248, 0.1);
+            padding: 25px;
+            border-radius: 20px;
+            border-left: 5px solid var(--accent);
+            margin: 30px 0;
+        }
+
         /* Sección canción */
-        .music-section { margin-top: 40px; padding: 25px; background: #1e293b; border-radius: 20px; text-align: center; }
-        input { padding: 12px; border-radius: 10px; border: none; width: 70%; margin-bottom: 10px; font-family: 'Fredoka'; }
-        button { padding: 12px 25px; border-radius: 10px; border: none; background: #38bdf8; cursor: pointer; font-weight: 700; }
-        #musicResult { margin-top: 15px; font-weight: 700; color: #38bdf8; }
+        .music-section {
+            margin-top: 40px;
+            padding: 25px;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+
+        input {
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            width: 70%;
+            margin-bottom: 15px;
+            background: rgba(0,0,0,0.2);
+            color: white;
+            font-family: 'Fredoka';
+        }
+
+        button {
+            padding: 15px 30px;
+            border-radius: 12px;
+            border: none;
+            background: var(--accent);
+            color: #020617;
+            cursor: pointer;
+            font-weight: 700;
+            font-family: 'Fredoka';
+            transition: 0.3s;
+        }
+
+        button:hover { transform: scale(1.05); box-shadow: 0 0 15px var(--accent); }
+
+        /* Botón Finalizar */
+        .btn-finish {
+            background: #22c55e;
+            color: white;
+            margin-top: 50px;
+            font-size: 1.2rem;
+            width: 100%;
+        }
+
+        .btn-finish:hover {
+            background: #16a34a;
+            box-shadow: 0 0 25px #22c55e;
+        }
+
+        /* Emojis Voladores */
+        .emoji-fly {
+            position: fixed;
+            pointer-events: none;
+            z-index: 999;
+            font-size: 2rem;
+            animation: flyUp 5s forwards linear;
+        }
+
+        @keyframes flyUp {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        #musicResult { margin-top: 15px; font-weight: 700; }
     </style>
 </head>
 <body>
@@ -29,68 +127,93 @@
         <p>Tu vida es realmente importante. Aquí puedes hablar de tus metas, tus sueños y lo que te importa. Tú, que estás leyendo esto, eres alguien especial. Si vas al colegio, ¡disfruta cada momento!</p>
 
         <div class="creador-box">
-            <strong>Mensaje de Cristóbal:</strong><br>
+            <strong style="color: var(--accent); font-family: 'Orbitron';">MENSAJE DE CRISTÓBAL:</strong><br>
             Yo soy Cristóbal, el creador de esta página. Cuando tenía 10 años y disfrutaba mucho la escuela, decidí hacer esto para compartir contigo: quiero motivarte cada día, tal como yo lo viví. Estoy aquí para ayudarte, para que nunca te rindas y crezcas feliz.
         </div>
 
         <p>¡Es tu momento! Puedes expresarte como quieras: dibuja, escribe, estudia, crea o haz lo que más te guste. Cuando te sientas aburrido, puedes leer, dibujar o descubrir cosas nuevas. ¡Eres muy bienvenido aquí!</p>
 
-        <h2 style="color: #f472b6;">Vamos a empezar con nuestro primer tema: ¡La vida es feliz!</h2>
-        <p>Cada día de tu vida puede ser feliz. Un simple abrazo a alguien que quieres, un momento compartido, o una cosa que te gusta hacer: esas pequeñas cosas son las que hacen que tu día sea increíble. Hay que valorarlas, porque aunque parezcan pocas, son mucho más importantes de lo que creemos.</p>
+        <h2 style="color: var(--pink);">¡La vida es feliz!</h2>
+        <p>Cada día de tu vida puede ser feliz. Un simple abrazo a alguien que quieres, un momento compartido, o una cosa que te gusta hacer: esas pequeñas cosas son las que hacen que tu día sea increíble.</p>
         
         <p>Ser feliz no es tan difícil como parece, solo hay que aprender algunas cosas para sentirnos bien y seguros siempre.</p>
 
         <div class="music-section">
             <h3>🎵 ¡Comparte tu música!</h3>
-            <p>¿Cuál es tu canción favorita en este momento?</p>
-            <input type="text" id="songInput" placeholder="Nombre de la canción...">
-            <button onclick="checkSong()">Compartir</button>
+            <p>¿Cuál es tu canción favorita?</p>
+            <input type="text" id="songInput" placeholder="Nombre de la canción..." autocomplete="off">
+            <button onclick="checkSong()">Compartir con Cristóbal</button>
             <div id="musicResult"></div>
         </div>
+
+        <button class="btn-finish" onclick="finishLesson()">Finalizar lección...</button>
         
-        <center><a href="../home.html" style="color: white; opacity: 0.5; text-decoration: none; display: block; margin-top: 40px;">← Volver al inicio</a></center>
+        <center><a href="../home.html" style="color: white; opacity: 0.3; text-decoration: none; display: block; margin-top: 40px; font-size: 0.8rem;">← Cancelar reflexión</a></center>
     </div>
 
     <script>
-function checkSong() {
-    const input = document.getElementById('songInput').value;
-    const result = document.getElementById('musicResult');
+        // 1. Lógica de la canción con filtro de seguridad total
+        function checkSong() {
+            const input = document.getElementById('songInput').value;
+            const result = document.getElementById('musicResult');
 
-    // 1. "Normalizamos" el texto: quitamos espacios, puntos y lo pasamos a minúsculas
-    // Esto hace que "P E N E" se convierta en "pene" antes de revisar
-    const cleanInput = input.toLowerCase()
-                            .replace(/\s+/g, '')       // Quita todos los espacios
-                            .replace(/[04]/g, 'a')     // Cambia 0 o 4 por 'a'
-                            .replace(/[3]/g, 'e')      // Cambia 3 por 'e'
-                            .replace(/[1]/g, 'i');     // Cambia 1 por 'i'
+            // Filtro avanzado: quita espacios y traduce números comunes
+            const cleanInput = input.toLowerCase()
+                                    .replace(/\s+/g, '')
+                                    .replace(/[04]/g, 'a').replace(/[3]/g, 'e').replace(/[1]/g, 'i');
 
-    // 2. Lista de conceptos bloqueados (palabras clave y frases)
-    const forbiddenPatterns = [
-        "pene", "vagina", "sexo", "puta", "mierda", "culo", 
-        "parteintima", "organoreproductor", "p.e.n.e", "pen3"
-    ];
+            const forbidden = ["pene", "vagina", "sexo", "puta", "mierda", "culo", "parteintima", "p.e.n.e"];
+            const isInsolent = forbidden.some(word => cleanInput.includes(word));
 
-    // 3. Verificamos si el mensaje contiene algo de la lista negra
-    const isInsolent = forbiddenPatterns.some(word => cleanInput.includes(word));
-    
-    // 4. Verificación de longitud mínima
-    if (input.trim().length < 2) {
-        result.innerText = "¡Dime el nombre de una canción!";
-        result.style.color = "#fff";
-        return;
-    }
+            if (input.trim().length < 2) {
+                result.innerText = "¡Escribe el nombre de una canción!";
+                return;
+            }
 
-    if (isInsolent) {
-        result.innerText = "¡Ups! Ese mensaje contiene palabras no permitidas en nuestro espacio de reflexión. ✋";
-        result.style.color = "#fb7185";
-        // Opcional: Limpiar el input si es grosero
-        document.getElementById('songInput').value = "";
-    } else {
-        // Si todo está bien, mostramos el mensaje con el nombre original (con espacios)
-        result.innerText = `¡Wow! La canción "${input}" es realmente increíble, me gusta. ✨`;
-        result.style.color = "#38bdf8";
-    }
-}
+            if (isInsolent) {
+                result.innerText = "¡Ups! Usemos palabras bonitas para nuestra reflexión. ✋";
+                result.style.color = "#fb7185";
+                document.getElementById('songInput').value = "";
+            } else {
+                result.innerText = `¡Wow! La canción "${input}" es realmente increíble, me gusta. ✨`;
+                result.style.color = "#38bdf8";
+            }
+        }
+
+        // 2. Lógica de Finalización Feliz
+        function finishLesson() {
+            alert("¡Felicidades, Agente! 🌟\nHas completado tu reflexión diaria. Recuerda que eres especial y capaz de lograr todo lo que sueñes.\n\nCristóbal está orgulloso de tu progreso. ¡Sigue brillando!");
+
+            // Lanzar emojis voladores
+            startEmojiShower();
+
+            // Redirigir después de 5 segundos
+            setTimeout(() => {
+                window.location.href = '../home.html';
+            }, 5000);
+        }
+
+        function startEmojiShower() {
+            const emojis = ['😊', '🌟', '✨', '🎈', '❤️', '🚀', '🌈', '🍀', '🍬'];
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const emoji = document.createElement('div');
+                    emoji.className = 'emoji-fly';
+                    emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                    
+                    // Posición horizontal aleatoria
+                    emoji.style.left = Math.random() * 100 + 'vw';
+                    // Velocidad aleatoria
+                    emoji.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    
+                    document.body.appendChild(emoji);
+
+                    // Limpiar el emoji después de la animación
+                    setTimeout(() => emoji.remove(), 5000);
+                }, i * 100);
+            }
+        }
     </script>
 </body>
 </html>
