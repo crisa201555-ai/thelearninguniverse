@@ -2,242 +2,187 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>TLU | Biblioteca Pro</title>
+    <title>TLU | Biblioteca de Resúmenes</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <script src="../js/auth.js"></script>
     <style>
         :root {
             --tlu-blue: #38bdf8;
             --tlu-purple: #d946ef;
-            --tlu-green: #4ade80;
             --bg: #020617;
-            --card-bg: rgba(255, 255, 255, 0.04);
         }
 
         body {
             margin: 0;
             font-family: 'Fredoka', sans-serif;
             background: var(--bg);
-            background: radial-gradient(circle at top right, #0f172a, #020617);
+            background: radial-gradient(circle at top left, #1e1b4b 0%, #020617 100%);
             color: white;
             min-height: 100vh;
         }
 
         .container {
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 40px 20px;
         }
 
-        /* HEADER PRO */
-        .library-header {
+        .header {
             text-align: center;
             margin-bottom: 60px;
-            padding: 40px;
-            background: rgba(56, 189, 248, 0.05);
-            border-radius: 40px;
-            border: 1px solid rgba(56, 189, 248, 0.1);
         }
 
         h1 {
             font-family: 'Orbitron', sans-serif;
-            font-size: 3.5rem;
-            margin: 0;
-            background: linear-gradient(to right, #38bdf8, #d946ef);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: 2px;
+            font-size: 3rem;
+            color: var(--tlu-blue);
+            text-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+            margin-bottom: 10px;
         }
 
-        /* BUSCADOR PRO */
-        .search-container {
-            margin-top: 30px;
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-        }
-
-        #bookSearch {
-            width: 70%;
-            padding: 20px 30px;
-            border-radius: 20px;
-            border: 2px solid rgba(255,255,255,0.1);
-            background: rgba(0,0,0,0.4);
+        .search-bar {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px 25px;
+            border-radius: 50px;
+            width: 100%;
+            max-width: 500px;
             color: white;
-            font-size: 1.1rem;
-            font-family: 'Fredoka';
+            font-size: 1rem;
+            margin: 20px auto;
+            display: block;
+            outline: none;
             transition: 0.3s;
         }
 
-        #bookSearch:focus {
+        .search-bar:focus {
             border-color: var(--tlu-blue);
-            box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
-            outline: none;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
         }
 
-        /* GRID DE LIBROS */
-        .book-grid {
+        .books-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 30px;
         }
 
         .book-card {
-            background: var(--card-bg);
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 30px;
-            padding: 30px;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: flex;
-            flex-direction: column;
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            transition: 0.4s;
+            text-decoration: none;
+            color: white;
             position: relative;
             overflow: hidden;
         }
 
         .book-card:hover {
-            transform: translateY(-15px);
-            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.07);
             border-color: var(--tlu-blue);
         }
 
-        .tag {
-            display: inline-block;
-            padding: 5px 12px;
-            border-radius: 8px;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            font-weight: 700;
+        .book-card img {
+            width: 140px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
             margin-bottom: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
-
-        .tag-aventura { background: rgba(56, 189, 248, 0.2); color: var(--tlu-blue); }
-        .tag-valores { background: rgba(217, 70, 239, 0.2); color: var(--tlu-purple); }
 
         .book-card h3 {
             font-family: 'Orbitron', sans-serif;
-            margin: 0 0 10px 0;
-            font-size: 1.4rem;
+            font-size: 1.1rem;
+            margin: 10px 0 5px 0;
+            color: var(--tlu-blue);
         }
 
         .book-card p {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin: 0;
+        }
+
+        .badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--tlu-purple);
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            border-radius: 50px;
+            font-weight: bold;
+        }
+
+        .btn-back {
+            display: inline-block;
+            margin-top: 50px;
+            padding: 10px 25px;
             color: #94a3b8;
-            font-size: 0.95rem;
-            margin-bottom: 25px;
-            flex-grow: 1;
-        }
-
-        /* BOTONES */
-        .btn-main {
-            background: var(--tlu-blue);
-            color: var(--bg);
             text-decoration: none;
-            padding: 15px;
-            border-radius: 15px;
-            font-weight: 700;
-            text-align: center;
-            transition: 0.3s;
-            margin-bottom: 10px;
-        }
-
-        .btn-main:hover { filter: brightness(1.1); box-shadow: 0 5px 15px rgba(56, 189, 248, 0.4); }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.05);
-            color: white;
-            text-decoration: none;
-            padding: 12px;
-            border-radius: 15px;
-            font-size: 0.85rem;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.1);
             transition: 0.3s;
         }
 
-        .btn-secondary:hover { background: #e11d48; border-color: #e11d48; }
+        .btn-back:hover { color: white; }
 
-        .no-results {
-            grid-column: 1 / -1;
+        footer {
             text-align: center;
-            padding: 100px;
-            display: none;
+            margin-top: 100px;
+            padding-bottom: 40px;
+            opacity: 0.3;
+            font-size: 0.8rem;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="library-header">
+        <header class="header">
             <h1>CENTRAL DE LIBROS</h1>
-            <p>La base de datos literaria más avanzada de la galaxia.</p>
+            <p>Explora más de 500 resúmenes exclusivos para cadetes de TLU.</p>
+            <input type="text" class="search-bar" placeholder="Buscar un libro o autor...">
+        </header>
+
+        <div class="books-grid">
             
-            <div class="search-container">
-                <input type="text" id="bookSearch" placeholder="¿Qué misión quieres repasar hoy?..." onkeyup="searchBooks()">
-            </div>
-        </div>
-
-        <div class="book-grid" id="bookGrid">
-            
-            <div class="book-card">
-                <span class="tag tag-valores">Espacial • Valores</span>
-                <h3>Ami, el niño de las estrellas</h3>
-                <p>Enrique Barrios</p>
-                <p>Acompaña a Pedro en un viaje galáctico para aprender que el Amor es la ley fundamental del universo.</p>
-                <a href="resumendelibros/amielniñodelasestrellas.html" class="btn-main">REPASAR RESUMEN</a>
-                <a href="https://bibliometro.cl/libros/ami-el-nino-de-las-estrellas/" target="_blank" class="btn-secondary">VER EN BIBLIOMETRO</a>
-            </div>
-
-            <div class="book-card">
-                <span class="tag tag-aventura">Aventura • Humor</span>
-                <h3>Papelucho y el marciano</h3>
-                <p>Marcela Paz</p>
-                <p>¿Qué pasa cuando aspiras accidentalmente a un marciano? Descubre la historia de Papelucho y su amigo Det.</p>
-                <a href="resumendelibros/papeluchoyelmarciano.html" class="btn-main">REPASAR RESUMEN</a>
-                <a href="https://bibliometro.cl/libros/papelucho-y-el-marciano/" target="_blank" class="btn-secondary">VER EN BIBLIOMETRO</a>
-            </div>
-
-            <div class="book-card">
-                <span class="tag tag-valores">Clásico • Filosofía</span>
+            <a href="resumendelibros/elprincipito.html" class="book-card">
+                <span class="badge">CLÁSICO</span>
+                <img src="principito.jpg" alt="El Principito">
                 <h3>El Principito</h3>
                 <p>Antoine de Saint-Exupéry</p>
-                <p>Un pequeño habitante del asteroide B-612 nos enseña que lo esencial es invisible a los ojos.</p>
-                <a href="resumendelibros/elprincipito.html" class="btn-main">REPASAR RESUMEN</a>
-                <a href="https://bibliometro.cl/libros/el-principito/" target="_blank" class="btn-secondary">VER EN BIBLIOMETRO</a>
-            </div>
+            </a>
 
-        </div>
+            <a href="resumendelibros/loscretinos.html" class="book-card">
+                <span class="badge">NUEVO</span>
+                <img src="los-cretinos.jpg" alt="Los Cretinos">
+                <h3>Los Cretinos</h3>
+                <p>Roald Dahl</p>
+            </a>
 
-        <div id="noResults" class="no-results">
-            <span style="font-size: 4rem;">📡</span>
-            <h2>Señal perdida...</h2>
-            <p>No encontramos ese libro en nuestros archivos estelares.</p>
+            <a href="resumendelibros/papelucho.html" class="book-card">
+                <img src="papelucho-diario.jpg" alt="Papelucho">
+                <h3>Papelucho</h3>
+                <p>Marcela Paz</p>
+            </a>
+
+            <a href="resumendelibros/papelucho-dixleso.html" class="book-card">
+                <img src="papelucho-dixleso.jpg" alt="Papelucho Dix-leso">
+                <h3>¿Soy Dix-leso?</h3>
+                <p>Marcela Paz</p>
+            </a>
+
+            <a href="resumendelibros/papelucho-clinica.html" class="book-card">
+                <img src="papelucho-clinica.jpg" alt="Papelucho Clínica">
+                <h3>En la Clínica</h3>
+                <p>Marcela Paz</p>
+            </a>
+
         </div>
 
         <center>
-            <a href="../home.html" style="color: white; opacity: 0.3; text-decoration: none; display: block; margin-top: 80px; font-size: 0.9rem;">← Volver al Centro de Mando</a>
+            <a href="../lenguaje.html" class="btn-back">← Volver a Lenguaje</a>
         </center>
-    </div>
-
-    <script>
-        function searchBooks() {
-            const input = document.getElementById('bookSearch').value.toLowerCase();
-            const cards = document.getElementsByClassName('book-card');
-            const noResults = document.getElementById('noResults');
-            let found = false;
-
-            for (let card of cards) {
-                const title = card.querySelector('h3').innerText.toLowerCase();
-                const text = card.querySelector('p').innerText.toLowerCase();
-                
-                if (title.includes(input) || text.includes(input)) {
-                    card.style.display = "flex";
-                    found = true;
-                } else {
-                    card.style.display = "none";
-                }
-            }
-
-            noResults.style.display = found ? "none" : "block";
-        }
-    </script>
-</body>
-</html>
