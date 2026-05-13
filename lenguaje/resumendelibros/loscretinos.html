@@ -8,7 +8,8 @@
     <style>
         :root {
             --tlu-blue: #38bdf8;
-            --tlu-orange: #fb923c; /* Color suciedad/barba */
+            --tlu-brown: #78350f; /* Color para la barba del Sr. Cretino */
+            --tlu-dirty-green: #4d7c0f; /* Color para las bromas y el pegamento */
             --bg: #020617;
         }
 
@@ -16,7 +17,7 @@
             margin: 0;
             font-family: 'Fredoka', sans-serif;
             background: var(--bg);
-            background: radial-gradient(circle at top, #1e1b4b 0%, #020617 100%);
+            background: radial-gradient(circle at top right, #1a2e05 0%, #020617 100%);
             color: white;
             line-height: 1.6;
         }
@@ -32,21 +33,31 @@
             margin-bottom: 40px;
         }
 
+        .book-img {
+            width: 200px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(77, 124, 15, 0.4);
+            margin-bottom: 20px;
+            border: 2px solid var(--tlu-dirty-green);
+        }
+
         h1 {
             font-family: 'Orbitron', sans-serif;
-            color: var(--tlu-orange);
+            color: var(--tlu-dirty-green);
             font-size: 2.5rem;
+            margin: 10px 0;
         }
 
         .aviso-repaso {
-            background: rgba(251, 146, 60, 0.1);
-            border: 1px solid var(--tlu-orange);
+            background: rgba(120, 53, 15, 0.1);
+            border: 1px solid var(--tlu-brown);
             padding: 20px;
             border-radius: 15px;
             margin: 30px 0;
             display: flex;
             align-items: center;
             gap: 15px;
+            font-size: 0.95rem;
         }
 
         .card {
@@ -60,6 +71,7 @@
         h2 {
             font-family: 'Orbitron', sans-serif;
             color: var(--tlu-blue);
+            margin-top: 0;
         }
 
         .character-box {
@@ -67,12 +79,93 @@
             padding: 20px;
             border-radius: 15px;
             margin-bottom: 15px;
-            border-left: 5px solid var(--tlu-orange);
+            border-left: 5px solid var(--tlu-brown);
         }
 
-        .lesson-list {
+        .broma-list {
             list-style: none;
             padding: 0;
         }
 
-        .lesson-list li
+        .broma-list li {
+            background: rgba(77, 124, 15, 0.1);
+            margin-bottom: 10px;
+            padding: 10px 15px;
+            border-radius: 10px;
+            border-left: 3px solid var(--tlu-dirty-green);
+        }
+
+        .btn-back {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 30px;
+            border: 1px solid var(--tlu-blue);
+            color: var(--tlu-blue);
+            text-decoration: none;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+
+        .btn-back:hover { background: var(--tlu-blue); color: var(--bg); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-book">
+            <img src="../los-cretinos.jpg" alt="Los Cretinos" class="book-img">
+            <h1>Los Cretinos</h1>
+            <p style="opacity: 0.8;">Escrito por Roald Dahl</p>
+        </div>
+
+        <div class="aviso-repaso">
+            <span style="font-size: 1.5rem;">⚠️</span>
+            <p style="margin: 0;"><strong>AVISO:</strong> Este es un resumen del libro, pero si tienes alguna prueba sobre esto, aunque hayas visto el resumen, puedes leer para repasarlo.</p>
+        </div>
+
+        <div class="card">
+            <h2>🤢 Una Pareja Repugnante</h2>
+            <p>El señor y la señora Cretino son dos personas desagradables que viven en una casa sin ventanas. El <strong>Señor Cretino</strong> tiene una barba enorme y sucia llena de restos de comida, mientras que la <strong>Señora Cretino</strong> se ha vuelto fea debido a sus pensamientos malvados.</p>
+            <p>Se pasan el día haciéndose bromas pesadas, como:</p>
+            <ul class="broma-list">
+                <li>La Señora Cretino pone su ojo de vidrio en la cerveza de su esposo.</li>
+                <li>El Señor Cretino le pone una rana en la cama.</li>
+                <li>La Señora Cretino le sirve espaguetis hechos con gusanos.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>🐒 La Rebelión de los Animales</h2>
+            <p>Los Cretinos mantienen prisioneros a una familia de monos, los <strong>Chimpa-Quico</strong>, obligándolos a estar cabeza abajo todo el día. También cazan pájaros usando pegamento fuerte en las ramas de un árbol para hacer "pastel de pájaro".</p>
+            <p>Gracias a la llegada del <strong>Pájaro Gordinflón</strong>, los monos logran comunicarse con las aves y planean una venganza. Aprovechan que los Cretinos salen a comprar escopetas para entrar a la casa y pegar todos los muebles en el techo usando el pegamento del Señor Cretino.</p>
+        </div>
+
+        <div class="card" style="border-color: var(--tlu-dirty-green);">
+            <h2>✨ El Final de los Cretinos</h2>
+            <p>Cuando los Cretinos regresan y ven todo en el techo, creen que <strong>ellos</strong> son los que están al revés. Para "corregirse", se ponen de cabeza y se quedan pegados al suelo. Debido a la presión y al miedo, sufren de la enfermedad de "el encogimiento" y terminan desapareciendo por completo.</p>
+            <p><strong>Enseñanza:</strong> Los buenos pensamientos te hacen brillar como rayos de sol y siempre serás hermoso, sin importar cómo seas por fuera.</p>
+        </div>
+
+        <div class="card">
+            <h2>👥 Personajes</h2>
+            
+            <div class="character-box">
+                <strong>Sr. Cretino:</strong> Sucio, cruel y mentiroso. Su barba es un catálogo de asquerosidades.
+            </div>
+
+            <div class="character-box" style="border-left-color: var(--tlu-dirty-green);">
+                <strong>Sra. Cretino:</strong> Antiguamente bella, pero sus malas acciones la transformaron en una persona horrenda.
+            </div>
+
+            <div class="character-box">
+                <strong>Monos Chimpa-Quico:</strong> Inteligentes y valientes, representan la unión para derrotar al abusador.
+            </div>
+        </div>
+
+        <center>
+            <a href="../resumendelibros.html" class="btn-back">← Volver a la Biblioteca</a>
+        </center>
+    </div>
+
+</body>
+</html>
