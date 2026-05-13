@@ -2,236 +2,50 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - The Learning Universe</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
-    
+    <title>TLU | Acceso Espacial</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --fondo: #020617;
-            --accent: #38bdf8;
-            --glass: rgba(255, 255, 255, 0.05);
-            --blanco: #ffffff;
-        }
-
         body {
-            margin: 0; padding: 0; font-family: 'Montserrat', sans-serif;
-            background: var(--fondo); height: 100vh; display: flex; overflow: hidden;
+            margin: 0;
+            background: #020617;
+            color: white;
+            font-family: 'Fredoka', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
         }
-
-        /* LADO IZQUIERDO: FORMULARIO */
-        .login-side {
-            width: 40%; height: 100%; display: flex; align-items: center;
-            justify-content: center; background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
-            padding: 50px; box-sizing: border-box; z-index: 10;
+        .welcome-img {
+            width: 300px;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(56, 189, 248, 0.3);
+            margin-bottom: 20px;
         }
-
-        .form-container { width: 100%; max-width: 380px; animation: fadeIn 0.8s ease; }
-
-        .logo {
-            font-family: 'Fredoka', sans-serif; font-size: 2.8rem;
-            color: var(--accent); margin-bottom: 35px; letter-spacing: -2px;
+        h1 { font-family: 'Orbitron', sans-serif; color: #38bdf8; }
+        .btn-enter {
+            background: white;
+            color: #020617;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-weight: 700;
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: 0.3s;
+            border: none;
+            cursor: pointer;
         }
-
-        h2 { color: #fff; margin: 0 0 10px 0; font-size: 1.8rem; }
-        .subtitle { color: #94a3b8; font-size: 0.9rem; margin-bottom: 30px; }
-
-        .input-group { margin-bottom: 15px; }
-        
-        input {
-            width: 100%; background: var(--glass); border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 16px 20px; border-radius: 12px; color: #fff; font-size: 1rem;
-            box-sizing: border-box; outline: none; transition: 0.3s;
-        }
-
-        input:focus { border-color: var(--accent); background: rgba(56, 189, 248, 0.05); }
-
-        .btn-main {
-            width: 100%; padding: 16px; background: var(--accent); color: var(--fondo);
-            border: none; border-radius: 12px; font-family: 'Fredoka', sans-serif;
-            font-size: 1.2rem; font-weight: 700; cursor: pointer; transition: 0.3s; margin-top: 10px;
-        }
-
-        .btn-main:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(56, 189, 248, 0.3); }
-
-        /* ESTILO PASSKEY */
-        .btn-passkey {
-            width: 100%; padding: 14px; background: #fff; color: #1e293b;
-            border: none; border-radius: 12px; font-family: 'Montserrat', sans-serif;
-            font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: 0.3s;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            margin-bottom: 15px;
-        }
-        .btn-passkey:hover { background: #f1f5f9; transform: scale(1.02); }
-
-        .divider { display: flex; align-items: center; margin: 25px 0; color: #475569; font-size: 0.75rem; font-weight: 600; }
-        .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: #1e293b; margin: 0 15px; }
-
-        .btn-social {
-            background: white; border: 1px solid #e2e8f0; color: #1e293b;
-            width: 100%; padding: 12px; border-radius: 12px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            gap: 12px; margin-bottom: 12px; font-weight: 600; transition: 0.3s;
-        }
-
-        .btn-social.github { background: #24292e; color: white; border: none; }
-        .btn-social:hover { transform: scale(1.02); filter: brightness(0.95); }
-        .btn-social img { width: 20px; height: 20px; }
-
-        .footer-links { margin-top: 25px; text-align: center; }
-        .footer-links a { color: #64748b; text-decoration: none; font-size: 0.8rem; margin: 0 10px; }
-        .footer-links a:hover { color: var(--accent); }
-
-        /* LADO DERECHO: SLIDER */
-        .visual-side { width: 60%; height: 100%; position: relative; }
-        .slide {
-            position: absolute; width: 100%; height: 100%; opacity: 0;
-            transition: opacity 1.5s ease; background-size: cover; background-position: center;
-        }
-        .slide.active { opacity: 1; }
-        .slide::after {
-            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to top, rgba(2, 6, 23, 0.9), transparent);
-        }
-        .slide-content {
-            position: absolute; bottom: 80px; left: 60px; right: 60px;
-            color: #fff; z-index: 5;
-        }
-        .slide-content h3 { font-family: 'Fredoka'; font-size: 2.8rem; margin: 0; line-height: 1.1; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .btn-enter:hover { transform: scale(1.1); box-shadow: 0 0 20px white; }
     </style>
 </head>
 <body>
 
-    <div class="login-side">
-        <div class="form-container">
-            <div class="logo">The Learning Universe</div>
-            <h2>Hola, Cadete</h2>
-            <p class="subtitle">Ingresa tus credenciales para iniciar el viaje espacial.</p>
-            
-            <button class="btn-passkey" id="passkeyBtn">
-                <span>🆔</span> Iniciar con Passkey
-            </button>
+    <img src="classroom1.png" alt="Welcome" class="welcome-img">
+    <h1>¡Bienvenido!</h1>
+    <p style="font-size: 1.2rem; margin-bottom: 30px;">Puedes entrar a The Learning Universe. Es hora de aprender.</p>
+    
+    <button class="btn-enter" onclick="location.href='selectname.html'">Entrar al Universo</button>
 
-            <div class="input-group">
-                <input type="email" id="email" placeholder="Correo Espacial">
-            </div>
-            <div class="input-group">
-                <input type="password" id="pass" placeholder="Tu Llave Secreta">
-            </div>
-            
-            <button class="btn-main" id="loginBtn">INICIAR VIAJE</button>
-
-            <div class="divider">O CONTINÚA CON</div>
-
-            <button class="btn-social" id="googleBtn">
-                <img src="google.png" alt="Google">
-                Entrar con Google
-            </button>
-
-            <button class="btn-social github" id="githubBtn">
-                <img src="github.png" alt="GitHub" style="filter: invert(1);">
-                Entrar con GitHub
-            </button>
-
-            <div class="footer-links">
-                <a href="register.html">Regístrate</a>
-                <a href="resetpassword.html">¿Olvidaste tu contraseña?</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="visual-side">
-        <div class="slide active" style="background-image: url('classroom.png');">
-            <div class="slide-content">
-                <h3>La educación es compleja,<br>debemos educar gratis a todos los niños.</h3>
-            </div>
-        </div>
-        <div class="slide" style="background-image: url('classroom2.png');">
-            <div class="slide-content">
-                <h3>¡Puedes registrarte de varias maneras!<br>100% gratis totalmente.</h3>
-            </div>
-        </div>
-        <div class="slide" style="background-image: url('classroom3.png');">
-            <div class="slide-content">
-                <h3>Es hora.<br>Regístrate y empieza tu aventura.</h3>
-            </div>
-        </div>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, GithubAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAuQgFqmiKUwKlXfBjFXz0Uu584RT6LtbI",
-            authDomain: "thelearninguniverse-26.firebaseapp.com",
-            projectId: "thelearninguniverse-26",
-            storageBucket: "thelearninguniverse-26.firebasestorage.app",
-            messagingSenderId: "85338996011",
-            appId: "1:85338996011:web:1f3bb216900c07e735596e"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const googleProvider = new GoogleAuthProvider();
-        const githubProvider = new GithubAuthProvider();
-
-        const saveAndRedirect = (user) => {
-            const name = user.displayName || user.email.split('@')[0];
-            localStorage.setItem('usuarioActivo', name);
-            window.location.href = 'home.html';
-        };
-
-        // EVENTO PASSKEY (Simulación funcional de WebAuthn)
-        document.getElementById('passkeyBtn').addEventListener('click', async () => {
-            try {
-                // Simula la llamada al sistema de seguridad del dispositivo
-                const confirmacion = confirm("¿Deseas iniciar sesión usando la Passkey vinculada a este dispositivo?");
-                if (confirmacion) {
-                    // En un entorno Passkey real se usa navigator.credentials.get
-                    // Aquí lo vinculamos a tu lógica de sesión actual
-                    localStorage.setItem('usuarioActivo', 'Agente_Biométrico');
-                    window.location.href = 'home.html';
-                }
-            } catch (e) {
-                alert("Error en Passkey: " + e.message);
-            }
-        });
-
-        // Eventos de Firebase
-        document.getElementById('loginBtn').addEventListener('click', async () => {
-            const email = document.getElementById('email').value;
-            const pass = document.getElementById('pass').value;
-            try { 
-                const res = await signInWithEmailAndPassword(auth, email, pass); 
-                saveAndRedirect(res.user); 
-            } catch (e) { alert("Error: " + e.message); }
-        });
-
-        document.getElementById('googleBtn').addEventListener('click', async () => {
-            try { 
-                const res = await signInWithPopup(auth, googleProvider); 
-                saveAndRedirect(res.user); 
-            } catch (e) { alert("Google Error: " + e.message); }
-        });
-
-        document.getElementById('githubBtn').addEventListener('click', async () => {
-            try { 
-                const res = await signInWithPopup(auth, githubProvider); 
-                saveAndRedirect(res.user); 
-            } catch (e) { alert("GitHub Error: " + e.message); }
-        });
-
-        // Lógica del Slider automático
-        const slides = document.querySelectorAll('.slide');
-        let index = 0;
-        setInterval(() => {
-            slides[index].classList.remove('active');
-            index = (index + 1) % slides.length;
-            slides[index].classList.add('active');
-        }, 6000);
-    </script>
 </body>
 </html>
