@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>TLU | Papelucho ¿soy dix-leso?</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <script src="../../js/auth.js"></script>
+    <style>
+        :root {
+            --tlu-blue: #38bdf8;
+            --tlu-yellow: #fef08a;
+            --tlu-police: #1e3a8a; /* Azul policial */
+            --bg: #020617;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Fredoka', sans-serif;
+            background: var(--bg);
+            background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
+            color: white;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header-book {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .book-img {
+            width: 190px;
+            border-radius: 10px;
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.4);
+            margin-bottom: 20px;
+            border: 4px solid var(--tlu-blue);
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--tlu-yellow);
+            font-size: 2.2rem;
+            margin: 10px 0;
+            text-transform: uppercase;
+        }
+
+        .aviso-repaso {
+            background: rgba(30, 58, 138, 0.2);
+            border: 1px solid var(--tlu-police);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 30px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 30px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--tlu-blue);
+            font-size: 1.4rem;
+        }
+
+        .detective-box {
+            border: 2px dashed #94a3b8;
+            padding: 20px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.02);
+            margin-top: 20px;
+        }
+
+        .lesson-tag {
+            display: inline-block;
+            background: var(--tlu-police);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 5px;
+            margin: 5px;
+            font-size: 0.9rem;
+        }
+
+        .btn-back {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 35px;
+            border: 2px solid var(--tlu-blue);
+            color: var(--tlu-blue);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .btn-back:hover { background: var(--tlu-blue); color: #000; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-book">
+            <img src="../papelucho-dixleso.jpg" alt="Papelucho ¿soy dix-leso?" class="book-img">
+            <h1>¿Soy dix-leso?</h1>
+            <p style="opacity: 0.8;">Una aventura de Papelucho y el Teniente Albornoz</p>
+        </div>
+
+        <div class="aviso-repaso">
+            <span style="font-size: 1.5rem;">🔍</span>
+            <p style="margin: 0;"><strong>RECUERDA:</strong> La dislexia no afecta la inteligencia ni la creatividad. ¡Papelucho nos demuestra que ser diferente puede ser una gran ventaja!</p>
+        </div>
+
+        <div class="card">
+            <h2>📖 Una "Enfermedad Choriflái"</h2>
+            <p>Todo comienza cuando a Papelucho le diagnostican <strong>dislexia</strong> (él lo entiende como "dix-leso"). Al principio se pone muy contento porque cree que es una excusa perfecta para no ir al colegio ni hacer tareas[cite: 439, 444].</p>
+            <p>Sin embargo, el aburrimiento lo lleva a caminar por la calle, donde termina cuidando un auto que resulta ser de una banda de ladrones. ¡Así empieza su inesperada carrera como detective! [cite: 445, 447]</p>
+        </div>
+
+        <div class="card">
+            <h2>🚨 Enredos y Persecuciones</h2>
+            <p>Tras una serie de confusiones, Papelucho termina en la comisaría y conoce al <strong>Teniente Albornoz</strong>[cite: 449]. A pesar de los malentendidos iniciales, Papelucho usa su gran imaginación y su forma distinta de ver las cosas para ayudar a la policía a resolver el caso y atrapar a los delincuentes[cite: 451].</p>
+            <div class="detective-box">
+                <strong>Caso Resuelto:</strong> La dislexia solo significa que el cerebro procesa el lenguaje de forma diferente, pero no impide ser valiente, creativo y muy inteligente[cite: 452, 453].
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>👥 Personajes del Caso</h2>
+            <ul style="list-style: none; padding: 0;">
+                <li style="margin-bottom: 10px;"><strong>👦 Papelucho:</strong> El protagonista ingenioso que descubre que sus dificultades no definen su valor[cite: 464].</li>
+                <li style="margin-bottom: 10px;"><strong>👮 Teniente Albornoz:</strong> Un policía serio que aprende a valorar la inteligencia única de Papelucho[cite: 466, 467].</li>
+                <li style="margin-bottom: 10px;"><strong>👩‍🏫 La Profesora:</strong> Quien identifica la necesidad de Papelucho para que reciba el apoyo correcto[cite: 469].</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px;">
+            <h3>Lo que aprendimos hoy:</h3>
+            <span class="lesson-tag">Aceptar las diferencias</span>
+            <span class="lesson-tag">Valorar la creatividad</span>
+            <span class="lesson-tag">Superar problemas con ingenio</span>
+            <br><br>
+            <a href="../resumendelibros.html" class="btn-back">← Volver a la Biblioteca</a>
+        </div>
+    </div>
+
+</body>
+</html>
