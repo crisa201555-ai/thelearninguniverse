@@ -52,28 +52,45 @@
     </div>
 
     <script>
-        function checkSong() {
-            const songName = document.getElementById('songInput').value.trim();
-            const result = document.getElementById('musicResult');
+function checkSong() {
+    const input = document.getElementById('songInput').value;
+    const result = document.getElementById('musicResult');
 
-            // Filtro de seguridad (puedes añadir más palabras aquí)
-            const forbidden = ["pene", "vagina", "sexo", "puta", "mierda", "ctm", "67", "sixseven", "six seven", "seissiete", "seis y siete", "penerico", "testiculos", "Weon"]; 
-            
-            const isInsolent = forbidden.some(word => songName.toLowerCase().includes(word));
+    // 1. "Normalizamos" el texto: quitamos espacios, puntos y lo pasamos a minúsculas
+    // Esto hace que "P E N E" se convierta en "pene" antes de revisar
+    const cleanInput = input.toLowerCase()
+                            .replace(/\s+/g, '')       // Quita todos los espacios
+                            .replace(/[04]/g, 'a')     // Cambia 0 o 4 por 'a'
+                            .replace(/[3]/g, 'e')      // Cambia 3 por 'e'
+                            .replace(/[1]/g, 'i');     // Cambia 1 por 'i'
 
-            if (songName === "") {
-                result.innerText = "¡Dime el nombre de una canción!";
-                return;
-            }
+    // 2. Lista de conceptos bloqueados (palabras clave y frases)
+    const forbiddenPatterns = [
+        "pene", "vagina", "sexo", "puta", "mierda", "culo", 
+        "parteintima", "organoreproductor", "p.e.n.e", "pen3"
+    ];
 
-            if (isInsolent) {
-                result.innerText = "¡Ups! Ese nombre no parece ser una canción adecuada para nuestra comunidad. ✋";
-                result.style.color = "#fb7185";
-            } else {
-                result.innerText = `¡Wow! La canción "${songName}" es realmente increíble, me gusta. ✨`;
-                result.style.color = "#38bdf8";
-            }
-        }
+    // 3. Verificamos si el mensaje contiene algo de la lista negra
+    const isInsolent = forbiddenPatterns.some(word => cleanInput.includes(word));
+    
+    // 4. Verificación de longitud mínima
+    if (input.trim().length < 2) {
+        result.innerText = "¡Dime el nombre de una canción!";
+        result.style.color = "#fff";
+        return;
+    }
+
+    if (isInsolent) {
+        result.innerText = "¡Ups! Ese mensaje contiene palabras no permitidas en nuestro espacio de reflexión. ✋";
+        result.style.color = "#fb7185";
+        // Opcional: Limpiar el input si es grosero
+        document.getElementById('songInput').value = "";
+    } else {
+        // Si todo está bien, mostramos el mensaje con el nombre original (con espacios)
+        result.innerText = `¡Wow! La canción "${input}" es realmente increíble, me gusta. ✨`;
+        result.style.color = "#38bdf8";
+    }
+}
     </script>
 </body>
 </html>
