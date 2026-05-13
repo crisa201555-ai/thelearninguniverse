@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>TLU | Elige tu Nombre</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            background: #020617;
+            color: white;
+            font-family: 'Fredoka', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 40px;
+            border-radius: 30px;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            max-width: 400px;
+            text-align: center;
+        }
+        input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #38bdf8;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            font-size: 1.1rem;
+            margin: 20px 0;
+            box-sizing: border-box;
+        }
+        .aviso {
+            background: rgba(56, 189, 248, 0.1);
+            color: #94a3b8;
+            font-size: 0.8rem;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+        .btn-save {
+            background: #38bdf8;
+            color: #020617;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2 style="font-family: 'Orbitron';">Tu Identidad</h2>
+        <p>Campo de nombre:</p>
+        <input type="text" id="userName" placeholder="Ej: Cadete Espacial" maxlength="20">
+        
+        <div class="aviso">
+            <strong>AVISO:</strong> Este dato se guarda en el navegador. No en el servidor. Esto es hecho para proteger a los usuarios de la web.
+        </div>
+
+        <button class="btn-save" onclick="saveAndGo()">Comenzar Misión</button>
+    </div>
+
+    <script>
+        function saveAndGo() {
+            const name = document.getElementById('userName').value;
+            if (name.trim() === "") {
+                alert("Por favor, ingresa un nombre para tu cadete.");
+                return;
+            }
+            // GUARDADO LOCAL (STORAGE) - No viaja a ningún servidor
+            localStorage.setItem('usuarioActivo', name.toUpperCase());
+            location.href = 'home.html';
+        }
+    </script>
+</body>
+</html>
