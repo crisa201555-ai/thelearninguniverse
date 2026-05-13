@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>TLU | Papelucho en la clínica</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <script src="../../js/auth.js"></script>
+    <style>
+        :root {
+            --tlu-blue: #38bdf8;
+            --tlu-medical: #e0f2fe;
+            --tlu-emergency: #f87171;
+            --bg: #020617;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Fredoka', sans-serif;
+            background: var(--bg);
+            background: radial-gradient(circle at top, #0c4a6e 0%, #020617 100%);
+            color: white;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header-book {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .book-img {
+            width: 190px;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(56, 189, 248, 0.3);
+            margin-bottom: 20px;
+            border: 4px solid white;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--tlu-blue);
+            font-size: 2.5rem;
+            margin: 10px 0;
+        }
+
+        .ficha-medica {
+            background: white;
+            color: #1e293b;
+            padding: 30px;
+            border-radius: 10px;
+            border-top: 10px solid var(--tlu-blue);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .ficha-medica::after {
+            content: "PACIENTE: PAPELUCHO";
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background: var(--tlu-emergency);
+            color: white;
+            padding: 5px 15px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border-radius: 5px;
+        }
+
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--tlu-blue);
+            font-size: 1.3rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 25px;
+        }
+
+        .adventure-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 20px;
+            background: rgba(56, 189, 248, 0.1);
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .step-num {
+            background: var(--tlu-blue);
+            color: #000;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .btn-back {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 35px;
+            background: white;
+            color: #000;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .btn-back:hover { background: var(--tlu-blue); color: white; transform: scale(1.05); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-book">
+            <img src="../papelucho-clinica.jpg" alt="Papelucho en la clínica" class="book-img">
+            <h1>En la Clínica</h1>
+            <p style="opacity: 0.8;">"Las cambiaditas" y una operación por error</p>
+        </div>
+
+        <div class="ficha-medica">
+            <h2 style="color: #0f172a;">📋 Reporte de la Aventura</h2>
+            <p>Todo comienza cuando Papelucho acompaña a su familia a la clínica porque ha nacido su hermanita menor. Aburrido de esperar, decide explorar los pasillos y llega a la <strong>habitación 15</strong>.</p>
+            <p>Allí conoce a <strong>Casimiro</strong>, un niño que espera una operación de apéndice. Se les ocurre la idea de jugar a <em>"las cambiaditas"</em>: se cambian de ropa y de cama. El problema surge cuando llega la enfermera y, confundiéndolo con Casimiro, ¡se llevan a Papelucho al pabellón y lo operan por error!</p>
+        </div>
+
+        <div class="card">
+            <h2>🏥 Momentos Clave</h2>
+            <div class="adventure-step">
+                <div class="step-num">1</div>
+                <div><strong>El error médico:</strong> Papelucho es operado del apéndice sin estar enfermo, pero lo toma con mucha valentía y humor.</div>
+            </div>
+            <div class="adventure-step">
+                <div class="step-num">2</div>
+                <div><strong>El señor Rubilar:</strong> En la clínica conoce al Sr. Adalberto Rubilar, un anciano solitario y millonario que se encariña profundamente con Papelucho.</div>
+            </div>
+            <div class="adventure-step">
+                <div class="step-num">3</div>
+                <div><strong>El incendio:</strong> Papelucho demuestra su gran corazón al salvar a una enfermera durante un incendio en el hospital.</div>
+            </div>
+        </div>
+
+        <div class="card" style="border-left: 5px solid #4ade80;">
+            <h2>✨ El Final Inesperado</h2>
+            <p>Gracias a su amistad con el Sr. Rubilar, Papelucho recibe una herencia que ayuda a solucionar los problemas económicos de su familia. Esta aventura nos enseña que el cariño puede surgir en los lugares más tristes y que ser valiente siempre trae recompensas.</p>
+        </div>
+
+        <div style="text-align: center; padding: 20px;">
+            <h3>Personajes Principales</h3>
+            <p><strong>Casimiro:</strong> El amigo de travesuras. | <strong>Sr. Rubilar:</strong> El sabio solitario. | <strong>Papelucho:</strong> El héroe por accidente.</p>
+            <a href="../resumendelibros.html" class="btn-back">← Volver a la Biblioteca</a>
+        </div>
+    </div>
+
+</body>
+</html>
