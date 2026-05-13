@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>TLU | Papelucho y el marciano</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <script src="../../js/auth.js"></script>
+    <style>
+        :root {
+            --tlu-blue: #38bdf8;
+            --tlu-green: #4ade80; /* Color Marciano */
+            --bg: #020617;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Fredoka', sans-serif;
+            background: var(--bg);
+            background: radial-gradient(circle at bottom right, #064e3b 0%, #020617 100%);
+            color: white;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header-book {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .book-img {
+            width: 200px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(74, 222, 128, 0.3);
+            margin-bottom: 20px;
+            border: 2px solid var(--tlu-green);
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--tlu-green);
+            font-size: 2.5rem;
+            margin: 10px 0;
+        }
+
+        .aviso-repaso {
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid var(--tlu-green);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 30px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 0.95rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--tlu-blue);
+            margin-top: 0;
+        }
+
+        .character-box {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border-left: 5px solid var(--tlu-green);
+        }
+
+        .btn-back {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 30px;
+            border: 1px solid var(--tlu-blue);
+            color: var(--tlu-blue);
+            text-decoration: none;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+
+        .btn-back:hover { background: var(--tlu-blue); color: var(--bg); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-book">
+            <img src="../papelucho-marciano.jpg" alt="Papelucho y el Marciano" class="book-img">
+            <h1>Papelucho y el marciano</h1>
+            <p style="opacity: 0.8;">Escrito por Marcela Paz (1968) [cite: 29]</p>
+        </div>
+
+        <div class="aviso-repaso">
+            <span style="font-size: 1.5rem;">⚠️</span>
+            <p style="margin: 0;"><strong>AVISO:</strong> Este es un resumen del libro, pero si tienes alguna prueba sobre esto, aunque hayas visto el resumen, puedes leer para repasarlo.</p>
+        </div>
+
+        <div class="card">
+            <h2>🛸 Resumen del Viaje</h2>
+            <p>La aventura comienza cuando <strong>Papelucho</strong>, un niño de ocho años con una imaginación sin límites [cite: 29, 30], aspira accidentalmente a un ser del espacio tras estornudar en la cocina[cite: 31]. Este ser es <strong>Det</strong>, un marciano que termina alojado dentro de su cuerpo[cite: 31].</p>
+            <p>Desde ese momento, la vida de Papelucho se vuelve una locura: Det tiene sus propias costumbres y hace que Papelucho actúe de forma extraña, hablando solo y haciendo movimientos que nadie entiende[cite: 32, 33]. A pesar de los problemas, nace entre ellos una amistad muy especial donde comparten secretos y juegos[cite: 35].</p>
+            <p>Finalmente, Papelucho decide ayudar a Det a regresar a <strong>Marte</strong>[cite: 36]. Juntos construyen transportes originales y logran viajar al planeta rojo, donde se despiden con pena pero sabiendo que su amistad es real[cite: 37, 38].</p>
+        </div>
+
+        <div class="card">
+            <h2>👥 Personajes Destacados</h2>
+            
+            <div class="character-box">
+                <strong>Papelucho:</strong> Protagonista y narrador. Es un niño chileno inteligente, inquieto y con una forma única de ver lo extraordinario en lo cotidiano[cite: 43, 44, 47].
+            </div>
+
+            <div class="character-box">
+                <strong>Det:</strong> El marciano pequeño y diferente que vive dentro de Papelucho[cite: 48, 49, 50, 51]. Representa la posibilidad de convivir con quienes son distintos a nosotros[cite: 52].
+            </div>
+
+            <div class="character-box">
+                <strong>Domitila:</strong> La empleada de la casa. Es comprensiva, amable y la persona en quien Papelucho confía para contar sus aventuras[cite: 57, 58].
+            </div>
+        </div>
+
+        <div class="card" style="border-color: var(--tlu-blue);">
+            <h2>💡 ¿Qué nos enseña?</h2>
+            <p>Esta historia nos enseña sobre la <strong>aceptación de las diferencias</strong>, el valor de la amistad verdadera y cómo la imaginación es la herramienta más poderosa para resolver problemas y entender el mundo[cite: 40].</p>
+        </div>
+
+        <center>
+            <a href="../resumendelibros.html" class="btn-back">← Volver a la Biblioteca</a>
+        </center>
+    </div>
+
+</body>
+</html>
